@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     alignSelf: "center",
     marginBottom: 20,
-    fontFamily: "Cochin",
+    // fontFamily: "",
   },
   input: {
     margin: 5,

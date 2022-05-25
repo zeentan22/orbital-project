@@ -1,7 +1,7 @@
 import React, { userState, useState, useEffect } from "react";
 // import type Node from 'react';
 import { NavigationContainer } from "@react-navigation/native";
-import { Card } from "@rneui/themed";
+// import { Card } from "@rneui/themed";
 import MashButton from "./src/Components/CustomButton";
 import {
   StatusBar,
@@ -26,12 +26,12 @@ import {
   ImageBackground,
 } from "react-native";
 import { createStackNavigator, Header } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Login from "./src/Screens/LoginPage";
 import CreateAccount from "./src/Screens/CreateAccountPage";
-import Screenc from "./src/Screens/Screen_C";
-import { yupResolver } from "@hookform/resolvers/yup";
+// import Screenc from "./src/Screens/Screen_C";
+// import { yupResolver } from "@hookform/resolvers/yup";
 
 const Wholelogin = createStackNavigator();
 

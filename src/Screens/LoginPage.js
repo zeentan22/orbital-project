@@ -1,7 +1,7 @@
 import React, { userState, useState, useEffect } from "react";
 // import type Node from 'react';
-import { NavigationContainer } from "@react-navigation/native";
-import { Card } from "@rneui/themed";
+// import { NavigationContainer } from "@react-navigation/native";
+// import { Card } from "@rneui/themed";
 import {
   StatusBar,
   Alert,
@@ -24,16 +24,17 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+// import { createStackNavigator } from "@react-navigation/stack";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MashButton from "../Components/CustomButton";
 
 export default function Login({ navigation }) {
   const onPressHandler = () => {
     navigation.navigate("Createpage"); //used for when we click on Create Account Button, go to that page
   };
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   return (
     <View style={styles.body}>
       <View style={styles.body1}>
@@ -47,12 +48,12 @@ export default function Login({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="E.g. xxx@gmail.com"
-        onChangeText={(text) => setValue("email", text)} //connect to backend to login by checking with database
+        onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
       />
       <TextInput
         style={styles.input}
         placeholder="Enter Password"
-        onChangeText={(text) => setValue("password", text)} //connect to backend to login by checking with database
+        onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
         secureTextEntry
       />
       <MashButton //havent create the login button function yet

@@ -1,4 +1,6 @@
-import React, { userState, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { login } from "../../firebase";
+
 // import type Node from 'react';
 // import { NavigationContainer } from "@react-navigation/native";
 // import { Card } from "@rneui/themed";
@@ -30,11 +32,26 @@ import {
 import MashButton from "../Components/CustomButton";
 
 export default function Login({ navigation }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const onPressHandler = () => {
     navigation.navigate("Createpage"); //used for when we click on Create Account Button, go to that page
   };
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  async function handleLogin() {
+    setLoading(true);
+    try {
+      await login(email, password);
+      console.log("logged in!");
+      navigation.navigate("Screenc");
+      alert("Logged in!");
+    } catch {
+      alert("Error!");
+    }
+    setLoading(false);
+  }
+
   return (
     <View style={styles.body}>
       <View style={styles.body1}>
@@ -53,12 +70,13 @@ export default function Login({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Enter Password"
-        onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
+        onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
         secureTextEntry
       />
       <MashButton //havent create the login button function yet
         title="Login"
         color="#D3D3D3"
+        onPress={handleLogin}
       />
       <MashButton
         title="Create Account"

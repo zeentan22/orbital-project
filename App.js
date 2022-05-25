@@ -32,7 +32,7 @@ import Login from "./src/Screens/LoginPage";
 import CreateAccount from "./src/Screens/CreateAccountPage";
 // import Screenc from "./src/Screens/Screen_C";
 // import { yupResolver } from "@hookform/resolvers/yup";
-
+import Screenc from "./src/Screens/Screen_C";
 const Wholelogin = createStackNavigator();
 
 function App() {
@@ -49,6 +49,11 @@ function App() {
           name="Createpage"
           component={CreateAccount}
           options={{ title: "Create Account" }}
+        />
+        <Wholelogin.Screen
+          name="Screenc"
+          component={Screenc}
+          options={{ title: "Temporary home" }}
         />
       </Wholelogin.Navigator>
     </NavigationContainer>

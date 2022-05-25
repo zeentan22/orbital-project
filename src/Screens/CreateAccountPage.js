@@ -1,4 +1,5 @@
-import React, { userState, useState } from "react";
+"use strict";
+import React, { userState, useState, useRef } from "react";
 // import type Node from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -23,6 +24,7 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
+import { signup, login, logout, useAuth } from "../../firebase";
 import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -36,6 +38,24 @@ export default function CreateAccount({ navigation }) {
   const [password, setPassword] = useState("");
   const [first_name, setFirstname] = useState("");
   const [last_name, setLastname] = useState("");
+  const [loading, setLoading] = useState(false);
+  const currentUser = useAuth();
+
+  //   const emailRef = useRef();
+  //   const passwordRef = useRef();
+
+  async function handleSignup() {
+    setLoading(true);
+    try {
+      console.log("hello");
+      console.log(email);
+      await signup(email, password);
+    } catch (err) {
+      alert("Error!");
+      console.log(err);
+    }
+    setLoading(false);
+  }
   return (
     <View style={styles.body}>
       <View style={styles.body1}>
@@ -67,7 +87,7 @@ export default function CreateAccount({ navigation }) {
         title="Create Account"
         color="#D3D3D3"
         style={{ marginTop: 40 }}
-        onPress={onPressHandler}
+        onPress={handleSignup}
       />
     </View>
   );

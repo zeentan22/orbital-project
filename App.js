@@ -33,6 +33,7 @@ import CreateAccount from "./src/Screens/CreateAccountPage";
 // import Screenc from "./src/Screens/Screen_C";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import Screenc from "./src/Screens/Screen_C";
+import "react-native-gesture-handler";
 const Wholelogin = createStackNavigator();
 
 function App() {
@@ -150,7 +151,6 @@ const styles = StyleSheet.create({
     fontSize: 40,
     alignSelf: "center",
     marginBottom: 20,
-    fontFamily: "Cochin",
   },
   input: {
     margin: 5,

@@ -30,6 +30,7 @@ import {
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MashButton from "../Components/CustomButton";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -53,41 +54,51 @@ export default function Login({ navigation }) {
   }
 
   return (
-    <View style={styles.body}>
-      <View style={styles.body1}>
-        <Image
-          style={styles.image}
-          resizeMode="stretch"
-          source={require("../../assets/!Procrastinate_Logo.png")}
-        ></Image>
-        <Text style={styles.textintro}>Welcome !</Text>
+    <KeyboardAwareScrollView
+    behavior='padding'
+    contentContainerStyle = {styles.scrollbody}>
+      <View style={styles.body}>
+        <View style={styles.body1}>
+          <Image
+            style={styles.image}
+            resizeMode="stretch"
+            source={require("../../assets/!Procrastinate_Logo.png")}
+          ></Image>
+          <Text style={styles.textintro}>Welcome !</Text>
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="E.g. xxx@gmail.com"
+          onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Password"
+          onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
+          secureTextEntry
+        />
+        <MashButton //havent create the login button function yet
+          title="Login"
+          color="#D3D3D3"
+          onPress={handleLogin}
+        />
+        <MashButton
+          title="Create Account"
+          color="#D3D3D3"
+          onPress={onPressHandler}
+        />
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="E.g. xxx@gmail.com"
-        onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Password"
-        onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
-        secureTextEntry
-      />
-      <MashButton //havent create the login button function yet
-        title="Login"
-        color="#D3D3D3"
-        onPress={handleLogin}
-      />
-      <MashButton
-        title="Create Account"
-        color="#D3D3D3"
-        onPress={onPressHandler}
-      />
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollbody: {
+    backgroundColor: "#ffffff",
+    justifyContent: 'center',
+    flex: 1,
+
+  },
   body: {
     flex: 1,
     flexDirection: "column",
@@ -111,17 +122,17 @@ const styles = StyleSheet.create({
     fontSize: 40,
     alignSelf: "center",
     marginBottom: 20,
-    fontFamily: "Cochin",
   },
   input: {
     margin: 5,
     borderWidth: 2,
     alignSelf: "center",
-    width: 250,
+    width: 300,
+    height: 55,
     borderColor: "#555",
     borderRadius: 5,
     textAlign: "center",
-    margin: 10,
+    margin: 15,
   },
   button: {
     height: 50,

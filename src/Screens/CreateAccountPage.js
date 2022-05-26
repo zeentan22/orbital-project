@@ -29,6 +29,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MashButton from "../Components/CustomButton";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function CreateAccount({ navigation }) {
   const onPressHandler = () => {
@@ -57,48 +58,58 @@ export default function CreateAccount({ navigation }) {
     setLoading(false);
   }
   return (
-    <View style={styles.body}>
-      <View style={styles.body1}>
-        <Text style={styles.textintro}>Create your account</Text>
+    <KeyboardAwareScrollView
+    behavior='padding'
+    contentContainerStyle = {styles.scrollbody}>
+      <View style={styles.body}>
+        <View style={styles.body1}>
+          <Text style={styles.textintro} numberOfLines = {1} adjustsFontSizeToFit = {true}>Create your account</Text>
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          onChangeText={(value) => setFirstname(value)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+          onChangeText={(value) => setLastname(value)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="E.g. xxx@gmail.com"
+          onChangeText={(value) => setEmail(value)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Password"
+          onChangeText={(value) => setPassword(value)}
+          secureTextEntry
+        />
+        <MashButton //havent create the signup button function yet to store into database,
+          // for now it goes back to login page when you lick create account
+          title="Create Account"
+          color="#D3D3D3"
+          style={{ marginTop: 40 }}
+          onPress={handleSignup}
+        />
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        onChangeText={(value) => setFirstname(value)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        onChangeText={(value) => setLastname(value)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="E.g. xxx@gmail.com"
-        onChangeText={(value) => setEmail(value)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Password"
-        onChangeText={(value) => setPassword(value)}
-        secureTextEntry
-      />
-      <MashButton //havent create the signup button function yet to store into database,
-        // for now it goes back to login page when you lick create account
-        title="Create Account"
-        color="#D3D3D3"
-        style={{ marginTop: 40 }}
-        onPress={handleSignup}
-      />
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollbody: {
+    backgroundColor: "#ffffff",
+    justifyContent: 'center',
+    flex: 1,
+
+  },
   body: {
     flex: 1,
     flexDirection: "column",
     backgroundColor: "#ffffff",
-    alignItems: "center",
+    alignItems: "stretch",
     justifyContent: "center",
   },
   body1: {
@@ -114,20 +125,20 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   textintro: {
-    fontSize: 40,
+    fontSize: 35,
     alignSelf: "center",
     marginBottom: 20,
-    fontFamily: "Cochin",
   },
   input: {
     margin: 5,
     borderWidth: 2,
     alignSelf: "center",
-    width: 250,
+    width: 300,
     borderColor: "#555",
     borderRadius: 5,
     textAlign: "center",
-    margin: 10,
+    margin: 15,
+    height: 55,
   },
   button: {
     height: 50,

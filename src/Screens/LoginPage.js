@@ -25,6 +25,9 @@ import {
   Modal,
   Image,
   ImageBackground,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 // import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -53,37 +56,39 @@ export default function Login({ navigation }) {
   }
 
   return (
-    <View style={styles.body}>
-      <View style={styles.body1}>
-        <Image
-          style={styles.image}
-          resizeMode="stretch"
-          source={require("../../assets/!Procrastinate_Logo.png")}
-        ></Image>
-        <Text style={styles.textintro}>Welcome !</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.body}>
+        <View style={styles.body1}>
+          <Image
+            style={styles.image}
+            resizeMode="stretch"
+            source={require("../../assets/!Procrastinate_Logo.png")}
+          ></Image>
+          <Text style={styles.textintro}>Welcome !</Text>
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="E.g. xxx@gmail.com"
+          onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Password"
+          onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
+          secureTextEntry
+        />
+        <MashButton //havent create the login button function yet
+          title="Login"
+          color="#D3D3D3"
+          onPress={handleLogin}
+        />
+        <MashButton
+          title="Create Account"
+          color="#D3D3D3"
+          onPress={onPressHandler}
+        />
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="E.g. xxx@gmail.com"
-        onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Password"
-        onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
-        secureTextEntry
-      />
-      <MashButton //havent create the login button function yet
-        title="Login"
-        color="#D3D3D3"
-        onPress={handleLogin}
-      />
-      <MashButton
-        title="Create Account"
-        color="#D3D3D3"
-        onPress={onPressHandler}
-      />
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 

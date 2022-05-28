@@ -41,6 +41,8 @@ export default function Screenc({ navigation }) {
   useEffect(() => {
     const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
     const dat = onSnapshot(wdoc, (doc) =>{
+      console.log("hello")
+      console.log(doc.data().firstname)
       setUserName(doc.data().firstname)
     });
   },[username]) 

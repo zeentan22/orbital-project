@@ -45,7 +45,7 @@ export default function Screenc({ navigation }) {
       console.log(doc.data().firstname)
       setUserName(doc.data().firstname)
     });
-  },[username]) 
+  },[]) 
   console.log(typeof currentUser);
   console.log(currentUser?.email);
   const [loading, setLoading] = useState(false);

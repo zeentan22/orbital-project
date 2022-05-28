@@ -25,6 +25,9 @@ import {
   Modal,
   Image,
   ImageBackground,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { signup, login, logout, useAuth, dbInit } from "../../firebase";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -52,6 +55,7 @@ export default function CreateAccount({ navigation }) {
       await signup(email, password)
       .then(async ()=>{
         try {
+          alert("signed up sucessfully");
           const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
           setDoc(wdoc, {firstname: first_name, lastname: last_name, emailadd: email});
           console.log("Document written with ID: ", wdoc.id);
@@ -69,12 +73,10 @@ export default function CreateAccount({ navigation }) {
     navigation.navigate("Screenc");
   }
   return (
-    <KeyboardAwareScrollView
-    behavior='padding'
-    contentContainerStyle = {styles.scrollbody}>
-      <View style={styles.body}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView style={styles.body} behavior="padding">
         <View style={styles.body1}>
-          <Text style={styles.textintro} numberOfLines = {1} adjustsFontSizeToFit = {true}>Create your account</Text>
+          <Text style={styles.textintro}>Create your account</Text>
         </View>
         <TextInput
           style={styles.input}
@@ -104,8 +106,9 @@ export default function CreateAccount({ navigation }) {
           style={{ marginTop: 40 }}
           onPress={handleSignup}
         />
-      </View>
-    </KeyboardAwareScrollView>
+
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 

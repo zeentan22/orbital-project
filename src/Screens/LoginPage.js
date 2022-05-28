@@ -25,6 +25,9 @@ import {
   Modal,
   Image,
   ImageBackground,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 // import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -53,9 +56,8 @@ export default function Login({ navigation }) {
   }
 
   return (
-    <KeyboardAwareScrollView
-    behavior='padding'
-    contentContainerStyle = {styles.scrollbody}>
+
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.body}>
         <View style={styles.body1}>
           <Image
@@ -87,7 +89,8 @@ export default function Login({ navigation }) {
           onPress={onPressHandler}
         />
       </View>
-    </KeyboardAwareScrollView>
+
+    </TouchableWithoutFeedback>
   );
 }
 

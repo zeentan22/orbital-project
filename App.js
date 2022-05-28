@@ -1,5 +1,6 @@
 import React, { userState, useState, useEffect } from "react";
 // import type Node from 'react';
+import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 // import { Card } from "@rneui/themed";
 import MashButton from "./src/Components/CustomButton";
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     alignSelf: "center",
     marginBottom: 20,
+
   },
   input: {
     margin: 5,

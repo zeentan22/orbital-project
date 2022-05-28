@@ -1,5 +1,7 @@
-import React, { userState, useState } from "react";
-import { logout } from "../../firebase";
+import React, { userState, useState, useEffect } from "react";
+import {logout, dbInit, useAuth} from "../../firebase";
+import {getAuth} from "firebase/auth";
+import {getDoc, onSnapshot, doc} from "firebase/firestore";
 // import type Node from 'react';
 // import { NavigationContainer } from "@react-navigation/native";
 // import { Card } from "@rneui/themed";
@@ -26,7 +28,6 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-import { useAuth } from "../../firebase";
 import MashButton from "../Components/CustomButton";
 
 // import { createStackNavigator } from "@react-navigation/stack";
@@ -35,7 +36,14 @@ import MashButton from "../Components/CustomButton";
 // import MashButton from "../Components/CustomButton";
 
 export default function Screenc({ navigation }) {
+  const [username, setUserName] = useState("")
   const currentUser = useAuth();
+  useEffect(() => {
+    const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
+    const dat = onSnapshot(wdoc, (doc) =>{
+      setUserName(doc.data().firstname)
+    });
+  },[username]) 
   console.log(typeof currentUser);
   console.log(currentUser?.email);
   const [loading, setLoading] = useState(false);
@@ -54,7 +62,7 @@ export default function Screenc({ navigation }) {
 
   return (
     <View>
-      <Text style={styles.text}>Hello Friend {currentUser?.email} </Text>
+      <Text style={styles.text}>Hello Friend {username} </Text>
       <MashButton title="Log Out" color="#D3D3D3" onPress={handleLogout} />
     </View>
   );

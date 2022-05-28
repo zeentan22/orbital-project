@@ -2,6 +2,8 @@
 import React, { userState, useState, useRef } from "react";
 // import type Node from 'react';
 import { NavigationContainer } from "@react-navigation/native";
+import { getAuth } from "firebase/auth";
+import {addDoc, collection, doc, setDoc} from "firebase/firestore"
 import {
   StatusBar,
   Alert,
@@ -24,7 +26,7 @@ import {
   Image,
   ImageBackground,
 } from "react-native";
-import { signup, login, logout, useAuth } from "../../firebase";
+import { signup, login, logout, useAuth, dbInit } from "../../firebase";
 import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -32,9 +34,6 @@ import MashButton from "../Components/CustomButton";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function CreateAccount({ navigation }) {
-  const onPressHandler = () => {
-    navigation.navigate("Login Page");
-  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [first_name, setFirstname] = useState("");
@@ -50,12 +49,24 @@ export default function CreateAccount({ navigation }) {
     try {
       console.log("hello");
       console.log(email);
-      await signup(email, password);
+      await signup(email, password)
+      .then(async ()=>{
+        try {
+          const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
+          setDoc(wdoc, {firstname: first_name, lastname: last_name, emailadd: email});
+          console.log("Document written with ID: ", wdoc.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      }
+    
+      );
     } catch (err) {
       alert("Error!");
       console.log(err);
     }
     setLoading(false);
+    navigation.navigate("Screenc");
   }
   return (
     <KeyboardAwareScrollView

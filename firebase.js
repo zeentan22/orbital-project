@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { useEffect, useState } from "react";
 import { initializeApp } from "firebase/app";
-import firestore from "@react-native-firebase/firestore"
+import {getFirestore, collection, setDoc, doc} from "firebase/firestore"
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -53,3 +53,8 @@ export function useAuth() {
 
   return currentUser;
 }
+export const dbInit = getFirestore(app);
+
+
+
+

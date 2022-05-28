@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { login } from "../../firebase";
-
+import { login, useAuth} from "../../firebase";
+import {getDoc, collection, doc, setDoc} from "firebase/firestore"
 // import type Node from 'react';
 // import { NavigationContainer } from "@react-navigation/native";
 // import { Card } from "@rneui/themed";
@@ -31,7 +31,6 @@ import {
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MashButton from "../Components/CustomButton";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

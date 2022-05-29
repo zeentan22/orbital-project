@@ -34,7 +34,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, } from '@re
 import {Avatar, Title, Caption,Paragraph,Drawer,TouchableRipple,Switch} from "react-native-paper";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SetFlashCard from "./flashcard";
+import FlashCard from "./FlashCard";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 // import MashButton from "../Components/CustomButton";
 import SetCalendar from "./calendar";
@@ -57,7 +57,7 @@ export function HomeStack({navigation}) {
 
         <homeStackTab.Screen
         name = "Flashcards"
-        component={SetFlashCard}/>
+        component={FlashCard}/>
 
       </homeStackTab.Navigator>
     </NavigationContainer>
@@ -124,9 +124,9 @@ export function Screenc({ navigation }) {
       console.log(doc.data().firstname)
       setUserName(doc.data().firstname)
     });
-  },[])  */
+  },[])  
   console.log(typeof currentUser);
-  console.log(currentUser?.email);
+  console.log(currentUser?.email); */
   const [loading, setLoading] = useState(false);
 
   async function handleLogout() {
@@ -143,8 +143,7 @@ export function Screenc({ navigation }) {
 
   return (
     <View>
-      <Text style={styles.text}>Hello Friend {username} </Text>
-      <MashButton title="Log Out" color="#D3D3D3" onPress={handleLogout} />
+      <Text style={styles.text}>No Schedule set </Text>
     </View>
   );
 }
@@ -152,6 +151,7 @@ export function Screenc({ navigation }) {
 const styles = StyleSheet.create({
   text: {
     fontSize: 40,
+    alignSelf: "center",
   },
   body: {
     flex: 1,

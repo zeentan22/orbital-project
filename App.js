@@ -35,7 +35,7 @@ import CreateAccount from "./src/Screens/CreateAccountPage";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import {Screenc, HomeStack} from "./src/Screens/Screen_C";
 import "react-native-gesture-handler";
-import Tabs from "./src/Navigation/tabs";
+import {BotTabs} from "./src/Navigation/tabs";
 const Wholelogin = createStackNavigator();
 
 function App() {
@@ -55,8 +55,8 @@ function App() {
         />
         <Wholelogin.Screen
           name="Screenc"
-          component={Tabs}
-          options={{ title: "!Procrastinate" ,headerLeft: ()=> null}}
+          component={BotTabs}
+          options={{ title: "!Procrastinate" ,headerLeft: ()=> null, headerTitleAlign: "center"}}
         />
       </Wholelogin.Navigator>
     </NavigationContainer>

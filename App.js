@@ -33,7 +33,7 @@ import Login from "./src/Screens/LoginPage";
 import CreateAccount from "./src/Screens/CreateAccountPage";
 // import Screenc from "./src/Screens/Screen_C";
 // import { yupResolver } from "@hookform/resolvers/yup";
-import Screenc from "./src/Screens/Screen_C";
+import {Screenc, HomeStack} from "./src/Screens/Screen_C";
 import "react-native-gesture-handler";
 const Wholelogin = createStackNavigator();
 
@@ -54,8 +54,8 @@ function App() {
         />
         <Wholelogin.Screen
           name="Screenc"
-          component={Screenc}
-          options={{ title: "Temporary home" }}
+          component={HomeStack}
+          options={{ header: ()=> null,headerLeft: ()=> null, title : "!Procrastinate"}}
         />
       </Wholelogin.Navigator>
     </NavigationContainer>

@@ -54,7 +54,7 @@ export default function CreateAccount({ navigation }) {
       await signup(email, password)
       .then(async ()=>{
         try {
-          alert("signed up sucessfully");
+          alert(`Welcome to the app, ${last_name}!`)
           const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
           setDoc(wdoc, {firstname: first_name, lastname: last_name, emailadd: email});
           console.log("Document written with ID: ", wdoc.id);

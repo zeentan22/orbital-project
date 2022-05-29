@@ -47,7 +47,7 @@ export default function Login({ navigation }) {
       await login(email, password);
       console.log("logged in!");
       navigation.navigate("Screenc");
-      alert("Logged in!");
+      alert("Welcome back!");
     } catch {
       alert("Error!");
     }

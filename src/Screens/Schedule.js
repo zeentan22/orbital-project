@@ -1,15 +1,15 @@
 import React, { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function FlashCard({ navigation }) {
+export default function Schedule({ navigation }) {
   return (
     <View style={styles.body}>
-      <Text style={styles.text}>Customise your FlashCard now!</Text>
+      <Text style={styles.text}>Set your schedule</Text>
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.button}>
-          <Text> Create new flashcard </Text>
+          <Text> Set Schedule </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
-          <Text> Test Yourself! </Text>
+          <Text> Custom notifications </Text>
         </TouchableOpacity>
       </View>
     </View>

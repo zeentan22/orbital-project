@@ -16,6 +16,10 @@ export function FlashCard({ navigation }) {
   );
 }
 
+const press = () =>{
+  console.log("hello")
+};
+
 const styles = StyleSheet.create({
   text: {
     fontSize: 40,

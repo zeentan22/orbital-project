@@ -7,7 +7,7 @@ import {Screenc} from "../Screens/Screen_C"
 import Schedule from "../Screens/Schedule";
 import {FlashCard} from "../Screens/FlashCard";
 import MashButton from "../Components/CustomButton";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, closeDrawer, DrawerActions } from '@react-navigation/drawer';
 import {Avatar, Title, Caption,Paragraph,Drawer,TouchableRipple,Switch} from "react-native-paper";
 import {logout, dbInit, useAuth, auth} from "../../firebase";
 import {getAuth} from "firebase/auth";
@@ -108,7 +108,7 @@ export function DrawerContent (props) {
             </View>
           </View>
           <Drawer.Section style={{flex:1, marginTop:40, marginLeft : 10}}>
-            <DrawerItem label = "Home" onPress={()=> {props.navigation.navigate("Home")}}></DrawerItem>
+            <DrawerItem label = "Home" onPress={()=> {{props.navigation.toggleDrawer()};{props.navigation.navigate("Home")};}}></DrawerItem>
           </Drawer.Section>
           <Drawer.Section style={{flex:1, marginLeft : 10}}>
             <DrawerItem label = "Sign Out" onPress = {async () =>

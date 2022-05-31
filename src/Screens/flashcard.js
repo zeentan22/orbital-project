@@ -1,6 +1,6 @@
 import React, { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function FlashCard({ navigation }) {
+export function FlashCard({ navigation }) {
   return (
     <View style={styles.body}>
       <Text style={styles.text}>Customise your FlashCard now!</Text>

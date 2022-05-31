@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import {Screenc} from "../Screens/Screen_C"
 import Schedule from "../Screens/Schedule";
-import FlashCard from "../Screens/FlashCard";
+import {FlashCard} from "../Screens/FlashCard";
 import MashButton from "../Components/CustomButton";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, } from '@react-navigation/drawer';
 import {Avatar, Title, Caption,Paragraph,Drawer,TouchableRipple,Switch} from "react-native-paper";
@@ -23,15 +23,24 @@ export const BotTabs = () => {
     return (
     <NavigationContainer
     independent = {true}>
-      <homeStackTab.Navigator screenOptions={{ headerShown: false }}>
+      <homeStackTab.Navigator screenOptions={({route}) => ({ 
+        headerShown: false,
+        tabBarLabel: ({focused}) => {let textStyle;
+        textStyle = focused? { fontSize: 14, paddingBottom: 2, fontWeight: "bold", color: "#32cd32"} : { fontSize: 11, paddingBottom: 2, fontWeight: "normal", color: "black"};
+        return <Text style = {textStyle}>{route.name}</Text> },
+        tabBarActiveTintColor: "#32cd32",
+        tabBarInactiveTintColor: "#555",
+        tabBarActiveBackgroundColor: "#fff",
+        })}>
         <homeStackTab.Screen
           name="Home"
           component={Screenc}
           options={{
-            tabBarIcon: () => (
+            tabBarIcon: ({focused}) => (
               <Image
                 source={require("../../assets/home.png")}
-                style={{ width: 20, height: 20 }}
+                style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
+                tintColor = {focused ? "#32cd32" : "black"}
               />
             ),
           }}
@@ -40,10 +49,11 @@ export const BotTabs = () => {
           name="Set Schedule"
           component={Schedule}
           options={{
-            tabBarIcon: () => (
+            tabBarIcon: ({focused}) => (
               <Image
                 source={require("../../assets/schedule.png")}
-                style={{ width: 20, height: 20 }}
+                style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
+                tintColor = {focused ? "#32cd32" : "black"}
               />
             ),
           }}
@@ -52,13 +62,16 @@ export const BotTabs = () => {
           name="Flash Card"
           component={FlashCard}
           options={{
-            tabBarIcon: () => (
+            tabBarIcon: ({focused}) => (
               <Image
                 source={require("../../assets/flash-cards.png")}
-                style={{ width: 20, height: 20 }}
+                style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
+                tintColor = {focused ? "#32cd32" : "black"}
               />
             ),
-          }}
+          }
+
+          }       
         />
       </homeStackTab.Navigator>
     </NavigationContainer>

@@ -1,11 +1,23 @@
 import React, { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator, Header } from "@react-navigation/stack";
+import MashButton from "../Components/CustomButton";
 
-export default function Schedule({ navigation }) {
+const ScheduleStack = createStackNavigator();
+
+export default function Schedule() {
+
+
+
+
+
+
+const Trial = ({navigation}) =>{
   return (
     <View style={styles.body}>
       <Text style={styles.text}>Set your schedule</Text>
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress ={()=> navigation.navigate("second")}>
           <Text> Set Schedule </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
@@ -14,6 +26,34 @@ export default function Schedule({ navigation }) {
       </View>
     </View>
   );
+};
+const Trial2 = ({navigation}) =>{
+  return (
+    <View style={styles.body}>
+      <MashButton title = "GO back" onPress={()=>{navigation.goBack()}}/>
+      <Text style={styles.text}>Set your schedule 2</Text>
+    </View>
+  );
+};
+return (
+<ScheduleStack.Navigator
+initialRouteName="first"
+screenOptions={{header: ()=> null}}>
+<ScheduleStack.Screen
+  name = "first"
+    component={Trial}/>
+
+
+    <ScheduleStack.Screen
+    name = "second"
+    component={Trial2}/>
+
+
+
+
+  </ScheduleStack.Navigator>
+  );
+
 }
 
 const styles = StyleSheet.create({

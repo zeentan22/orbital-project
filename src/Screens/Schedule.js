@@ -2,7 +2,7 @@ import React, { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, Header } from "@react-navigation/stack";
 import MashButton from "../Components/CustomButton";
-
+import SetCalendar from "./calendar";
 const ScheduleStack = createStackNavigator();
 
 export default function Schedule() {
@@ -17,7 +17,7 @@ const Trial = ({navigation}) =>{
     <View style={styles.body}>
       <Text style={styles.text}>Set your schedule</Text>
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress ={()=> navigation.navigate("second")}>
+        <TouchableOpacity style={styles.button} onPress ={()=> navigation.navigate("SetCalendar")}>
           <Text> Set Schedule </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
@@ -43,10 +43,9 @@ screenOptions={{header: ()=> null}}>
   name = "first"
     component={Trial}/>
 
-
     <ScheduleStack.Screen
-    name = "second"
-    component={Trial2}/>
+    name = "SetCalendar"
+    component={SetCalendar}/>
 
 
 

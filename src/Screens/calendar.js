@@ -1,46 +1,74 @@
-"use strict";
-import React, { userState, useState, useRef, useEffect } from "react";
-// import type Node from 'react';
-import { NavigationContainer } from "@react-navigation/native";
-import { getAuth } from "firebase/auth";
-import {addDoc, collection, doc, setDoc} from "firebase/firestore"
-import {
-  StatusBar,
-  Alert,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Button,
-  TouchableOpacity,
-  TouchableHighlight,
-  Linking,
-  ScrollView,
-  RefreshControl,
-  FlatList,
-  SectionList,
-  Pressable,
-  TextInput,
-  ToastAndroid,
-  Modal,
-  Image,
-  ImageBackground,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import MashButton from "../Components/CustomButton";
+import React, {useState} from 'react';
+import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
+import {Agenda} from 'react-native-calendars';
+import {Card, Avatar} from 'react-native-paper';
 
-export default function SetCalendar ({navigation}) {
+
+const timeToString = (time) => {
+  const date = new Date(time);
+  return date.toISOString().split('T')[0];
+};
+
+const SetCalendar = ({navigation}) => {
+  const [items, setItems] = useState({});
+
+  const loadItems = (day) => {
+    setTimeout(() => {
+      for (let i = -15; i < 85; i++) {
+        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+        const strTime = timeToString(time);
+        if (!items[strTime]) {
+          items[strTime] = [];
+          const numItems = Math.floor(Math.random() * 3 + 1);
+          for (let j = 0; j < numItems; j++) {
+            items[strTime].push({
+              name: 'Item for ' + strTime + ' #' + j,
+              height: Math.max(50, Math.floor(Math.random() * 150)),
+            });
+          }
+        }
+      }
+      const newItems = {};
+      Object.keys(items).forEach((key) => {
+        newItems[key] = items[key];
+      });
+      setItems(newItems);
+    }, 1000);
+  };
+
+  const renderItem = (item) => {
     return (
-        <View style = {styles.body}>
-            <Text style = {styles.text}>
-                Customise your Flashcards now!
-            </Text>
-        </View>
-    )
-}
+      <TouchableOpacity style={{marginRight: 10, marginTop: 17}}>
+        <Card>
+          <Card.Content>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text>{item.name} hello</Text>
+              {/* <Avatar.Text label="J" />   */}
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
 
+  return (
+    <View style={{flex: 1}}>
+      <Agenda
+        items={items}
+        loadItemsForMonth={loadItems}
+        selected={'2022-05-16'}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+};
+
+export default SetCalendar;
 
 
 const styles = StyleSheet.create({

@@ -17,7 +17,7 @@ export function FlashCard({ navigation }) {
 }
 
 const press = () =>{
-  console.log("hello")
+  console.log("hello, its megi")
 };
 
 const styles = StyleSheet.create({

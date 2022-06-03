@@ -1,54 +1,56 @@
-import React, {useState} from 'react';
-import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
-import {Agenda} from 'react-native-calendars';
-import {Card, Avatar} from 'react-native-paper';
+"use strict";
+import React, { useState, useEffect } from "react";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { Agenda } from "react-native-calendars";
+import { onSnapshot, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { Card, Avatar } from "react-native-paper";
+import { dbInit } from "../../firebase";
 
-
-const timeToString = (time) => {
-  const date = new Date(time);
-  return date.toISOString().split('T')[0];
-};
-
-const SetCalendar = ({navigation}) => {
+const SetCalendar = ({ navigation }) => {
   const [items, setItems] = useState({});
 
-  const loadItems = (day) => {
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-        const strTime = timeToString(time);
-        if (!items[strTime]) {
-          items[strTime] = [];
-          const numItems = Math.floor(Math.random() * 3 + 1);
-          for (let j = 0; j < numItems; j++) {
-            items[strTime].push({
-              name: 'Item for ' + strTime + ' #' + j,
-              height: Math.max(50, Math.floor(Math.random() * 150)),
-            });
-          }
-        }
+  useEffect(() => {
+    let result = {};
+    return onSnapshot(
+      doc(dbInit, "users", getAuth().currentUser.uid),
+      (doc) => {
+        let allData = doc.data().tasks;
+        allData.forEach((element) => {
+          const dateInput = element.date;
+          result[dateInput] = element.tasks;
+        });
+        console.log(result);
+        setItems(result);
       }
-      const newItems = {};
-      Object.keys(items).forEach((key) => {
-        newItems[key] = items[key];
-      });
-      setItems(newItems);
-    }, 1000);
-  };
+    );
+  }, []);
 
   const renderItem = (item) => {
     return (
-      <TouchableOpacity style={{marginRight: 10, marginTop: 17}}>
+      <TouchableOpacity
+        style={{
+          marginRight: 10,
+          marginTop: 20,
+          shadowColor: "#000000",
+          shadowOpacity: 0.8,
+          shadowRadius: 2,
+          shadowOffset: {
+            height: 2,
+            width: 1,
+          },
+        }}
+      >
         <Card>
           <Card.Content>
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text>{item.name} hello</Text>
-              {/* <Avatar.Text label="J" />   */}
+                flexDirection: "row",
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+            >
+              <Text>{item.name}</Text>
             </View>
           </Card.Content>
         </Card>
@@ -57,12 +59,16 @@ const SetCalendar = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Agenda
         items={items}
-        loadItemsForMonth={loadItems}
-        selected={'2022-05-16'}
         renderItem={renderItem}
+        renderEmptyData={() => (
+          <View style={styles.itemContainer}>
+            <Text style={styles.text}> No tasks </Text>
+          </View>
+        )}
+        showOnlySelectedDayItems={true}
       />
     </View>
   );
@@ -70,12 +76,22 @@ const SetCalendar = ({navigation}) => {
 
 export default SetCalendar;
 
-
 const styles = StyleSheet.create({
-    text: {
-      fontSize: 40,
-    },
-    body: {
-      flex: 1,
-    },
-  });
+  text: {
+    fontSize: 40,
+  },
+  body: {
+    flex: 1,
+  },
+  safe: {
+    flex: 1,
+  },
+  itemContainer: {
+    backgroundColor: "white",
+    margin: 5,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+});

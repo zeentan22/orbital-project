@@ -36,7 +36,7 @@ import MashButton from "../Components/CustomButton";
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading,setLoading] = useState("")
   const onPressHandler = () => {
     navigation.navigate("Createpage"); //used for when we click on Create Account Button, go to that page
   };
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     textAlign: "center",
     margin: 15,
+    paddingHorizontal: 10,
   },
   button: {
     height: 50,

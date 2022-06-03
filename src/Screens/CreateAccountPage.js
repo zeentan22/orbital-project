@@ -1,5 +1,5 @@
 "use strict";
-import React, { userState, useState, useRef } from "react";
+import React, { userState, useState, useRef, useEffect} from "react";
 // import type Node from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
@@ -42,7 +42,13 @@ export default function CreateAccount({ navigation }) {
   const [last_name, setLastname] = useState("");
   const [loading, setLoading] = useState(false);
   const currentUser = useAuth();
-
+  useEffect(()=>{
+    setEmail("");
+    setPassword("");
+    setFirstname("");
+    setLastname("");
+    
+  },[])
   //   const emailRef = useRef();
   //   const passwordRef = useRef();
 

@@ -62,10 +62,14 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    // justifyContent: "center",
+    paddingTop: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
   },
   button: {
     alignItems: "center",
+    width:300,
     borderRadius: 20,
     borderWidth: 2,
     padding: 10,

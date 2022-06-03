@@ -57,7 +57,7 @@ const SetCalendar = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.body}>
       <Agenda
         items={items}
         loadItemsForMonth={loadItems}
@@ -77,5 +77,7 @@ const styles = StyleSheet.create({
     },
     body: {
       flex: 1,
+      backgroundColor: "white",
+      paddingTop: 10,
     },
   });

@@ -29,19 +29,19 @@ import {
 import { createStackNavigator, Header } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Login from "./src/Screens/LoginPage";
 import CreateAccount from "./src/Screens/CreateAccountPage";
 // import Screenc from "./src/Screens/Screen_C";
-// import { yupResolver } from "@hookform/resolvers/yup";
-import {Screenc, HomeStack} from "./src/Screens/Screen_C";
 import "react-native-gesture-handler";
 import {BotTabs} from "./src/Navigation/tabs";
+import Login from "./src/Screens/LoginPage"
+import {useAuth} from "../orbital-project/firebase";
+
 const Wholelogin = createStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Wholelogin.Navigator>
+        <Wholelogin.Navigator>
         <Wholelogin.Screen
           name="Login Page"
           component={Login}
@@ -58,7 +58,9 @@ function App() {
           component={BotTabs}
           options={{ title: "!Procrastinate" ,headerLeft: ()=> null, headerTitleAlign: "center"}}
         />
-      </Wholelogin.Navigator>
+      </Wholelogin.Navigator> 
+
+
     </NavigationContainer>
   );
 }
@@ -110,6 +112,8 @@ export default App;
     </View>
   )
 }
+
+
 
 
 const loadAllChanges = async () => {

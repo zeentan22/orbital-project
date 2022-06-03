@@ -2,12 +2,12 @@
 import React, { userState, useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DrawerActions} from "@react-navigation/native";
 import {Screenc} from "../Screens/Screen_C"
 import Schedule from "../Screens/Schedule";
 import {FlashCard} from "../Screens/FlashCard";
 import MashButton from "../Components/CustomButton";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, closeDrawer, DrawerActions } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, useDrawerStatus, closeDrawer} from '@react-navigation/drawer';
 import {Avatar, Title, Caption,Paragraph,Drawer,TouchableRipple,Switch} from "react-native-paper";
 import {logout, dbInit, useAuth, auth} from "../../firebase";
 import {getAuth} from "firebase/auth";
@@ -21,9 +21,9 @@ const homeDrawer = createDrawerNavigator()
 export const BotTabs = () => {
   const HomeStacks = () => {
     return (
-    <NavigationContainer
-    independent = {true}>
+      <NavigationContainer independent={true}>
       <homeStackTab.Navigator screenOptions={({route}) => ({ 
+        tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarLabel: ({focused}) => {let textStyle;
         textStyle = focused? { fontSize: 14, paddingBottom: 2, fontWeight: "bold", color: "#32cd32"} : { fontSize: 11, paddingBottom: 2, fontWeight: "normal", color: "black"};
@@ -33,7 +33,7 @@ export const BotTabs = () => {
         tabBarActiveBackgroundColor: "#fff",
         })}>
         <homeStackTab.Screen
-          name="Home"
+          name="Home Page"
           component={Screenc}
           options={{
             tabBarIcon: ({focused}) => (
@@ -74,27 +74,29 @@ export const BotTabs = () => {
           }       
         />
       </homeStackTab.Navigator>
-    </NavigationContainer>
+      </NavigationContainer>
   );
 };
 return(
-  
-  <homeDrawer.Navigator drawerStatusBarAnimation = "slide" swipeEnabled = {true} swipeEdgeWidth = {200} swipeMinDistance = {10} drawerContent={(props) => <DrawerContent {...props}/>}>
+  <homeDrawer.Navigator drawerStatusBarAnimation = "slide" DrawerActions = "closeDrawer()"   swipeEnabled = {true} drawerContent={(props) => <DrawerContent {...props}/>}>
     <homeDrawer.Screen
     name = "Home"
-    component={HomeStacks}/>
+    component={HomeStacks}
+    options={{title:false,}}
+    />
   </homeDrawer.Navigator>
-
 
 )}
 
 
 export function DrawerContent (props) {
-  const [username, setUserName] = useState("")
+  const [username, setUserName] = useState("");
+  useEffect(()=>{
   const wdoc = doc(dbInit, "users", auth.currentUser.uid);
   const dat = onSnapshot(wdoc, (doc) =>{
-      setUserName(doc.data().firstname)
-      });
+      setUserName(doc.data().firstname);
+      return dat
+  })},[])
      return (
       <View style ={{flex:1}}>
         <DrawerContentScrollView {...props}>
@@ -108,12 +110,12 @@ export function DrawerContent (props) {
             </View>
           </View>
           <Drawer.Section style={{flex:1, marginTop:40, marginLeft : 10}}>
-            <DrawerItem label = "Home" onPress={()=> {{props.navigation.toggleDrawer()};{props.navigation.navigate("Home")};}}></DrawerItem>
+            <DrawerItem label = "Home" onPress={()=> [props.navigation.navigate("Home"),props.navigation.closeDrawer()]}></DrawerItem>
           </Drawer.Section>
           <Drawer.Section style={{flex:1, marginLeft : 10}}>
             <DrawerItem label = "Sign Out" onPress = {async () =>
             await logout()
-            .then(()=>{alert("logged out"); props.navigation.navigate("Login Page")})
+            .then(()=>{alert("logged out");props.navigation.navigate("Login Page")})
             .catch(error=>alert(error.message))}></DrawerItem>
 
   
@@ -140,6 +142,7 @@ export function DrawerContent (props) {
       flex: 1,
       flexDirection : "row",
       alignItems: "center",
+      backgroundColor: "white",
     },
   });
   

@@ -142,7 +142,7 @@ export function Screenc({ navigation }) {
   }
 
   return (
-    <View>
+    <View styles = {styles.body}>
       <Text style={styles.text}>No Schedule set </Text>
     </View>
   );
@@ -155,5 +155,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
+    paddingTop: 50,
+    backgroundColor: "white",
   },
 });

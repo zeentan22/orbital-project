@@ -3,11 +3,19 @@ import React, { userState, useState, useEffect } from "react";
 import MashButton from "../Components/CustomButton";
 import { DrawerActions } from '@react-navigation/native';
 import { createStackNavigator, Header } from "@react-navigation/stack";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
+import { dbInit, auth} from "../../firebase";
+import {
+  onSnapshot,
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
+import { color } from "react-native-reanimated";
+import DropDown from "../Components/DropDown";
 const FlashCardStack = createStackNavigator()
 
-export function FlashCard({ navigation }) {
+export function FlashCard({ navigation, route }) {
   const [flashCardList,setFlashCardList] = useState();
 
   const CreateFlashCard = ({navigation}) => { 
@@ -25,10 +33,19 @@ export function FlashCard({ navigation }) {
     </View>
   );
 };
-const TopicList = ({navigation}) => { 
-  const [topic, setTopic] = useState()
+const TopicList = ({navigation, route}) => { 
+  let fruits = [{id:1, name: 'Mango'}, {id:2, name: 'Banana'},{id:3, name: 'Apple'}, {id:4, name:"Add New Topic"}]
+  const [topic, setTopic] = useState("")
+  const [fsDataList, setFsDataList] = useState();
+  const [selectedItem, setSelectedItem] = useState(null);
+  const onSelect = (item) => {
+    setSelectedItem(item)
+  }
+
   useEffect(()=>{
-    setTopic()
+    setTopic("");
+    const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
+    const fetchData = async() =>{}
   },[])
   return (
     <View style={styles.body}>
@@ -36,58 +53,90 @@ const TopicList = ({navigation}) => {
         <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
       </TouchableOpacity>
-      <Text style={styles.subtitle}>Choose Your Topic</Text>
-      <View style={styles.listSize}>
-          <Text style = {{fontSize:30}}> {flashCardList}, listing here</Text>
+      <Text style={[styles.subtitle, {marginTop:10}]}>Choose Your Topic</Text>
+      <View style={[styles.listSize, {marginTop:60}]}>
+          <DropDown
+          value={selectedItem}
+          data = {fruits}
+          onSelect={onSelect}/>
       </View>
-      <TouchableOpacity style= {{alignItems: "center", flexDirection: "row", justifyContent:"center", width: "100%", flex : 0.3}} onPress={()=>navigation.navigate("Input for Flashcard", {topic})}>
+      <TouchableOpacity style= {{alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: "100%", flex : 0.3}} onPress={()=>{navigation.navigate("Input for Flashcard", {topicSelected:`${topic}`})}}>
       <Image
       style = {[styles.image,{marginRight: 10}]}
       tintColor = "#1e90ff"
-      source = {{uri: "https://cdn.icon-icons.com/icons2/2036/PNG/512/plus_button_add_insert_icon_124187.png"}}></Image>
-      <Text style = {{fontSize:24, color:`#1e90ff`}}>Add Topic</Text>
+      source = {{uri: "https://icons.veryicon.com/png/o/clothes-accessories/through-item/arrow-right-31.png"}}></Image>
+      <Text style = {{fontSize:24, color:`#1e90ff`}}>Proceed</Text>
       </TouchableOpacity>
     </View>
   ); }
 
-  const FlashCardInput = ({navigation}) => { 
-    const [question,setQuestion] = useState()
-    const [answer, setAnswer] = useState()
+  const FlashCardInput = ({route,navigation}) => { 
+    const topic =  route.params.topicSelected
+    const [currentTopic, setCurrentTopic] = useState(topic ? topic : "Null")
+    const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
+    console.log(`${topic}`)
+    const [question,setQuestion] = useState("Null")
+    const [answer, setAnswer] = useState("Null")
     useEffect(()=>{
-      setQuestion();
-      setAnswer();
+      setQuestion("Null");
+      setAnswer("Null");
     },[])
     return (
-      <KeyboardAwareScrollView contentContainerStyle={styles.body}>
+      <View style={styles.body}>
         <View style = {{flexDirection:"row", flex:0.2, alignItems: "flex-start",justifyContent: "flex-start",}}>
-        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:2, marginRight:166,}} onPress={()=>navigation.goBack()}>
+        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:2, marginRight:166,}} onPress={()=>
+          navigation.goBack()}>
         <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
       </TouchableOpacity>
-      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom:20,marginRight:8}} onPress={()=>navigation.navigate("Create Or View Flash Card")}>
+      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom:20,marginRight:8}} onPress={async ()=>{
+          try {
+            let newObj = {topic: currentTopic, Question: question, Answer:answer}
+            await updateDoc(wdoc, {FlashCardContent:arrayUnion(newObj)})
+          } catch (err){
+            alert("Error!");
+            console.log(err);
+          };navigation.navigate("Create Or View Flash Card")}}>
         <Image style = {{marginRight:3,height: 27.3,width: 27.3, alignSelf: "center", justifyContent:"center",}} source = {{uri: "https://cdn.icon-icons.com/icons2/1946/PNG/512/1904674-accept-approved-check-checked-confirm-done-tick_122524.png"}} tintColor= '#008b8b' ></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Confirm</Text>
       </TouchableOpacity>
       </View>
       <View style ={{flex:1, alignItems:"center",justifyContent: "center",}}>
-        <Text style = {styles.text}>Question:</Text>
+        <View style={{flexDirection:"row", justifyContent:"center", alignItems: "center", paddingBottom:10,}}>
+          <Text style = {[styles.titletext,{marginRight:10}]}>Topic:</Text>
+          {(topic==currentTopic) ?<TextInput
+          style = {{justifyContent: "center", alignItems: "center", fontSize:30, fontStyle:"italic",borderBottomWidth:1,textAlign: "center"}}
+          placeholder={` ${topic}`}
+          placeholderTextColor = "black"
+          editable={false}>
+          </TextInput>
+          : 
+          <TextInput
+          style = {{justifyContent: "center", alignItems: "center", fontSize:30, fontStyle:"italic",borderBottomWidth:1,textAlign: "center"}}
+          placeholder={" Enter here"}
+          placeholderTextColor = "grey"
+          onChangeText={(text) => setCurrentTopic(text)} 
+          editable= {true}>
+          </TextInput>}
+        </View>
+        <Text style = {[styles.text,{marginTop:30}]}>Question:</Text>
         <TextInput
-          style = {styles.input}
+          style = {[styles.input,{marginTop:15}]}
           placeholder="Enter your question"
           onChangeText={(value) => setQuestion(value)}>
         </TextInput>
       </View>
       <View  style ={{flex:1, alignItems:"center",justifyContent: "center",}}>
-        <Text style = {styles.text}>Answer:</Text>
+        <Text style = {[styles.text,{marginTop:15}]}>Answer:</Text>
         <TextInput
-          style = {styles.input}
+          style = {[styles.input,{marginBottom:15}]}
           placeholder="Enter your Answer"
           onChangeText={(value) => setAnswer(value)}>
         </TextInput>
       </View>
 
 
-      </KeyboardAwareScrollView >
+      </View >
     ); }
   const SelectTopic = ({navigation}) => { 
       return (
@@ -139,14 +188,26 @@ const TopicList = ({navigation}) => {
 
 const styles = StyleSheet.create({
   subtitle:{
-    fontSize: 30,
+    fontSize: 35,
     textAlign: "center",
     borderTopWidth:3,
     borderBottomWidth: 2,
   },
   text: {
+    fontSize: 20,
+    textAlign: "center",
+    color: "black"
+  },
+  titletext: {
     fontSize: 30,
     textAlign: "center",
+    color: "black"
+  },
+  inputText: {
+    fontSize: 30,
+    textAlign: "center",
+    color: "black",
+    fontStyle: "italic",
   },
   body: {
     flex: 1,
@@ -168,8 +229,8 @@ const styles = StyleSheet.create({
     // alignItems: "center",
   },
   image:{
-    height: 50,
-    width: 50,
+    height: 45,
+    width: 45,
     alignSelf: "center",
     justifyContent:"center",
   },

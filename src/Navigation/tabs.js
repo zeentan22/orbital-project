@@ -91,12 +91,14 @@ return(
 
 export function DrawerContent (props) {
   const [username, setUserName] = useState("");
+  const [trying, setTrying] = useState();
   useEffect(()=>{
   const wdoc = doc(dbInit, "users", auth.currentUser.uid);
-  const dat = onSnapshot(wdoc, (doc) =>{
-      setUserName(doc.data().firstname);
-      return dat
-  })},[])
+  const dat = () => { 
+      onSnapshot(wdoc, (doc) => {
+      setUserName(doc.data().firstname);})};
+  dat()
+  },[])
      return (
       <View style ={{flex:1}}>
         <DrawerContentScrollView {...props}>

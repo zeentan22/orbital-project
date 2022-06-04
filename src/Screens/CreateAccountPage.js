@@ -79,7 +79,7 @@ export default function CreateAccount({ navigation }) {
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView style={styles.body} behavior="padding">
+      <View style={styles.body}>
         <View style={styles.body1}>
           <Text style={styles.textintro}>Create your account</Text>
         </View>
@@ -112,7 +112,7 @@ export default function CreateAccount({ navigation }) {
           onPress={handleSignup}
         />
 
-      </KeyboardAvoidingView>
+      </View>
     </TouchableWithoutFeedback>
   );
 }

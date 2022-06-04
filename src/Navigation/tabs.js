@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DrawerActions} from "@react-navigation/native";
 import {Screenc} from "../Screens/Screen_C"
 import Schedule from "../Screens/Schedule";
-import {FlashCard} from "../Screens/FlashCard";
+import {FlashCard} from "../Screens/flashCard";
 import MashButton from "../Components/CustomButton";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, useDrawerStatus, closeDrawer} from '@react-navigation/drawer';
 import {Avatar, Title, Caption,Paragraph,Drawer,TouchableRipple,Switch} from "react-native-paper";

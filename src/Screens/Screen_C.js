@@ -34,7 +34,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, } from '@re
 import {Avatar, Title, Caption,Paragraph,Drawer,TouchableRipple,Switch} from "react-native-paper";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FlashCard from "./FlashCard";
+import FlashCard from "./flashCard";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 // import MashButton from "../Components/CustomButton";
 import SetCalendar from "./calendar";

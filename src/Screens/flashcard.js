@@ -16,7 +16,6 @@ import DropDown from "../Components/DropDown";
 const FlashCardStack = createStackNavigator()
 
 export function FlashCard({ navigation, route }) {
-  const [flashCardList,setFlashCardList] = useState();
 
   const CreateFlashCard = ({navigation}) => { 
   return (
@@ -34,19 +33,26 @@ export function FlashCard({ navigation, route }) {
   );
 };
 const TopicList = ({navigation, route}) => { 
-  let fruits = [{id:1, name: 'Mango'}, {id:2, name: 'Banana'},{id:3, name: 'Apple'}, {id:4, name:"Add New Topic"}]
-  const [topic, setTopic] = useState("")
-  const [fsDataList, setFsDataList] = useState();
+  let tList = [{name: 'Mango'}, {name: 'Banana'},{name: 'Apple'}, {name: "Add New Topic"}]
   const [selectedItem, setSelectedItem] = useState(null);
   const onSelect = (item) => {
     setSelectedItem(item)
   }
 
   useEffect(()=>{
-    setTopic("");
     const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
-    const fetchData = async() =>{}
-  },[])
+    const fetchData = async() =>{
+      return onSnapshot(wdoc, (doc) => {
+        let allData = doc.data()?.FlashCardContent;
+        if (allData) {
+        allData.forEach((element)=> {
+          if (element.topic in tList ) {null}
+          else {console.log(element.topic);tList.unshift({name :element.topic}
+            );console.log(tList)}
+        })
+      }})
+  };
+  fetchData()},[])
   return (
     <View style={styles.body}>
       <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20,marginLeft:2}} onPress={()=>navigation.goBack()}>
@@ -56,11 +62,11 @@ const TopicList = ({navigation, route}) => {
       <Text style={[styles.subtitle, {marginTop:10}]}>Choose Your Topic</Text>
       <View style={[styles.listSize, {marginTop:60}]}>
           <DropDown
-          value={selectedItem}
-          data = {fruits}
+          item={selectedItem}
+          data = {tList}
           onSelect={onSelect}/>
       </View>
-      <TouchableOpacity style= {{alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: "100%", flex : 0.3}} onPress={()=>{navigation.navigate("Input for Flashcard", {topicSelected:`${topic}`})}}>
+      <TouchableOpacity style= {{alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: 150, flex : 0.3}} onPress={()=>{navigation.navigate("Input for Flashcard", {topicSelected:`${selectedItem.name}`})}}>
       <Image
       style = {[styles.image,{marginRight: 10}]}
       tintColor = "#1e90ff"
@@ -72,7 +78,7 @@ const TopicList = ({navigation, route}) => {
 
   const FlashCardInput = ({route,navigation}) => { 
     const topic =  route.params.topicSelected
-    const [currentTopic, setCurrentTopic] = useState(topic ? topic : "Null")
+    const [currentTopic, setCurrentTopic] = useState((topic != "Add New Topic") ? topic : null)
     const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
     console.log(`${topic}`)
     const [question,setQuestion] = useState("Null")
@@ -104,7 +110,7 @@ const TopicList = ({navigation, route}) => {
       <View style ={{flex:1, alignItems:"center",justifyContent: "center",}}>
         <View style={{flexDirection:"row", justifyContent:"center", alignItems: "center", paddingBottom:10,}}>
           <Text style = {[styles.titletext,{marginRight:10}]}>Topic:</Text>
-          {(topic==currentTopic) ?<TextInput
+          {currentTopic ?<TextInput
           style = {{justifyContent: "center", alignItems: "center", fontSize:30, fontStyle:"italic",borderBottomWidth:1,textAlign: "center"}}
           placeholder={` ${topic}`}
           placeholderTextColor = "black"

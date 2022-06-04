@@ -2,21 +2,33 @@
 import React, { userState, useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, DrawerActions} from "@react-navigation/native";
-import {Screenc} from "../Screens/Screen_C"
+import { NavigationContainer } from "@react-navigation/native";
+import { Screenc } from "../Screens/Screen_C";
 import Schedule from "../Screens/Schedule";
-import {FlashCard} from "../Screens/flashCard";
+import { FlashCard } from "../Screens/flashcard";
 import MashButton from "../Components/CustomButton";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, useDrawerStatus, closeDrawer} from '@react-navigation/drawer';
-import {Avatar, Title, Caption,Paragraph,Drawer,TouchableRipple,Switch} from "react-native-paper";
-import {logout, dbInit, useAuth, auth} from "../../firebase";
-import {getAuth} from "firebase/auth";
-import {getDoc, onSnapshot, doc} from "firebase/firestore";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItem,
+  closeDrawer,
+  DrawerActions,
+} from "@react-navigation/drawer";
+import {
+  Avatar,
+  Title,
+  Caption,
+  Paragraph,
+  Drawer,
+  TouchableRipple,
+  Switch,
+} from "react-native-paper";
+import { logout, dbInit, useAuth, auth } from "../../firebase";
+import { getAuth } from "firebase/auth";
+import { getDoc, onSnapshot, doc } from "firebase/firestore";
 
-
-
-const homeStackTab = createBottomTabNavigator()
-const homeDrawer = createDrawerNavigator()
+const homeStackTab = createBottomTabNavigator();
+const homeDrawer = createDrawerNavigator();
 
 export const BotTabs = () => {
   const HomeStacks = () => {
@@ -129,22 +141,16 @@ export function DrawerContent (props) {
      )
   }
 
-
-
-
   const styles = StyleSheet.create({
     text: {
       fontSize: 15,
       alignSelf: "center",
       justifyContent: "center",
-      marginLeft: 20
-
+      marginLeft: 20,
     },
     body: {
       flex: 1,
-      flexDirection : "row",
+      flexDirection: "row",
       alignItems: "center",
-      backgroundColor: "white",
     },
   });
-  

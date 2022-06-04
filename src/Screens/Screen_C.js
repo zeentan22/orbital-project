@@ -1,7 +1,7 @@
 import React, { userState, useState, useEffect } from "react";
-import {logout, dbInit, useAuth} from "../../firebase";
-import {getAuth} from "firebase/auth";
-import {getDoc, onSnapshot, doc} from "firebase/firestore";
+import { logout, dbInit, useAuth } from "../../firebase";
+import { getAuth } from "firebase/auth";
+import { getDoc, onSnapshot, doc } from "firebase/firestore";
 import { NavigationContainer } from "@react-navigation/native";
 // import type Node from 'react';
 // import { NavigationContainer } from "@react-navigation/native";
@@ -30,55 +30,63 @@ import {
   ImageBackground,
 } from "react-native";
 import MashButton from "../Components/CustomButton";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, } from '@react-navigation/drawer';
-import {Avatar, Title, Caption,Paragraph,Drawer,TouchableRipple,Switch} from "react-native-paper";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItem,
+} from "@react-navigation/drawer";
+import {
+  Avatar,
+  Title,
+  Caption,
+  Paragraph,
+  Drawer,
+  TouchableRipple,
+  Switch,
+} from "react-native-paper";
 import { createStackNavigator } from "@react-navigation/stack";
+<<<<<<< HEAD
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FlashCard from "./flashCard";
+=======
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import FlashCard from "./flashcard";
+>>>>>>> 6b5e9a0cbdce5c1fc94178c29a30a0fcfd3719b1
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 // import MashButton from "../Components/CustomButton";
 import SetCalendar from "./calendar";
 import SetNotifications from "./noti";
-const homeStackTab = createBottomTabNavigator()
-const homeDrawer = createDrawerNavigator()
+const homeStackTab = createBottomTabNavigator();
+const homeDrawer = createDrawerNavigator();
 
-export function HomeStack({navigation}) {
-  const HomePageStack = () => {return(
-    <NavigationContainer
-    independent = {true}>
-      <homeStackTab.Navigator>
-        <homeStackTab.Screen
-        name = "Calendar"
-        component={SetCalendar}/>
+export function HomeStack({ navigation }) {
+  const HomePageStack = () => {
+    return (
+      <NavigationContainer independent={true}>
+        <homeStackTab.Navigator>
+          <homeStackTab.Screen name="Calendar" component={SetCalendar} />
 
-        <homeStackTab.Screen
-        name = "Notifications"
-        component={SetNotifications}/>
+          <homeStackTab.Screen
+            name="Notifications"
+            component={SetNotifications}
+          />
 
-        <homeStackTab.Screen
-        name = "Flashcards"
-        component={FlashCard}/>
-
-      </homeStackTab.Navigator>
-    </NavigationContainer>
-  )
-}
-return(
-    <homeDrawer.Navigator drawerContent={(props) => <DrawerContent {...props}/>}>
-      <homeDrawer.Screen
-      name = "Home"
-      component={HomePageStack}/>
-
-
+          <homeStackTab.Screen name="Flashcards" component={FlashCard} />
+        </homeStackTab.Navigator>
+      </NavigationContainer>
+    );
+  };
+  return (
+    <homeDrawer.Navigator
+      drawerContent={(props) => <DrawerContent {...props} />}
+    >
+      <homeDrawer.Screen name="Home" component={HomePageStack} />
     </homeDrawer.Navigator>
-
-
-)
+  );
 }
 
-
-export function DrawerContent (props) {
-/*  const [username, setUserName] = useState("")
+export function DrawerContent(props) {
+  /*  const [username, setUserName] = useState("")
   useEffect(() => {
     const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
     const dat = onSnapshot(wdoc, (doc) =>{
@@ -88,34 +96,40 @@ export function DrawerContent (props) {
     return dat
   },[]) */
 
-   return (
-    <View style ={{flex:1}}>
+  return (
+    <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
-        <View style = {styles.body}>
-          <View style = {[styles.body]}>
+        <View style={styles.body}>
+          <View style={[styles.body]}>
             <Text>Hello World</Text>
           </View>
         </View>
-        <Drawer.Section style={{flex:1, marginTop:40}}>
-          <DrawerItem label = "Home" onPress={()=> {props.navigation.navigate("Home")}}></DrawerItem>
-          <DrawerItem label = "Sign Out" onPress = {async () =>
-          await logout()
-          .then(()=>{alert("logged out"); props.navigation.navigate("Login Page")})
-          .catch(error=>alert(error.message))}></DrawerItem>
-
-
-
-
+        <Drawer.Section style={{ flex: 1, marginTop: 40 }}>
+          <DrawerItem
+            label="Home"
+            onPress={() => {
+              props.navigation.navigate("Home");
+            }}
+          ></DrawerItem>
+          <DrawerItem
+            label="Sign Out"
+            onPress={async () =>
+              await logout()
+                .then(() => {
+                  alert("logged out");
+                  props.navigation.navigate("Login Page");
+                })
+                .catch((error) => alert(error.message))
+            }
+          ></DrawerItem>
         </Drawer.Section>
-      
       </DrawerContentScrollView>
     </View>
-   )
+  );
 }
 
-
 export function Screenc({ navigation }) {
-/*  const [username, setUserName] = useState("")
+  /*  const [username, setUserName] = useState("")
   const currentUser = useAuth();
   useEffect(() => {
     const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);

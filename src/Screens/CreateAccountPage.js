@@ -3,7 +3,7 @@ import React, { userState, useState, useRef } from "react";
 // import type Node from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
-import {addDoc, collection, doc, setDoc} from "firebase/firestore"
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import {
   StatusBar,
   Alert,
@@ -51,19 +51,21 @@ export default function CreateAccount({ navigation }) {
     try {
       console.log("hello");
       console.log(email);
-      await signup(email, password)
-      .then(async ()=>{
+      await signup(email, password).then(async () => {
         try {
-          alert(`Welcome to the app, ${last_name}!`)
+          alert(`Welcome to the app, ${last_name}!`);
           const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
-          setDoc(wdoc, {firstname: first_name, lastname: last_name, emailadd: email});
+          setDoc(wdoc, {
+            firstname: first_name,
+            lastname: last_name,
+            emailadd: email,
+            tasks: [],
+          });
           console.log("Document written with ID: ", wdoc.id);
         } catch (e) {
           console.error("Error adding document: ", e);
         }
-      }
-    
-      );
+      });
     } catch (err) {
       alert("Error!");
       console.log(err);
@@ -105,7 +107,6 @@ export default function CreateAccount({ navigation }) {
           style={{ marginTop: 40 }}
           onPress={handleSignup}
         />
-
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
@@ -114,9 +115,8 @@ export default function CreateAccount({ navigation }) {
 const styles = StyleSheet.create({
   scrollbody: {
     backgroundColor: "#ffffff",
-    justifyContent: 'center',
+    justifyContent: "center",
     flex: 1,
-
   },
   body: {
     flex: 1,

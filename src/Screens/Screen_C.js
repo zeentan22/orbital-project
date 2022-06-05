@@ -45,13 +45,8 @@ import {
   Switch,
 } from "react-native-paper";
 import { createStackNavigator } from "@react-navigation/stack";
-<<<<<<< HEAD
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FlashCard from "./flashCard";
-=======
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FlashCard from "./flashcard";
->>>>>>> 6b5e9a0cbdce5c1fc94178c29a30a0fcfd3719b1
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 // import MashButton from "../Components/CustomButton";
 import SetCalendar from "./calendar";

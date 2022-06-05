@@ -25,7 +25,7 @@ export function FlashCard({ navigation, route }) {
         <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("Topic List")}>
           <Text> Create new flashcard </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate("Select Your Topic")}>
           <Text> Test Yourself! </Text>
         </TouchableOpacity>
       </View>
@@ -33,7 +33,7 @@ export function FlashCard({ navigation, route }) {
   );
 };
 const TopicList = ({navigation, route}) => { 
-  let tList = [{name: 'Mango'}, {name: 'Banana'},{name: 'Apple'}, {name: "Add New Topic"}]
+  const tList = [{name: "Add New Topic"}];
   const [selectedItem, setSelectedItem] = useState(null);
   const onSelect = (item) => {
     setSelectedItem(item)
@@ -41,18 +41,17 @@ const TopicList = ({navigation, route}) => {
 
   useEffect(()=>{
     const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
-    const fetchData = async() =>{
       return onSnapshot(wdoc, (doc) => {
-        let allData = doc.data()?.FlashCardContent;
-        if (allData) {
-        allData.forEach((element)=> {
-          if (element.topic in tList ) {null}
-          else {console.log(element.topic);tList.unshift({name :element.topic}
-            );console.log(tList)}
+        let repList = [];
+        let Data = doc.data()?.FlashCardContent;
+        if (Data != null) {
+        Data.forEach((element)=> {
+          if (repList.includes(element.topic)) {}
+          else {console.log(element.topic);tList.unshift({name : element.topic}
+            );console.log("damnnn",tList);repList.push(element.topic); console.log(repList)}
         })
-      }})
-  };
-  fetchData()},[])
+      }
+    else{null}})},[])
   return (
     <View style={styles.body}>
       <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20,marginLeft:2}} onPress={()=>navigation.goBack()}>
@@ -66,7 +65,7 @@ const TopicList = ({navigation, route}) => {
           data = {tList}
           onSelect={onSelect}/>
       </View>
-      <TouchableOpacity style= {{alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: 150, flex : 0.3}} onPress={()=>{navigation.navigate("Input for Flashcard", {topicSelected:`${selectedItem.name}`})}}>
+      <TouchableOpacity style= {{alignSelf: "center", alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: 150, flex : 0.3}} onPress={()=>{navigation.navigate("Input for Flashcard", {topicSelected:`${selectedItem.name}`})}}>
       <Image
       style = {[styles.image,{marginRight: 10}]}
       tintColor = "#1e90ff"
@@ -78,6 +77,7 @@ const TopicList = ({navigation, route}) => {
 
   const FlashCardInput = ({route,navigation}) => { 
     const topic =  route.params.topicSelected
+    const passedTopic = topic
     const [currentTopic, setCurrentTopic] = useState((topic != "Add New Topic") ? topic : null)
     const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
     console.log(`${topic}`)
@@ -110,7 +110,7 @@ const TopicList = ({navigation, route}) => {
       <View style ={{flex:1, alignItems:"center",justifyContent: "center",}}>
         <View style={{flexDirection:"row", justifyContent:"center", alignItems: "center", paddingBottom:10,}}>
           <Text style = {[styles.titletext,{marginRight:10}]}>Topic:</Text>
-          {currentTopic ?<TextInput
+          {(passedTopic != "Add New Topic") ?<TextInput
           style = {{justifyContent: "center", alignItems: "center", fontSize:30, fontStyle:"italic",borderBottomWidth:1,textAlign: "center"}}
           placeholder={` ${topic}`}
           placeholderTextColor = "black"
@@ -145,19 +145,47 @@ const TopicList = ({navigation, route}) => {
       </View >
     ); }
   const SelectTopic = ({navigation}) => { 
-      return (
-        <View style={styles.body}>
-          <Text style={styles.text}>Customise your FlashCard2 now!</Text>
-          <View style={styles.buttons}>
-            <TouchableOpacity style={styles.button}>
-              <Text> Create new flashcard </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text> Test Yourself! </Text>
-            </TouchableOpacity>
-          </View>
+    const tList = [{name: "Add New Topic"}];
+    const [selectedItem, setSelectedItem] = useState(null);
+    const onSelect = (item) => {
+      setSelectedItem(item)
+    }
+  
+    useEffect(()=>{
+      const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
+        return onSnapshot(wdoc, (doc) => {
+          let repList = [];
+          let Data = doc.data()?.FlashCardContent;
+          if (Data != null) {
+          Data.forEach((element)=> {
+            if (repList.includes(element.topic)) {}
+            else {console.log(element.topic);tList.unshift({name : element.topic}
+              );console.log("damnnn",tList);repList.push(element.topic); console.log(repList)}
+          })
+        }
+      else{null}})},[])
+    return (
+      <View style={styles.body}>
+        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20,marginLeft:2}} onPress={()=>navigation.goBack()}>
+          <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
+          <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
+        </TouchableOpacity>
+        <Text style={[styles.subtitle, {marginTop:10}]}>Choose Your Topic</Text>
+        <View style={[styles.listSize, {marginTop:60}]}>
+            <DropDown
+            item={selectedItem}
+            data = {tList}
+            onSelect={onSelect}/>
         </View>
-      ); }
+        <TouchableOpacity style= {{alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: 150, flex : 0.3}} onPress={()=>{navigation.navigate("Input for Flashcard", {topicSelected:`${selectedItem.name}`})}}>
+        <Image
+        style = {[styles.image,{marginRight: 10}]}
+        tintColor = "#1e90ff"
+        source = {{uri: "https://icons.veryicon.com/png/o/clothes-accessories/through-item/arrow-right-31.png"}}></Image>
+        <Text style = {{fontSize:24, color:`#1e90ff`}}>Proceed</Text>
+        </TouchableOpacity>
+      </View>
+    ); }
   return(
     <FlashCardStack.Navigator>
       <FlashCardStack.Screen

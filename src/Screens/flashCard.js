@@ -4,6 +4,7 @@ import MashButton from "../Components/CustomButton";
 import { DrawerActions } from '@react-navigation/native';
 import { createStackNavigator, Header } from "@react-navigation/stack";
 import { dbInit, auth} from "../../firebase";
+import ProceedButton from "../Components/ProceedButton";
 import {
   onSnapshot,
   doc,
@@ -51,7 +52,7 @@ const TopicList = ({navigation, route}) => {
             );console.log("damnnn",tList);repList.push(element.topic); console.log(repList)}
         })
       }
-    else{null}})},[])
+    else{null}})},[selectedItem])
   return (
     <View style={styles.body}>
       <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20,marginLeft:2}} onPress={()=>navigation.goBack()}>
@@ -65,13 +66,14 @@ const TopicList = ({navigation, route}) => {
           data = {tList}
           onSelect={onSelect}/>
       </View>
-      <TouchableOpacity style= {{alignSelf: "center", alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: 150, flex : 0.3}} onPress={()=>{navigation.navigate("Input for Flashcard", {topicSelected:`${selectedItem.name}`})}}>
-      <Image
-      style = {[styles.image,{marginRight: 10}]}
-      tintColor = "#1e90ff"
-      source = {{uri: "https://icons.veryicon.com/png/o/clothes-accessories/through-item/arrow-right-31.png"}}></Image>
-      <Text style = {{fontSize:24, color:`#1e90ff`}}>Proceed</Text>
-      </TouchableOpacity>
+      <ProceedButton
+      title = "Proceed"
+      style = {{marginBottom:25}}
+      onPress={()=>{
+        if (selectedItem) {navigation.navigate("Input for Flashcard", {topicSelected:`${selectedItem.name}`})}
+        else {alert("Please select a topic!")}}}
+
+        />
     </View>
   ); }
 

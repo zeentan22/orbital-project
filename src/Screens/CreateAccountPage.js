@@ -62,7 +62,7 @@ export default function CreateAccount({ navigation }) {
         try {
           alert(`Welcome to the app, ${last_name}!`)
           const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
-          setDoc(wdoc, {firstname: first_name, lastname: last_name, emailadd: email});
+          setDoc(wdoc, {firstname: first_name, lastname: last_name, emailadd: email,tasks: [],});
           console.log("Document written with ID: ", wdoc.id);
         } catch (e) {
           console.error("Error adding document: ", e);

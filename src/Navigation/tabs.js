@@ -7,6 +7,7 @@ import { Screenc } from "../Screens/Screen_C";
 import Schedule from "../Screens/Schedule";
 import { FlashCard } from "../Screens/flashcard";
 import MashButton from "../Components/CustomButton";
+import ProceedButton from "../Components/ProceedButton";
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -34,7 +35,7 @@ export const BotTabs = () => {
   const HomeStacks = () => {
     return (
       <NavigationContainer independent={true}>
-      <homeStackTab.Navigator screenOptions={({route}) => ({ 
+      <homeStackTab.Navigator initialRouteName="Home Page" screenOptions={({route}) => ({ 
         tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarLabel: ({focused}) => {let textStyle;
@@ -44,19 +45,7 @@ export const BotTabs = () => {
         tabBarInactiveTintColor: "#555",
         tabBarActiveBackgroundColor: "#fff",
         })}>
-        <homeStackTab.Screen
-          name="Home Page"
-          component={Screenc}
-          options={{
-            tabBarIcon: ({focused}) => (
-              <Image
-                source={require("../../assets/home.png")}
-                style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
-                tintColor = {focused ? "#32cd32" : "black"}
-              />
-            ),
-          }}
-        />
+        
         <homeStackTab.Screen
           name="Set Schedule"
           component={Schedule}
@@ -64,6 +53,19 @@ export const BotTabs = () => {
             tabBarIcon: ({focused}) => (
               <Image
                 source={require("../../assets/schedule.png")}
+                style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
+                tintColor = {focused ? "#32cd32" : "black"}
+              />
+            ),
+          }}
+        />
+        <homeStackTab.Screen
+          name="Home Page"
+          component={Screenc}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <Image
+                source={require("../../assets/home.png")}
                 style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
                 tintColor = {focused ? "#32cd32" : "black"}
               />
@@ -124,7 +126,7 @@ export function DrawerContent (props) {
             </View>
           </View>
           <Drawer.Section style={{flex:1, marginTop:40, marginLeft : 10}}>
-            <DrawerItem label = "Home" onPress={()=> [props.navigation.navigate("Home"),props.navigation.closeDrawer()]}></DrawerItem>
+            <DrawerItem label = "Home" onPress={()=> props.navigation.closeDrawer()}></DrawerItem>
           </Drawer.Section>
           <Drawer.Section style={{flex:1, marginLeft : 10}}>
             <DrawerItem label = "Sign Out" onPress = {async () =>

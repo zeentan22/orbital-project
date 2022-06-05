@@ -30,7 +30,7 @@ export default Dropdown = ({
                 </View>
             </TouchableOpacity>
             {showOption && (<View style = {{backgroundColor: "#f5f5dc", padding: 8, height:300}}> 
-                <Text style={styles.text}>Topics you have created</Text>
+                <Text style={styles.text}>Created Topics</Text>
                 <FlatList
                         keyExtractor={(item,index) => index.toString()}
                         data = {data}

@@ -5,6 +5,7 @@ import { DrawerActions } from '@react-navigation/native';
 import { createStackNavigator, Header } from "@react-navigation/stack";
 import { dbInit, auth} from "../../firebase";
 import ProceedButton from "../Components/ProceedButton";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import {
   onSnapshot,
   doc,
@@ -13,20 +14,59 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 import { color } from "react-native-reanimated";
+import CustomTabHeading from "../Components/CustomTabHeading";
 import DropDown from "../Components/DropDown";
-const FlashCardStack = createStackNavigator()
+const FlashCardStack = createStackNavigator();
 
 export function FlashCard({ navigation, route }) {
-
+  
+const horizontalAnimation = {
+  cardStyleInterpolator: ({ current, layouts }) => {
+    return {
+      cardStyle: {
+        transform: [
+          {
+            translateX: current.progress.interpolate({
+              inputRange: [0, 1],
+              outputRange: [layouts.screen.width, 0],
+            }),
+          },
+        ],
+      },
+    };
+  },
+};
+const reverseHorizontalAnimation = {
+  cardSyleInterpolator: ({ current, layouts }) => {
+    return {
+      cardStyle: {
+        transform: [
+          {
+            translateX: current.progress.interpolate({
+              inputRange: [1,0],
+              outputRange: [layouts.screen.width, 0],
+            }),
+          },
+        ],
+      },
+    };
+  },
+};
   const CreateFlashCard = ({navigation}) => { 
   return (
     <View style={styles.body}>
+      <CustomTabHeading
+      onPage = {true}
+      title1 = "Create"
+      title2 = "Test"
+      onPress2 = {()=>{navigation.navigate("View Flash Card")}}
+      onPress1 = {()=>{null}}/>
       <Text style={styles.text}>Start using Flashcards now!</Text>
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("Topic List")}>
           <Text> Create new flashcard </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate("Select Your Topic")}>
+        <TouchableOpacity style={styles.button} >
           <Text> Test Yourself! </Text>
         </TouchableOpacity>
       </View>
@@ -168,6 +208,12 @@ const TopicList = ({navigation, route}) => {
       else{null}})},[])
     return (
       <View style={styles.body}>
+        <CustomTabHeading
+          onPage = {false}
+          title1 = "Create"
+          title2 = "Test"
+          onPress2 = {()=>{navigation.navigate("View Flash Card")}}
+          onPress1 = {()=>{null}}/>
         <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20,marginLeft:2}} onPress={()=>navigation.goBack()}>
           <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
           <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
@@ -179,7 +225,7 @@ const TopicList = ({navigation, route}) => {
             data = {tList}
             onSelect={onSelect}/>
         </View>
-        <TouchableOpacity style= {{alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: 150, flex : 0.3}} onPress={()=>{navigation.navigate("Input for Flashcard", {topicSelected:`${selectedItem.name}`})}}>
+        <TouchableOpacity style= {{alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: 150, flex : 0.3}}>
         <Image
         style = {[styles.image,{marginRight: 10}]}
         tintColor = "#1e90ff"
@@ -188,33 +234,34 @@ const TopicList = ({navigation, route}) => {
         </TouchableOpacity>
       </View>
     ); }
+
+      
   return(
     <FlashCardStack.Navigator>
-      <FlashCardStack.Screen
-      name = "Create Or View Flash Card"
-      component={CreateFlashCard}
-      options = {{
-        header : ()=> null,
-      }}/>
-
-    <FlashCardStack.Screen
-      name = "Topic List"
-      component={TopicList}
-      options = {{
-        header : ()=> null,
-      }}/>
-    <FlashCardStack.Screen
-      name = "Input for Flashcard"
-      component={FlashCardInput}
-      options = {{
-        header : ()=> null,
-      }}/>
-    <FlashCardStack.Screen
-      name = "Select Your Topic"
-      component={SelectTopic}
-      options = {{
-        header : ()=> null,
-      }}/>
+          <FlashCardStack.Screen
+          name = "Create Or View Flash Card"
+          component={CreateFlashCard}
+          options = {{
+            header : ()=> null,
+          }}/>
+        <FlashCardStack.Screen
+          name = "Topic List"
+          component={TopicList}
+          options = {{
+            header : ()=> null,
+          }}/>
+        <FlashCardStack.Screen
+          name = "Input for Flashcard"
+          component={FlashCardInput}
+          options = {{
+            header : ()=> null,
+          }}/> 
+          <FlashCardStack.Screen
+          name = "View Flash Card"
+          component={SelectTopic}
+          options = {{
+            header : ()=> null,
+          }}/> 
     </FlashCardStack.Navigator>
   )
   }
@@ -247,8 +294,8 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    paddingTop: 10,
     alignItems:"center",
+    justifyContent:"flex-start",
     backgroundColor: "white",
   },
   button: {

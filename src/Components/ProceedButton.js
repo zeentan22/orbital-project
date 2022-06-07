@@ -7,7 +7,7 @@ const ProceedButton = (p) => {
         onPress={p.onPress}
         hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
         style={({ pressed }) => [
-          { backgroundColor: pressed ? "#dddddd" : "#00fa9a"},
+          { backgroundColor: pressed ? "#b0c4de" : "#32cd32"},
           styles.button,
           {borderRadius:8, borderWidth:1},
           {borderBottomWidth: pressed ? 1 : 4},
@@ -24,7 +24,7 @@ const ProceedButton = (p) => {
     text: {
       alignSelf: "center",
       justifyContent: "center",
-      color: "#000000",
+      color: "white",
       fontSize: 15,
       fontStyle: "italic",
     },

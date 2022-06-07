@@ -56,6 +56,7 @@ export const BotTabs = () => {
                 style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
                 tintColor = {focused ? "#32cd32" : "black"}
               />
+              
             ),
           }}
         />

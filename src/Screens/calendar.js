@@ -121,8 +121,8 @@ const SetCalendar = ({ navigation }) => {
               <Text
                 style={{
                   alignSelf: "flex-start",
-                  // backgroundColor: "#e1e1ea",
-
+                  backgroundColor: "#d1d1e0",
+                  overflow: "hidden",
                   borderRadius: 10,
                   borderWidth: 2,
                   borderColor: "#d1d1e0",

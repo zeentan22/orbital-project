@@ -1,5 +1,6 @@
 "use strict";
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import {
   View,
   TouchableOpacity,
@@ -29,6 +30,7 @@ const SetCalendar = ({ navigation }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [task, setTask] = useState("");
   const [date, setDate] = useState(new Date());
+  const [startTime, setStartTime] = useState(0);
 
   const convertDate = (date) => {
     const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
@@ -46,9 +48,22 @@ const SetCalendar = ({ navigation }) => {
 
   const onChange = (event, selectedDate) => {
     fDateTime = convertDate(selectedDate);
+    let x = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
+    let time = x.split(" ")[1];
+    const hour = time.split(":")[0];
+    const minutes = time.split(":")[1];
     setDate(selectedDate);
     setDateFormat(convertDate(selectedDate));
-    console.log(fDateTime);
+    setStartTime(parseInt(hour) * 60 + parseInt(minutes));
+  };
+
+  const onChangeTime = (event, selectedTime) => {
+    let x = moment(selectedTime).format("YYYY-MM-DD HH:mm:ss");
+    let time = x.split(" ")[1];
+    const hour = time.split(":")[0];
+    const minutes = time.split(":")[1];
+    setDate(selectedTime);
+    setStartTime(parseInt(hour) * 60 + parseInt(minutes));
   };
 
   useEffect(() => {
@@ -61,6 +76,10 @@ const SetCalendar = ({ navigation }) => {
         allData.forEach((element) => {
           unmodifiedResult.push(element);
           const dateInput = element.date;
+          element.tasks.sort((a, b) => {
+            return parseInt(a.startTime) - parseInt(b.startTime);
+          });
+
           result[dateInput] = element.tasks;
         });
         setItems(result);
@@ -68,6 +87,12 @@ const SetCalendar = ({ navigation }) => {
       }
     );
   }, []);
+
+  const convertTime = (time) => {
+    const hours = Math.floor(time / 60);
+    const minutes = time % 60;
+    return `${hours}:${minutes}`;
+  };
 
   const renderItem = (item) => {
     return (
@@ -88,12 +113,24 @@ const SetCalendar = ({ navigation }) => {
           <Card.Content>
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: "column",
                 justifyContent: "center",
                 alignContent: "center",
               }}
             >
-              <Text>{item.name}</Text>
+              <Text
+                style={{
+                  alignSelf: "flex-start",
+                  // backgroundColor: "#e1e1ea",
+
+                  borderRadius: 10,
+                  borderWidth: 2,
+                  borderColor: "#d1d1e0",
+                }}
+              >
+                {convertTime(item.startTime)}
+              </Text>
+              <Text style={{ alignSelf: "center" }}>{item.name}</Text>
             </View>
           </Card.Content>
         </Card>
@@ -136,6 +173,18 @@ const SetCalendar = ({ navigation }) => {
               style={{ width: 200, marginRight: 70 }}
             />
 
+            <Text> </Text>
+
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode={"time"}
+              display="default"
+              is24Hour={true}
+              style={{ width: 200, margnRight: 70 }}
+              onChange={onChangeTime}
+            />
+
             <TextInput
               style={styles.input}
               placeholder="task 1..."
@@ -148,7 +197,10 @@ const SetCalendar = ({ navigation }) => {
             <TouchableOpacity
               style={{ borderColor: "black", borderWidth: 2, borderRadius: 5 }}
               onPress={() => {
-                const obj = { date: dateFormat, tasks: [{ name: task }] };
+                const obj = {
+                  date: dateFormat,
+                  tasks: [{ name: task, done: false, startTime: startTime }],
+                };
                 let oldData = {};
                 unmodfiedItems.forEach((item) => {
                   if (item.date === dateFormat) {
@@ -167,14 +219,6 @@ const SetCalendar = ({ navigation }) => {
             >
               <Text> Add Task </Text>
             </TouchableOpacity>
-
-            {/* <DateTimePicker
-              testID="dateTimePicker"
-              value={new Date()}
-              mode={"time"}
-              display="default"
-              is24Hour={true}
-            /> */}
           </View>
         </View>
       </Modal>

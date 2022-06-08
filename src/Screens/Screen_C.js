@@ -1,33 +1,16 @@
-import React, { userState, useState, useEffect } from "react";
+import React, { userState, useState, useEffect, useRef } from "react";
 import { logout, dbInit, useAuth } from "../../firebase";
 import { getAuth } from "firebase/auth";
 import { getDoc, onSnapshot, doc } from "firebase/firestore";
 import { NavigationContainer } from "@react-navigation/native";
-// import type Node from 'react';
-// import { NavigationContainer } from "@react-navigation/native";
-// import { Card } from "@rneui/themed";
-// import { signIn, supabase } from "./Lib/supabase-client.js";
 import {
-  StatusBar,
-  Alert,
   StyleSheet,
   Text,
-  useColorScheme,
-  View,
-  Button,
-  TouchableOpacity,
-  TouchableHighlight,
-  Linking,
-  ScrollView,
-  RefreshControl,
   FlatList,
-  SectionList,
+  Dimensions,
+  View,
   Pressable,
-  TextInput,
-  ToastAndroid,
-  Modal,
-  Image,
-  ImageBackground,
+  Animated,
 } from "react-native";
 import MashButton from "../Components/CustomButton";
 import {
@@ -47,12 +30,13 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FlashCard from "./flashcard";
-// import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-// import MashButton from "../Components/CustomButton";
 import SetCalendar from "./calendar";
 import SetNotifications from "./noti";
 const homeStackTab = createBottomTabNavigator();
 const homeDrawer = createDrawerNavigator();
+const { width, height } = Dimensions.get("window");
+const SPACING = 10;
+const ITEM_SIZE = width * 0.72;
 
 export function HomeStack({ navigation }) {
   const HomePageStack = () => {
@@ -124,20 +108,104 @@ export function DrawerContent(props) {
 }
 
 export function Screenc({ navigation }) {
-  /*  const [username, setUserName] = useState("")
-  const currentUser = useAuth();
-  useEffect(() => {
-    const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
-    const dat = onSnapshot(wdoc, (doc) =>{
-      console.log("hello")
-      console.log(doc.data().firstname)
-      setUserName(doc.data().firstname)
-    });
-  },[])  
-  console.log(typeof currentUser);
-  console.log(currentUser?.email); */
   const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [flipped, setFlipped] = useState([]);
+  const flipAnimation = useRef(new Animated.Value(0)).current;
+  let flipRotation = 0;
+  flipAnimation.addListener(({ value }) => (flipRotation = value));
 
+  console.log(ITEM_SIZE);
+  const flipToFrontStyle = {
+    transform: [
+      {
+        rotateY: flipAnimation.interpolate({
+          inputRange: [0, 180],
+          outputRange: ["0deg", "180deg"],
+        }),
+      },
+    ],
+  };
+
+  const flipToBackStyle = {
+    transform: [
+      {
+        rotateY: flipAnimation.interpolate({
+          inputRange: [0, 180],
+          outputRange: ["180deg", "360deg"],
+        }),
+      },
+    ],
+  };
+
+  const flipToFront = (item) => {
+    Animated.timing(flipAnimation, {
+      toValue: 180,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    // setFlipped(flipped.slice());
+
+    // let index = items.indexOf(item);
+    // item.flipped = !item.flipped;
+    // setItems(items.splice(index, 1).splice(index, 0, item));
+    // console.log(items.splice(index, 1).splice(index, 0, item));
+  };
+
+  const flipToBack = (item) => {
+    Animated.timing(flipAnimation, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    let index = flipped.indexOf(item.id);
+    setFlipped(flipped.slice(index));
+    // let index = items.indexOf(item);
+    // item.flipped = !item.flipped;
+    // setItems(items.splice(index, 1).splice(index, 0, item));
+    // console.log(items.splice(index, 1).splice(index, 0, item));
+  };
+
+  console.log(width);
+
+  const getData = async (date) => {
+    let result = [];
+    const docRef = doc(dbInit, "users", getAuth().currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    const allData = docSnap.data().tasks;
+    let todayTasks = allData.filter((item) => item.date === date);
+
+    if (todayTasks.length != 0) {
+      todayTasks[0].tasks.forEach((item) => {
+        item["flipped"] = false;
+        result.push(item);
+        console.log(item);
+      });
+      console.log(result);
+      setItems(result);
+    }
+  };
+
+  const convertDate = (date) => {
+    const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
+    const extraDayFormat = date.getDate() < 10 ? "0" : "";
+    return `${date.getFullYear()}-${extraMonthFormat}${
+      date.getMonth() + 1
+    }-${extraDayFormat}${date.getDate()}`;
+  };
+
+  useEffect(() => {
+    let result = {};
+    const todayTasks = getData(convertDate(date));
+
+    return onSnapshot(
+      doc(dbInit, "users", getAuth().currentUser.uid),
+      (doc) => {
+        getData(convertDate(date));
+      }
+    );
+  }, []);
   async function handleLogout() {
     setLoading(true);
     try {
@@ -150,9 +218,55 @@ export function Screenc({ navigation }) {
     setLoading(false);
   }
 
+  const checkTasks = (items) => {
+    if (items.length === 0) {
+      return (
+        <View style={{ marginTop: 20 }}>
+          <Text style={{ fontSize: 30 }}> No Schedule Set </Text>
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Text style={styles.taskHeader}>Today's Task: </Text>
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            data={items}
+            keyExtractor={(item) => item.name}
+            horizontal
+            contentContainerStyle={{ alignItems: "center" }}
+            snapToInterval={ITEM_SIZE}
+            decelerationRate={0}
+            bounces={false}
+            renderItem={({ item }) => {
+              return (
+                <View styles={{ marginTop: 50 }}>
+                  <Pressable
+                    style={{ width: ITEM_SIZE }}
+                    onPress={() => console.log("pressed")}
+                  >
+                    <View
+                      style={{
+                        ...styles.item,
+                        ...(item.done ? styles.done : styles.notDone),
+                      }}
+                    >
+                      <Text> {item.name} </Text>
+                    </View>
+                  </Pressable>
+                </View>
+              );
+            }}
+          />
+        </View>
+      );
+    }
+  };
+
   return (
-    <View>
-      <Text style={styles.text}>No Schedule set </Text>
+    <View style={styles.body}>
+      <Text style={styles.date}>Date : {convertDate(date)}</Text>
+      {checkTasks(items)}
     </View>
   );
 }
@@ -164,5 +278,64 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
+    alignItems: "center",
+  },
+
+  date: {
+    fontSize: 20,
+  },
+
+  taskHeader: {
+    marginTop: 10,
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+
+  noTasks: {
+    // marginTop: 100,
+    fontSize: 50,
+  },
+
+  item: {
+    marginHorizontal: SPACING,
+    padding: 5,
+    alignItems: "center",
+    // backgroundColor: "white",
+    borderRadius: 34,
+    height: height * 0.5,
+    width: "93%",
+    justifyContent: "center",
+    borderWidth: 3,
+    borderColor: "black",
+    backfaceVisibility: "hidden",
+  },
+
+  backItem: {
+    marginHorizontal: SPACING,
+    padding: 5,
+    alignItems: "center",
+    // backgroundColor: "white",
+    borderRadius: 34,
+    height: height * 0.5,
+    justifyContent: "center",
+    borderWidth: 3,
+    borderColor: "black",
+    backfaceVisibility: "hidden",
+  },
+
+  done: {
+    backgroundColor: "#4dff4d",
+  },
+
+  notDone: {
+    backgroundColor: "#ff4d4d",
+  },
+
+  cardFront: {
+    position: "absolute",
+  },
+
+  cardBack: {
+    backfaceVisibility: "hidden",
   },
 });

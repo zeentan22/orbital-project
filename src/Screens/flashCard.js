@@ -17,6 +17,7 @@ import {
 import  { color } from "react-native-reanimated";
 import CustomTabHeading from "../Components/CustomTabHeading";
 import DropDown from "../Components/DropDown";
+import { render } from "react-dom";
 const FlashCardStack = createStackNavigator();
 const {width, height} = Dimensions.get("screen")
 const cW = width * 0.7
@@ -242,12 +243,11 @@ const TopicList = ({navigation, route}) => {
 
   const DisplayCards = ({navigation,route}) =>{
     const _viewabilityConfig = {
-      itemVisiblePercentThreshold: 50,
+      itemVisiblePercentThreshold: 40,
     };
     const _onViewableItemsChanged = useCallback(({ viewableItems,changed}) => {
       console.log("Visible items are", viewableItems);
       console.log("Changed in this iteration", changed);
-      console.log("this second")
       console.log(viewableItems[0].index);
       setSelectedItem(viewableItems[0].index);
     },[selectedItem]);
@@ -255,7 +255,6 @@ const TopicList = ({navigation, route}) => {
     const flipback = useCallback((f,g)=>{
       if (f){
         g();
-        console.log("THis first")
       }else{}
     },[])
     const animate = useRef(new Animated.Value(0.01));
@@ -263,7 +262,7 @@ const TopicList = ({navigation, route}) => {
     const [isFlipped,setIsFlipped] = useState(false)
     const handleFlip = () => {
       Animated.timing(animate.current,{
-        duration:200,
+        duration: 200,
         toValue : isFlipped ? 0.01 : 180, 
         useNativeDriver: true,
       }).start(()=>{
@@ -281,7 +280,28 @@ const TopicList = ({navigation, route}) => {
       inputRange:[0.01,180],
       outputRange: ['180deg','360deg'],
     });
+    const keyExtractor=(item,index)=> index.toString()
+    const renderItem = useCallback(({item,index})=>(
+      <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{[handleFlip()]}}>  
+            <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
+            <FlipCard
+            heading = "Question"
+            image = "https://icons.veryicon.com/png/o/internet--web/truckhome/question-16.png"
+            title = {item.Ques}/>
 
+            </Animated.View>
+          
+          <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
+            <FlipCard
+            heading = "Answer"
+            image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
+            title = {item.Ans}/>
+          </Animated.View>
+
+      </Pressable>
+      
+      
+      ))
     const [tList,setTList] = useState()
     const topic =  route.params.topicSelected
     useEffect(()=>{
@@ -304,46 +324,12 @@ const TopicList = ({navigation, route}) => {
         onViewableItemsChanged={_onViewableItemsChanged}
         viewabilityConfig={_viewabilityConfig}
         horizontal = {true}
-        keyExtractor={(item,index) => index.toString()}
+        keyExtractor={keyExtractor}
         extraData = {selectedItem}
+        decelerationRate = "fast"
         pagingEnabled
         data = {tList}
-        renderItem={({item,index})=>(
-        (selectedItem == index) ? 
-        <View style = {{alignItems:"center",justifyContent:"center",width}}>
-        <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width: cW,height: cH,marginLeft:30,marginRight:30}} onPress = {()=>{[handleFlip()]}}>  
-              <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
-              <FlipCard
-              title = {item.Ques}/>
-
-              </Animated.View>
-            
-            <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
-              <FlipCard
-              title = {item.Ans}/>
-            </Animated.View>
-  
-        </Pressable>
-        </View>
-        :
-          <View style = {{alignItems:"center",justifyContent:"center",width}}>
-          <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",marginLeft:30,marginRight:30}} onPress = {()=>{[handleFlip()]}}>  
-                <View style={[styles.hidden,{width: cW,height: cH}]}>
-                <FlipCard
-                title = {item.Ans}/>
-  
-                </View>
-              
-              <View style = {[styles.back, styles.hidden,{width: cW,height: cH}]}> 
-                <FlipCard
-                title = {item.Ques}/>
-              </View>
-    
-          </Pressable>
-          </View>
-        
-        
-        )}/>
+        renderItem={renderItem}/>
     </View>
   )}
 

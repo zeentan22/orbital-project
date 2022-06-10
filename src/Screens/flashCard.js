@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput} from "react-native";
-import React, { userState, useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput,FlatList, Pressable, Animated,Dimensions} from "react-native";
+import React, { userState, useState, useEffect, useRef, useCallback } from "react";
 import MashButton from "../Components/CustomButton";
 import { DrawerActions } from '@react-navigation/native';
 import { createStackNavigator, Header } from "@react-navigation/stack";
 import { dbInit, auth} from "../../firebase";
 import ProceedButton from "../Components/ProceedButton";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import FlipCard from "../Components/CardsforFlashcards"
 import {
   onSnapshot,
   doc,
@@ -13,10 +14,13 @@ import {
   arrayUnion,
   arrayRemove,
 } from "firebase/firestore";
-import { color } from "react-native-reanimated";
+import  { color } from "react-native-reanimated";
 import CustomTabHeading from "../Components/CustomTabHeading";
 import DropDown from "../Components/DropDown";
 const FlashCardStack = createStackNavigator();
+const {width, height} = Dimensions.get("screen")
+const cW = width * 0.7
+const cH = cW * 1.54
 
 export function FlashCard({ navigation, route }) {
   
@@ -66,7 +70,7 @@ const reverseHorizontalAnimation = {
         <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("Topic List")}>
           <Text> Create new flashcard </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} >
+        <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("View Flash Card")}>
           <Text> Test Yourself! </Text>
         </TouchableOpacity>
       </View>
@@ -88,8 +92,8 @@ const TopicList = ({navigation, route}) => {
         if (Data != null) {
         Data.forEach((element)=> {
           if (repList.includes(element.topic)) {}
-          else {console.log(element.topic);tList.unshift({name : element.topic}
-            );console.log("damnnn",tList);repList.push(element.topic); console.log(repList)}
+          else {tList.unshift({name : element.topic}
+            );repList.push(element.topic)}
         })
       }
     else{null}})},[selectedItem])
@@ -186,7 +190,7 @@ const TopicList = ({navigation, route}) => {
 
       </View >
     ); }
-  const SelectTopic = ({navigation}) => { 
+  const SelectTopic = ({route,navigation}) => { 
     const tList = [{name: "Add New Topic"}];
     const [selectedItem, setSelectedItem] = useState(null);
     const onSelect = (item) => {
@@ -201,11 +205,11 @@ const TopicList = ({navigation, route}) => {
           if (Data != null) {
           Data.forEach((element)=> {
             if (repList.includes(element.topic)) {}
-            else {console.log(element.topic);tList.unshift({name : element.topic}
-              );console.log("damnnn",tList);repList.push(element.topic); console.log(repList)}
+            else {tList.unshift({name : element.topic}
+              );repList.push(element.topic)}
           })
         }
-      else{null}})},[])
+      else{null}})},[selectedItem])
     return (
       <View style={styles.body}>
         <CustomTabHeading
@@ -225,15 +229,123 @@ const TopicList = ({navigation, route}) => {
             data = {tList}
             onSelect={onSelect}/>
         </View>
-        <TouchableOpacity style= {{alignItems: "center", flexDirection: "row-reverse", justifyContent:"center", width: 150, flex : 0.3}}>
-        <Image
-        style = {[styles.image,{marginRight: 10}]}
-        tintColor = "#1e90ff"
-        source = {{uri: "https://icons.veryicon.com/png/o/clothes-accessories/through-item/arrow-right-31.png"}}></Image>
-        <Text style = {{fontSize:24, color:`#1e90ff`}}>Proceed</Text>
-        </TouchableOpacity>
+        <ProceedButton
+          title = "Proceed"
+          style = {{marginBottom:25}}
+          onPress={()=>{
+            if (selectedItem) {navigation.navigate("Display Cards", {topicSelected:`${selectedItem.name}`})}
+            else {alert("Please select a topic!")}}}
+
+        />
       </View>
     ); }
+
+  const DisplayCards = ({navigation,route}) =>{
+    const _viewabilityConfig = {
+      itemVisiblePercentThreshold: 50,
+    };
+    const _onViewableItemsChanged = useCallback(({ viewableItems,changed}) => {
+      console.log("Visible items are", viewableItems);
+      console.log("Changed in this iteration", changed);
+      console.log("this second")
+      console.log(viewableItems[0].index);
+      setSelectedItem(viewableItems[0].index);
+    },[selectedItem]);
+
+    const flipback = useCallback((f,g)=>{
+      if (f){
+        g();
+        console.log("THis first")
+      }else{}
+    },[])
+    const animate = useRef(new Animated.Value(0.01));
+    const [selectedItem,setSelectedItem] = useState(0)
+    const [isFlipped,setIsFlipped] = useState(false)
+    const handleFlip = () => {
+      Animated.timing(animate.current,{
+        duration:200,
+        toValue : isFlipped ? 0.01 : 180, 
+        useNativeDriver: true,
+      }).start(()=>{
+        setIsFlipped(!isFlipped);
+      });
+    }
+
+
+    const interpolateFront = animate.current.interpolate({
+      inputRange:[0.01,180],
+      outputRange: ['0.01deg','180deg'],
+    });
+
+    const interpolateBack = animate.current.interpolate({
+      inputRange:[0.01,180],
+      outputRange: ['180deg','360deg'],
+    });
+
+    const [tList,setTList] = useState()
+    const topic =  route.params.topicSelected
+    useEffect(()=>{
+      const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
+        return onSnapshot(wdoc, (doc) => {
+          let Data = doc.data()?.FlashCardContent
+          let dList = [{}]
+          if (Data != null) {
+          Data.forEach((element)=> {
+            if (element.topic == topic) {dList.push({Ques:element.Question, Ans:element.Answer})}
+            else {}
+          })
+        } else{null};
+        dList.splice(0,1);
+      setTList(dList)})},[])
+    return(
+    <View style={[styles.flashCardBody,{backgroundColor:"#f5f5dc"}]}>
+      <FlatList
+        onScrollBeginDrag={()=>{flipback(isFlipped,handleFlip)}}
+        onViewableItemsChanged={_onViewableItemsChanged}
+        viewabilityConfig={_viewabilityConfig}
+        horizontal = {true}
+        keyExtractor={(item,index) => index.toString()}
+        extraData = {selectedItem}
+        pagingEnabled
+        data = {tList}
+        renderItem={({item,index})=>(
+        (selectedItem == index) ? 
+        <View style = {{alignItems:"center",justifyContent:"center",width}}>
+        <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width: cW,height: cH,marginLeft:30,marginRight:30}} onPress = {()=>{[handleFlip()]}}>  
+              <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
+              <FlipCard
+              title = {item.Ques}/>
+
+              </Animated.View>
+            
+            <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
+              <FlipCard
+              title = {item.Ans}/>
+            </Animated.View>
+  
+        </Pressable>
+        </View>
+        :
+          <View style = {{alignItems:"center",justifyContent:"center",width}}>
+          <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",marginLeft:30,marginRight:30}} onPress = {()=>{[handleFlip()]}}>  
+                <View style={[styles.hidden,{width: cW,height: cH}]}>
+                <FlipCard
+                title = {item.Ans}/>
+  
+                </View>
+              
+              <View style = {[styles.back, styles.hidden,{width: cW,height: cH}]}> 
+                <FlipCard
+                title = {item.Ques}/>
+              </View>
+    
+          </Pressable>
+          </View>
+        
+        
+        )}/>
+    </View>
+  )}
 
       
   return(
@@ -262,6 +374,12 @@ const TopicList = ({navigation, route}) => {
           options = {{
             header : ()=> null,
           }}/> 
+          <FlashCardStack.Screen
+          name= "Display Cards"
+          component={DisplayCards}
+          options = {{
+            header : ()=> null,
+          }}/>
     </FlashCardStack.Navigator>
   )
   }
@@ -296,6 +414,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems:"center",
     justifyContent:"flex-start",
+    backgroundColor: "white",
+  },
+  flashCardBody: {
+    flex: 1,
+    alignItems:"center",
+    justifyContent:"center",
     backgroundColor: "white",
   },
   button: {
@@ -341,5 +465,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     margin: 15,
     height: 155,
+  },
+  hidden:{
+    backfaceVisibility:"hidden",
+  },
+  back:{
+    position:"absolute",
+    top: 0
   },
 });

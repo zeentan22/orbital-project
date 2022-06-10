@@ -5,7 +5,7 @@ const ProceedButton = (p) => {
     return (
       <Pressable
         onPress={p.onPress}
-        hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
+        hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }}
         style={({ pressed }) => [
           { backgroundColor: pressed ? "#b0c4de" : "#32cd32"},
           styles.button,

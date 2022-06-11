@@ -8,8 +8,9 @@ import {
   Text,
   Modal,
   Image,
-  Dimensions,
+  Pressable,
   TextInput,
+  Animated,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import {
@@ -23,6 +24,7 @@ import { getAuth } from "firebase/auth";
 import { Card, Avatar } from "react-native-paper";
 import { dbInit } from "../../firebase";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Swipeable } from "react-native-gesture-handler";
 const SetCalendar = ({ navigation }) => {
   const docRef = doc(dbInit, "users", getAuth().currentUser.uid);
   const [items, setItems] = useState({});
@@ -31,6 +33,9 @@ const SetCalendar = ({ navigation }) => {
   const [task, setTask] = useState("");
   const [date, setDate] = useState(new Date());
   const [startTime, setStartTime] = useState(0);
+  const [visible, setVisibility] = useState(false);
+  const [itemFocus, setItemFocus] = useState({});
+  const [updateItem, setupdateItem] = useState(false);
 
   const convertDate = (date) => {
     const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
@@ -66,7 +71,31 @@ const SetCalendar = ({ navigation }) => {
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
   };
 
+  const handleUpdate = async (oldData, obj, docRef) => {
+    if (Object.keys(oldData).length === 0) {
+      await updateDoc(docRef, { tasks: arrayUnion(obj) });
+    } else {
+      await updateDoc(docRef, {
+        tasks: arrayRemove(oldData),
+      });
+      let updatedTasks = [...oldData.tasks, ...obj.tasks];
+      updatedTasks.sort((a, b) => {
+        return parseInt(a.startTime) - parseInt(b.startTime);
+      });
+      let newObj = { date: dateFormat, tasks: updatedTasks };
+      await updateDoc(docRef, { tasks: arrayUnion(newObj) });
+    }
+    setupdateItem(!updateItem);
+  };
+
+  const handleDelete = async (oldData, newData, docRef) => {
+    await updateDoc(docRef, { tasks: arrayRemove(oldData) });
+    await updateDoc(docRef, { tasks: arrayUnion(newData) });
+    setupdateItem(!updateItem);
+  };
+
   useEffect(() => {
+    console.log("effect run 2");
     let result = {};
     let unmodifiedResult = [];
     return onSnapshot(
@@ -86,55 +115,100 @@ const SetCalendar = ({ navigation }) => {
         setUnmodifiedItems(unmodifiedResult);
       }
     );
-  }, []);
+  }, [updateItem]);
 
   const convertTime = (time) => {
     const hours = Math.floor(time / 60);
     const minutes = time % 60;
-    return `${hours}:${minutes}`;
+    const appendHr = hours < 10 ? "0" : "";
+    const appendMins = minutes < 10 ? "0" : "";
+    return `${appendHr}${hours}:${appendMins}${minutes}`;
+  };
+
+  const RightActions = ({ progress, dragX, onPress }) => {
+    const scale = dragX.interpolate({
+      inputRange: [-100, 0],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    });
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <View style={styles.rightAction}>
+          <Animated.Text
+            style={[styles.actionText, { transform: [{ scale }] }]}
+          >
+            Delete
+          </Animated.Text>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   const renderItem = (item) => {
+    const onRightPress = () => {
+      const date = item.date;
+      const oldData = unmodfiedItems.filter((ele) => ele.date === item.date)[0];
+      const newtasks = unmodfiedItems
+        .filter((ele) => ele.date === item.date)
+        .flatMap((ele) => ele.tasks)
+        .filter((ele) => ele !== item);
+      const newData = { date: date, tasks: newtasks };
+      handleDelete(oldData, newData, docRef);
+      // console.log(items);
+    };
     return (
-      <TouchableOpacity
-        style={{
-          marginRight: 10,
-          marginTop: 20,
-          shadowColor: "#000000",
-          shadowOpacity: 0.8,
-          shadowRadius: 2,
-          shadowOffset: {
-            height: 2,
-            width: 1,
-          },
-        }}
-      >
-        <Card>
-          <Card.Content>
-            <View
-              style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  alignSelf: "flex-start",
-                  backgroundColor: "#d1d1e0",
-                  overflow: "hidden",
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor: "#d1d1e0",
-                }}
-              >
-                {convertTime(item.startTime)}
-              </Text>
-              <Text style={{ alignSelf: "center" }}>{item.name}</Text>
-            </View>
-          </Card.Content>
-        </Card>
-      </TouchableOpacity>
+      <View style={{ justifyContent: "center" }}>
+        <Swipeable
+          renderRightActions={(progress, dragX) => (
+            <RightActions
+              progress={progress}
+              dragX={dragX}
+              onPress={onRightPress}
+            />
+          )}
+          style={{ marginTop: 10, marginBottom: 10 }} // ?
+        >
+          <TouchableOpacity
+            style={{
+              shadowColor: "#000000",
+              shadowOpacity: 0.8,
+              shadowRadius: 2,
+              shadowOffset: {
+                height: 2,
+                width: 1,
+              },
+              borderBottomWidth: 2,
+              borderLeftWidth: 1,
+            }}
+          >
+            <Card>
+              <Card.Content>
+                <View
+                  style={{
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      alignSelf: "flex-start",
+                      backgroundColor: "#d1d1e0",
+                      overflow: "hidden",
+                      borderRadius: 10,
+                      borderWidth: 2,
+                      borderColor: "#d1d1e0",
+                    }}
+                  >
+                    {convertTime(item.startTime)}
+                  </Text>
+                  <Text style={{ alignSelf: "center" }}>{item.name}</Text>
+                </View>
+              </Card.Content>
+            </Card>
+          </TouchableOpacity>
+        </Swipeable>
+      </View>
     );
   };
 
@@ -199,7 +273,14 @@ const SetCalendar = ({ navigation }) => {
               onPress={() => {
                 const obj = {
                   date: dateFormat,
-                  tasks: [{ name: task, done: false, startTime: startTime }],
+                  tasks: [
+                    {
+                      name: task,
+                      done: false,
+                      startTime: startTime,
+                      date: dateFormat,
+                    },
+                  ],
                 };
                 let oldData = {};
                 unmodfiedItems.forEach((item) => {
@@ -207,14 +288,7 @@ const SetCalendar = ({ navigation }) => {
                     oldData = item;
                   }
                 });
-                if (Object.keys(oldData).length === 0) {
-                  updateDoc(docRef, { tasks: arrayUnion(obj) });
-                } else {
-                  updateDoc(docRef, { tasks: arrayRemove(oldData) });
-                  let updatedTasks = [...oldData.tasks, ...obj.tasks];
-                  let newObj = { date: dateFormat, tasks: updatedTasks };
-                  updateDoc(docRef, { tasks: arrayUnion(newObj) });
-                }
+                handleUpdate(oldData, obj, docRef);
               }}
             >
               <Text> Add Task </Text>
@@ -230,6 +304,7 @@ const SetCalendar = ({ navigation }) => {
       </TouchableOpacity>
       <Agenda
         items={items}
+        minDate={"2018-05-10"}
         renderItem={renderItem}
         renderEmptyData={() => (
           <View style={styles.itemContainer}>
@@ -256,7 +331,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     backgroundColor: "white",
-    margin: 5,
+    margin: 10,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
@@ -276,6 +351,22 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: "contain",
     alignSelf: "flex-end",
+  },
+
+  deleteTaskBtn: {
+    // marginTop: 50,
+    // marginRight: 10,
+
+    alignSelf: "flex-end",
+    justifyContent: "center",
+    marginBottom: -20,
+    zIndex: 1,
+  },
+
+  deleteImg: {
+    width: 15,
+    height: 20,
+    resizeMode: "contain",
   },
 
   modalContent: {
@@ -301,5 +392,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  rightAction: {
+    backgroundColor: "#dd2c00",
+    justifyContent: "center",
+    flex: 1,
+    alignItems: "flex-end",
+  },
+  actionText: {
+    color: "#fff",
+    fontWeight: "600",
+    padding: 20,
   },
 });

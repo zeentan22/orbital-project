@@ -133,7 +133,7 @@ const SetCalendar = ({ navigation }) => {
               display="default"
               is24Hour={true}
               onChange={onChange}
-              style={{ width: 200, marginRight: 70 }}
+              // style={{ width: 200, marginRight: 70 }}  
             />
 
             <TextInput

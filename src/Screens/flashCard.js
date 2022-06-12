@@ -6,7 +6,7 @@ import { createStackNavigator, Header } from "@react-navigation/stack";
 import { dbInit, auth} from "../../firebase";
 import ProceedButton from "../Components/ProceedButton";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import FlipCard from "../Components/CardsforFlashcards"
+import FlipCard from "../Components/CardsforFlashcards";
 import {
   onSnapshot,
   doc,

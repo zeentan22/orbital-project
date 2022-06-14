@@ -33,12 +33,14 @@ import Login from "./src/Screens/LoginPage";
 import CreateAccount from "./src/Screens/CreateAccountPage";
 // import Screenc from "./src/Screens/Screen_C";
 // import { yupResolver } from "@hookform/resolvers/yup";
-import {Screenc, HomeStack} from "./src/Screens/Screen_C";
+import { Screenc, HomeStack } from "./src/Screens/Screen_C";
 import "react-native-gesture-handler";
-import {BotTabs} from "./src/Navigation/tabs";
+import { BotTabs } from "./src/Navigation/tabs";
+import registerNNPushToken from "native-notify";
 const Wholelogin = createStackNavigator();
 
 function App() {
+  registerNNPushToken(2943, "BmROKxqlbzefNiBbzAbRXt");
   return (
     <NavigationContainer>
       <Wholelogin.Navigator>
@@ -56,7 +58,11 @@ function App() {
         <Wholelogin.Screen
           name="Screenc"
           component={BotTabs}
-          options={{ title: "!Procrastinate" ,headerLeft: ()=> null, headerTitleAlign: "center"}}
+          options={{
+            title: "!Procrastinate",
+            headerLeft: () => null,
+            headerTitleAlign: "center",
+          }}
         />
       </Wholelogin.Navigator>
     </NavigationContainer>

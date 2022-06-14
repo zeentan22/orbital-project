@@ -198,10 +198,12 @@ export function Screenc({ navigation }) {
   useEffect(() => {
     let result = {};
     const todayTasks = getData(convertDate(date));
+    console.log("use effect 1");
 
     return onSnapshot(
       doc(dbInit, "users", getAuth().currentUser.uid),
       (doc) => {
+        console.log("onSnapshot");
         getData(convertDate(date));
       }
     );

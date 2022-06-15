@@ -25,7 +25,6 @@ import {
   Switch,
 } from "react-native-paper";
 import { logout, dbInit, useAuth, auth } from "../../firebase";
-import { getAuth } from "firebase/auth";
 import { getDoc, onSnapshot, doc } from "firebase/firestore";
 
 const homeStackTab = createBottomTabNavigator();
@@ -34,7 +33,6 @@ const homeDrawer = createDrawerNavigator();
 export const BotTabs = () => {
   const HomeStacks = () => {
     return (
-      <NavigationContainer independent={true}>
       <homeStackTab.Navigator initialRouteName="Home Page" screenOptions={({route}) => ({ 
         tabBarHideOnKeyboard: true,
         headerShown: false,
@@ -89,7 +87,6 @@ export const BotTabs = () => {
           }       
         />
       </homeStackTab.Navigator>
-      </NavigationContainer>
   );
 };
 return(
@@ -105,15 +102,17 @@ return(
 
 
 export function DrawerContent (props) {
+  const user = useAuth()
   const [username, setUserName] = useState("");
   const [trying, setTrying] = useState();
   useEffect(()=>{
-  const wdoc = doc(dbInit, "users", auth.currentUser.uid);
+  if (user){
+  const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
   const dat = () => { 
       onSnapshot(wdoc, (doc) => {
       setUserName(doc.data().firstname);})};
   dat()
-  },[])
+  }else{null}},[user])
      return (
       <View style ={{flex:1}}>
         <DrawerContentScrollView {...props}>
@@ -127,12 +126,12 @@ export function DrawerContent (props) {
             </View>
           </View>
           <Drawer.Section style={{flex:1, marginTop:40, marginLeft : 10}}>
-            <DrawerItem label = "Home" onPress={()=> props.navigation.closeDrawer()}></DrawerItem>
+            <DrawerItem label = "Home" onPress={()=> [props.navigation.closeDrawer(),props.navigation.navigate("Home Page")]}></DrawerItem>
           </Drawer.Section>
           <Drawer.Section style={{flex:1, marginLeft : 10}}>
             <DrawerItem label = "Sign Out" onPress = {async () =>
             await logout()
-            .then(()=>{alert("logged out");props.navigation.navigate("Login Page")})
+            .then(()=>{alert("logged out");})
             .catch(error=>alert(error.message))}></DrawerItem>
 
   

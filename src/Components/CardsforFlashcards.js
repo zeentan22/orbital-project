@@ -12,6 +12,9 @@ export default FlipCard = (p) =>{
                 <Title style = {{alignSelf:"center",marginRight:76}}>{p.heading}</Title>
                 </View>
                 <Subheading style = {{alignSelf:"center"}}>{p.title}</Subheading>
+                <View style = {{flex:1,justifyContent:"flex-end"}}>
+                    <Text style = {{fontSize:20}}>{p.pageNum}</Text>
+                </View>
             </Card.Content>
 
 

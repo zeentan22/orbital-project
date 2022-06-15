@@ -77,7 +77,6 @@ export default function CreateAccount({ navigation }) {
       console.log(err);
     }
     setLoading(false);
-    navigation.navigate("Screenc");
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

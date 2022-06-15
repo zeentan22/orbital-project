@@ -3,7 +3,7 @@ import React, { userState, useState, useEffect, useRef, useCallback } from "reac
 import MashButton from "../Components/CustomButton";
 import { DrawerActions } from '@react-navigation/native';
 import { createStackNavigator, Header } from "@react-navigation/stack";
-import { dbInit, auth} from "../../firebase";
+import { dbInit, auth, useAuth} from "../../firebase";
 import ProceedButton from "../Components/ProceedButton";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FlipCard from "../Components/CardsforFlashcards";
@@ -24,7 +24,9 @@ const cW = width * 0.7
 const cH = cW * 1.54
 
 export function FlashCard({ navigation, route }) {
-  
+  const user = useAuth();
+  const [score,setScore] = useState();
+  const [totalScore,setTotalScore] = useState()
 const horizontalAnimation = {
   cardStyleInterpolator: ({ current, layouts }) => {
     return {
@@ -86,6 +88,7 @@ const TopicList = ({navigation, route}) => {
   }
 
   useEffect(()=>{
+    if (user) {
     const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
       return onSnapshot(wdoc, (doc) => {
         let repList = [];
@@ -97,7 +100,7 @@ const TopicList = ({navigation, route}) => {
             );repList.push(element.topic)}
         })
       }
-    else{null}})},[selectedItem])
+    else{null}})}else{}},[selectedItem])
   return (
     <View style={styles.body}>
       <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20,marginLeft:2}} onPress={()=>navigation.goBack()}>
@@ -126,7 +129,7 @@ const TopicList = ({navigation, route}) => {
     const topic =  route.params.topicSelected
     const passedTopic = topic
     const [currentTopic, setCurrentTopic] = useState((topic != "Add New Topic") ? topic : null)
-    const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
+    const wdoc = user ? doc(dbInit, "users", auth?.currentUser.uid) : null ;
     console.log(`${topic}`)
     const [question,setQuestion] = useState("Null")
     const [answer, setAnswer] = useState("Null")
@@ -199,6 +202,8 @@ const TopicList = ({navigation, route}) => {
     }
   
     useEffect(()=>{
+      setScore("-");
+      if (user) {
       const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
         return onSnapshot(wdoc, (doc) => {
           let repList = [];
@@ -207,10 +212,10 @@ const TopicList = ({navigation, route}) => {
           Data.forEach((element)=> {
             if (repList.includes(element.topic)) {}
             else {tList.unshift({name : element.topic}
-              );repList.push(element.topic)}
-          })
+              );repList.push(element.topic);}
+          });
         }
-      else{null}})},[selectedItem])
+      else{null};})}else{}},[selectedItem])
     return (
       <View style={styles.body}>
         <CustomTabHeading
@@ -234,7 +239,8 @@ const TopicList = ({navigation, route}) => {
           title = "Proceed"
           style = {{marginBottom:25}}
           onPress={()=>{
-            if (selectedItem) {navigation.navigate("Display Cards", {topicSelected:`${selectedItem.name}`})}
+            if (selectedItem && (selectedItem.name != "Add New Topic")) {navigation.navigate("Display Cards", {topicSelected:`${selectedItem.name}`})}
+            else if (selectedItem && (selectedItem.name == "Add New Topic")) {navigation.navigate("Input for Flashcard", {topicSelected:`${selectedItem.name}`})}
             else {alert("Please select a topic!")}}}
 
         />
@@ -242,6 +248,17 @@ const TopicList = ({navigation, route}) => {
     ); }
 
   const DisplayCards = ({navigation,route}) =>{
+    const [test,setTest] = useState();
+    const tracking = () =>{
+      setTest(!test);
+      console.log(test);
+      if (test){return(
+        setScore(0))
+      }else{return(setScore("-"))}
+  
+
+
+    }
     const _viewabilityConfig = {
       itemVisiblePercentThreshold: 40,
     };
@@ -287,7 +304,8 @@ const TopicList = ({navigation, route}) => {
             <FlipCard
             heading = "Question"
             image = "https://icons.veryicon.com/png/o/internet--web/truckhome/question-16.png"
-            title = {item.Ques}/>
+            title = {item.Ques}
+            pageNum = {`${index + 1}/${tList.length}`}/>
 
             </Animated.View>
           
@@ -295,7 +313,8 @@ const TopicList = ({navigation, route}) => {
             <FlipCard
             heading = "Answer"
             image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
-            title = {item.Ans}/>
+            title = {item.Ans}
+            pageNum = {`${index + 1}/${tList.length}`}/>
           </Animated.View>
 
       </Pressable>
@@ -305,20 +324,26 @@ const TopicList = ({navigation, route}) => {
     const [tList,setTList] = useState()
     const topic =  route.params.topicSelected
     useEffect(()=>{
+      setTest(false);
+      if (user) {
       const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
         return onSnapshot(wdoc, (doc) => {
           let Data = doc.data()?.FlashCardContent
           let dList = [{}]
           if (Data != null) {
           Data.forEach((element)=> {
-            if (element.topic == topic) {dList.push({Ques:element.Question, Ans:element.Answer})}
+            if (element.topic == topic) {dList.push({Ques:element.Question, Ans:element.Answer});}
             else {}
           })
         } else{null};
         dList.splice(0,1);
-      setTList(dList)})},[])
+      setTList(dList);setTotalScore(dList.length)})}else{}},[])
     return(
     <View style={[styles.flashCardBody,{backgroundColor:"#f5f5dc"}]}>
+      <MashButton
+      title = {test ? "Stop Scoring" : "Start Scoring" }
+      onPress={tracking}
+      />
       <FlatList
         onScrollBeginDrag={()=>{flipback(isFlipped,handleFlip)}}
         onViewableItemsChanged={_onViewableItemsChanged}
@@ -332,7 +357,12 @@ const TopicList = ({navigation, route}) => {
         renderItem={renderItem}/>
     </View>
   )}
-
+    
+  const HeaderR = () =>{
+    return(
+      <Text style = {styles.text}>Score: {score}/{totalScore}</Text>
+    )
+  }
       
   return(
     <FlashCardStack.Navigator>
@@ -364,7 +394,7 @@ const TopicList = ({navigation, route}) => {
           name= "Display Cards"
           component={DisplayCards}
           options = {{
-            header : ()=> null,
+            headerRight : ()=> (HeaderR())
           }}/>
     </FlashCardStack.Navigator>
   )

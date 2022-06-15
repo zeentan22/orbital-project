@@ -22,11 +22,12 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { Card, Avatar } from "react-native-paper";
-import { dbInit } from "../../firebase";
+import { dbInit,useAuth } from "../../firebase";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Swipeable } from "react-native-gesture-handler";
 const SetCalendar = ({ navigation }) => {
-  const docRef = doc(dbInit, "users", getAuth().currentUser.uid);
+  const user = useAuth()
+  const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null
   const [items, setItems] = useState({});
   const [unmodfiedItems, setUnmodifiedItems] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -52,6 +53,7 @@ const SetCalendar = ({ navigation }) => {
   }-${date.getDate()}`;
 
   const onChange = (event, selectedDate) => {
+    console.log("hifk")
     fDateTime = convertDate(selectedDate);
     let x = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
@@ -63,12 +65,14 @@ const SetCalendar = ({ navigation }) => {
   };
 
   const onChangeTime = (event, selectedTime) => {
+    console.log("hifk2");
     let x = moment(selectedTime).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
     const hour = time.split(":")[0];
     const minutes = time.split(":")[1];
     setDate(selectedTime);
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
+    
   };
 
   const handleUpdate = async (oldData, obj, docRef) => {
@@ -98,7 +102,8 @@ const SetCalendar = ({ navigation }) => {
     console.log("effect run 2");
     let result = {};
     let unmodifiedResult = [];
-    return onSnapshot(
+    if (user) {
+    return onSnapshot( 
       doc(dbInit, "users", getAuth().currentUser.uid),
       (doc) => {
         let allData = doc.data().tasks;
@@ -115,7 +120,7 @@ const SetCalendar = ({ navigation }) => {
         setUnmodifiedItems(unmodifiedResult);
       }
     );
-  }, [updateItem]);
+  }}, [updateItem]);
 
   const convertTime = (time) => {
     const hours = Math.floor(time / 60);
@@ -237,7 +242,7 @@ const SetCalendar = ({ navigation }) => {
               borderWidth: 2,
             }}
           >
-            <DateTimePicker
+             (<DateTimePicker
               testID="dateTimePicker"
               value={date}
               mode={"date"}
@@ -245,11 +250,11 @@ const SetCalendar = ({ navigation }) => {
               is24Hour={true}
               onChange={onChange}
               // style={{ width: 200, marginRight: 70 }}  
-            />
+            />)
 
             <Text> </Text>
 
-            <DateTimePicker
+            (<DateTimePicker
               testID="dateTimePicker"
               value={date}
               mode={"time"}
@@ -257,7 +262,7 @@ const SetCalendar = ({ navigation }) => {
               is24Hour={true}
               style={{ width: 200, margnRight: 70 }}
               onChange={onChangeTime}
-            />
+            />)
 
             <TextInput
               style={styles.input}

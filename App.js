@@ -34,34 +34,41 @@ import CreateAccount from "./src/Screens/CreateAccountPage";
 import "react-native-gesture-handler";
 import {BotTabs} from "./src/Navigation/tabs";
 import Login from "./src/Screens/LoginPage"
-import {useAuth} from "../orbital-project/firebase";
-
+import {useAuth,auth} from "../orbital-project/firebase";
 const Wholelogin = createStackNavigator();
+const Mix = createStackNavigator()
 
 function App() {
+  const loggedIn = useAuth()
+  const [user,setUser] = useState(false)
+  console.log(user)
+  useEffect(()=>{
+    setUser(loggedIn)
+  },[loggedIn])
+  const Mixture = () =>{
+    return(
+        <Mix.Navigator>
+          <Mix.Screen
+           name="Login Page"
+           component={Login}
+           options={{ title: "Login" }}
+         />
+
+          <Mix.Screen
+           name="Createpage"
+           component={CreateAccount}
+           options={{ title: "Create Account" }}
+         />
+
+        </Mix.Navigator>
+    )
+  }
   return (
     <NavigationContainer>
-        <Wholelogin.Navigator>
-        <Wholelogin.Screen
-          name="Login Page"
-          component={Login}
-          options={{ title: "Login" }}
-        />
-
-        <Wholelogin.Screen
-          name="Createpage"
-          component={CreateAccount}
-          options={{ title: "Create Account" }}
-        />
-        <Wholelogin.Screen
-          name="Screenc"
-          component={BotTabs}
-          options={{ title: "!Procrastinate" ,headerLeft: ()=> null, headerTitleAlign: "center"}}
-        />
-      </Wholelogin.Navigator> 
-
-
+    {user ? <BotTabs/> : <Mixture/>}
+    
     </NavigationContainer>
+
   );
 }
 

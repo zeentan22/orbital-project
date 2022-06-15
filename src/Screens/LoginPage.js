@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { login, useAuth} from "../../firebase";
+import { login, useAuth, logout,auth} from "../../firebase";
 import {getDoc, collection, doc, setDoc} from "firebase/firestore"
 // import type Node from 'react';
 // import { NavigationContainer } from "@react-navigation/native";
@@ -34,27 +34,22 @@ import {
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MashButton from "../Components/CustomButton";
 export default function Login({ navigation }) {
-  
+  const user = useAuth()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading,setLoading] = useState("")
   const onPressHandler = () => {
     navigation.navigate("Createpage"); //used for when we click on Create Account Button, go to that page
   };
 
   async function handleLogin() {
-    setLoading(true);
     try {
       await login(email, password);
       console.log("logged in!");
-      navigation.navigate("Screenc");
       alert("Welcome back!");
     } catch {
       alert("Error!");
     }
-    setLoading(false);
-  }
-
+  };
   return (
 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

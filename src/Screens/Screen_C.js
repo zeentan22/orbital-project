@@ -1,8 +1,7 @@
-import React, { userState, useState, useEffect, useRef } from "react";
+import React, { userState, useState, useEffect, useRef,useCallback } from "react";
 import { logout, dbInit, useAuth } from "../../firebase";
 import { getAuth } from "firebase/auth";
 import { getDoc, onSnapshot, doc } from "firebase/firestore";
-import { NavigationContainer } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
@@ -14,11 +13,6 @@ import {
 } from "react-native";
 import MashButton from "../Components/CustomButton";
 import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItem,
-} from "@react-navigation/drawer";
-import {
   Avatar,
   Title,
   Caption,
@@ -27,165 +21,77 @@ import {
   TouchableRipple,
   Switch,
 } from "react-native-paper";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FlashCard from "./flashcard";
-import SetCalendar from "./calendar";
-import SetNotifications from "./noti";
-const homeStackTab = createBottomTabNavigator();
-const homeDrawer = createDrawerNavigator();
-const { width, height } = Dimensions.get("window");
-const SPACING = 10;
-const ITEM_SIZE = width * 0.72;
+const {width, height} = Dimensions.get("screen")
+const cW = width * 0.7
+const cH = cW * 1.54
 
-export function HomeStack({ navigation }) {
-  const HomePageStack = () => {
-    return (
-      <NavigationContainer independent={true}>
-        <homeStackTab.Navigator>
-          <homeStackTab.Screen name="Calendar" component={SetCalendar} />
-
-          <homeStackTab.Screen
-            name="Notifications"
-            component={SetNotifications}
-          />
-
-          <homeStackTab.Screen name="Flashcards" component={FlashCard} />
-        </homeStackTab.Navigator>
-      </NavigationContainer>
-    );
-  };
-  return (
-    <homeDrawer.Navigator
-      drawerContent={(props) => <DrawerContent {...props} />}
-    >
-      <homeDrawer.Screen name="Home" component={HomePageStack} />
-    </homeDrawer.Navigator>
-  );
-}
-
-export function DrawerContent(props) {
-  /*  const [username, setUserName] = useState("")
-  useEffect(() => {
-    const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
-    const dat = onSnapshot(wdoc, (doc) =>{
-      console.log(doc.data().firstname)
-      setUserName(doc.data().firstname)
-    });
-    return dat
-  },[]) */
-
-  return (
-    <View style={{ flex: 1 }}>
-      <DrawerContentScrollView {...props}>
-        <View style={styles.body}>
-          <View style={[styles.body]}>
-            <Text>Hello World</Text>
-          </View>
-        </View>
-        <Drawer.Section style={{ flex: 1, marginTop: 40 }}>
-          <DrawerItem
-            label="Home"
-            onPress={() => {
-              props.navigation.navigate("Home");
-            }}
-          ></DrawerItem>
-          <DrawerItem
-            label="Sign Out"
-            onPress={async () =>
-              await logout()
-                .then(() => {
-                  alert("logged out");
-                  props.navigation.navigate("Login Page");
-                })
-                .catch((error) => alert(error.message))
-            }
-          ></DrawerItem>
-        </Drawer.Section>
-      </DrawerContentScrollView>
-    </View>
-  );
-}
 
 export function Screenc({ navigation }) {
+  const user = useAuth()
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([]);
   const [date, setDate] = useState(new Date());
-  const [flipped, setFlipped] = useState([]);
-  const flipAnimation = useRef(new Animated.Value(0)).current;
-  let flipRotation = 0;
-  flipAnimation.addListener(({ value }) => (flipRotation = value));
-
-  console.log(ITEM_SIZE);
-  const flipToFrontStyle = {
-    transform: [
-      {
-        rotateY: flipAnimation.interpolate({
-          inputRange: [0, 180],
-          outputRange: ["0deg", "180deg"],
-        }),
-      },
-    ],
+  const [isFlipped,setIsFlipped] = useState(false)
+  const [selectedItem,setSelectedItem] = items ? useState(0) : null
+  const _viewabilityConfig = {
+    itemVisiblePercentThreshold: 40,
   };
+  const _onViewableItemsChanged = useCallback(({ viewableItems,changed}) => {
+    console.log("Visible items are", viewableItems);
+    console.log("Changed in this iteration", changed);
+    console.log(viewableItems[0].index);
+    setSelectedItem(viewableItems[0].index);
+  },[selectedItem]);
 
-  const flipToBackStyle = {
-    transform: [
-      {
-        rotateY: flipAnimation.interpolate({
-          inputRange: [0, 180],
-          outputRange: ["180deg", "360deg"],
-        }),
-      },
-    ],
-  };
+  const viewabilityConfigCallbackPairs = useRef([
+    { _onViewableItemsChanged },
+  ]);
 
-  const flipToFront = (item) => {
-    Animated.timing(flipAnimation, {
-      toValue: 180,
-      duration: 300,
+  const flipback = useCallback((f,g)=>{
+    if (f){
+      g();
+    }else{}
+  },[])
+
+  const animate = useRef(new Animated.Value(0.01));
+
+  const interpolateFront = animate.current.interpolate({
+    inputRange:[0.01,180],
+    outputRange: ['0.01deg','180deg'],
+  });
+
+  const interpolateBack = animate.current.interpolate({
+    inputRange:[0.01,180],
+    outputRange: ['180deg','360deg'],
+  });
+  
+  const handleFlip = () => {
+    Animated.timing(animate.current,{
+      duration: 200,
+      toValue : isFlipped ? 0.01 : 180, 
       useNativeDriver: true,
-    }).start();
-    // setFlipped(flipped.slice());
-
-    // let index = items.indexOf(item);
-    // item.flipped = !item.flipped;
-    // setItems(items.splice(index, 1).splice(index, 0, item));
-    // console.log(items.splice(index, 1).splice(index, 0, item));
-  };
-
-  const flipToBack = (item) => {
-    Animated.timing(flipAnimation, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-    let index = flipped.indexOf(item.id);
-    setFlipped(flipped.slice(index));
-    // let index = items.indexOf(item);
-    // item.flipped = !item.flipped;
-    // setItems(items.splice(index, 1).splice(index, 0, item));
-    // console.log(items.splice(index, 1).splice(index, 0, item));
-  };
-
-  console.log(width);
+    }).start(()=>{
+      setIsFlipped(!isFlipped);
+    });
+  }
 
   const getData = async (date) => {
     let result = [];
-    const docRef = doc(dbInit, "users", getAuth().currentUser.uid);
+    if (user) {
+    const docRef = doc(dbInit, "users", getAuth()?.currentUser.uid);
     const docSnap = await getDoc(docRef);
     const allData = docSnap.data().tasks;
     let todayTasks = allData.filter((item) => item.date === date);
 
     if (todayTasks.length != 0) {
       todayTasks[0].tasks.forEach((item) => {
-        item["flipped"] = false;
         result.push(item);
         console.log(item);
       });
       console.log(result);
       setItems(result);
     }
-  };
+  ;}else{}}
 
   const convertDate = (date) => {
     const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
@@ -198,25 +104,39 @@ export function Screenc({ navigation }) {
   useEffect(() => {
     let result = {};
     const todayTasks = getData(convertDate(date));
-
+    if (user) {
     return onSnapshot(
-      doc(dbInit, "users", getAuth().currentUser.uid),
+      doc(dbInit, "users", getAuth()?.currentUser.uid),
       (doc) => {
         getData(convertDate(date));
       }
     );
-  }, []);
-  async function handleLogout() {
-    setLoading(true);
-    try {
-      await logout();
-      alert("log out");
-      navigation.navigate("Login Page");
-    } catch {
-      alert("Error!");
-    }
-    setLoading(false);
-  }
+  }else{null}}, [user]);
+
+  const keyExtractor=(item,index)=> index.toString()
+  const renderItem = useCallback(({item,index})=>(
+    <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{[handleFlip()]}}>  
+          <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
+          <FlipCard
+          heading = {`Task ${index + 1}`}
+          image = {null}
+          title = {item.name}
+          pageNum = {`${index + 1}/${items.length}`}/>
+
+          </Animated.View>
+        
+        <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
+          <FlipCard
+          heading = "Done"
+          image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
+          title = {item.done}
+          pageNum = {`${index + 1}/${items.length}`}/>
+        </Animated.View>
+
+    </Pressable>
+    
+    
+    ))
 
   const checkTasks = (items) => {
     if (items.length === 0) {
@@ -230,34 +150,18 @@ export function Screenc({ navigation }) {
         <View>
           <Text style={styles.taskHeader}>Today's Task: </Text>
           <FlatList
-            showsHorizontalScrollIndicator={false}
-            data={items}
-            keyExtractor={(item) => item.name}
-            horizontal
-            contentContainerStyle={{ alignItems: "center" }}
-            snapToInterval={ITEM_SIZE}
-            decelerationRate={0}
-            bounces={false}
-            renderItem={({ item }) => {
-              return (
-                <View styles={{ marginTop: 50 }}>
-                  <Pressable
-                    style={{ width: ITEM_SIZE }}
-                    onPress={() => console.log("pressed")}
-                  >
-                    <View
-                      style={{
-                        ...styles.item,
-                        ...(item.done ? styles.done : styles.notDone),
-                      }}
-                    >
-                      <Text> {item.name} </Text>
-                    </View>
-                  </Pressable>
-                </View>
-              );
-            }}
-          />
+          onScrollBeginDrag={()=>{flipback(isFlipped,handleFlip)}}
+          viewabilityConfigCallbackPairs={
+            viewabilityConfigCallbackPairs.current
+          }
+          viewabilityConfig={_viewabilityConfig}
+          horizontal = {true}
+          keyExtractor={keyExtractor}
+          extraData = {selectedItem}
+          decelerationRate = "fast"
+          pagingEnabled
+          data = {items}
+          renderItem={renderItem}/>
         </View>
       );
     }
@@ -297,7 +201,6 @@ const styles = StyleSheet.create({
   },
 
   item: {
-    marginHorizontal: SPACING,
     padding: 5,
     alignItems: "center",
     // backgroundColor: "white",
@@ -310,18 +213,6 @@ const styles = StyleSheet.create({
     backfaceVisibility: "hidden",
   },
 
-  backItem: {
-    marginHorizontal: SPACING,
-    padding: 5,
-    alignItems: "center",
-    // backgroundColor: "white",
-    borderRadius: 34,
-    height: height * 0.5,
-    justifyContent: "center",
-    borderWidth: 3,
-    borderColor: "black",
-    backfaceVisibility: "hidden",
-  },
 
   done: {
     backgroundColor: "#4dff4d",
@@ -337,5 +228,18 @@ const styles = StyleSheet.create({
 
   cardBack: {
     backfaceVisibility: "hidden",
+  },
+  hidden:{
+    backfaceVisibility:"hidden",
+  },
+  back:{
+    position:"absolute",
+    top: 0
+  },
+  flashCardBody: {
+    flex: 1,
+    alignItems:"center",
+    justifyContent:"center",
+    backgroundColor: "white",
   },
 });

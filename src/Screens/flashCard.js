@@ -25,8 +25,6 @@ const cH = cW * 1.54
 
 export function FlashCard({ navigation, route }) {
   const user = useAuth();
-  const [score,setScore] = useState();
-  const [totalScore,setTotalScore] = useState()
 const horizontalAnimation = {
   cardStyleInterpolator: ({ current, layouts }) => {
     return {
@@ -202,7 +200,6 @@ const TopicList = ({navigation, route}) => {
     }
   
     useEffect(()=>{
-      setScore("-");
       if (user) {
       const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
         return onSnapshot(wdoc, (doc) => {
@@ -248,13 +245,16 @@ const TopicList = ({navigation, route}) => {
     ); }
 
   const DisplayCards = ({navigation,route}) =>{
-    const [test,setTest] = useState();
+    const totCount = useRef(0)
+    const [sco,setSco] = useState("-");
+    const totalsco = useRef("-");
+    const [test,setTest] = useState(true);
     const tracking = () =>{
-      setTest(!test);
-      console.log(test);
-      if (test){return(
-        setScore(0))
-      }else{return(setScore("-"))}
+      console.log("h",test);
+      if (test){
+        setSco(0);
+        totalsco.current = totCount.current;
+      }else{ setSco("-");totalsco.current = "-"}
   
 
 
@@ -302,8 +302,10 @@ const TopicList = ({navigation, route}) => {
       <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{[handleFlip()]}}>  
             <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
             <FlipCard
+            test = {false}
+            bcolor= "#dcdcdc"
             heading = "Question"
-            image = "https://icons.veryicon.com/png/o/internet--web/truckhome/question-16.png"
+            image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/ask-q.png"
             title = {item.Ques}
             pageNum = {`${index + 1}/${tList.length}`}/>
 
@@ -311,6 +313,9 @@ const TopicList = ({navigation, route}) => {
           
           <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
             <FlipCard
+            test = {!test}
+            onPress2 = {()=>{setSco(sco + 1)}}
+            bcolor= "#dcdcdc"
             heading = "Answer"
             image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
             title = {item.Ans}
@@ -324,7 +329,7 @@ const TopicList = ({navigation, route}) => {
     const [tList,setTList] = useState()
     const topic =  route.params.topicSelected
     useEffect(()=>{
-      setTest(false);
+      console.log("yoloo",test)
       if (user) {
       const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
         return onSnapshot(wdoc, (doc) => {
@@ -337,13 +342,16 @@ const TopicList = ({navigation, route}) => {
           })
         } else{null};
         dList.splice(0,1);
-      setTList(dList);setTotalScore(dList.length)})}else{}},[])
+      setTList(dList);totCount.current = dList.length})}else{}},[])
     return(
     <View style={[styles.flashCardBody,{backgroundColor:"#f5f5dc"}]}>
+      <View style = {{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
       <MashButton
-      title = {test ? "Stop Scoring" : "Start Scoring" }
-      onPress={tracking}
+      title = {test ? "Start Scoring" : "Stop Scoring" }
+      onPress={()=>{setTest(!test);tracking()}}
       />
+      <Text style = {{fontSize:20}}>{sco}/{totalsco.current}</Text>
+      </View>
       <FlatList
         onScrollBeginDrag={()=>{flipback(isFlipped,handleFlip)}}
         onViewableItemsChanged={_onViewableItemsChanged}
@@ -357,12 +365,7 @@ const TopicList = ({navigation, route}) => {
         renderItem={renderItem}/>
     </View>
   )}
-    
-  const HeaderR = () =>{
-    return(
-      <Text style = {styles.text}>Score: {score}/{totalScore}</Text>
-    )
-  }
+
       
   return(
     <FlashCardStack.Navigator>
@@ -394,7 +397,7 @@ const TopicList = ({navigation, route}) => {
           name= "Display Cards"
           component={DisplayCards}
           options = {{
-            headerRight : ()=> (HeaderR())
+            header : ()=> null,
           }}/>
     </FlashCardStack.Navigator>
   )

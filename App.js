@@ -35,16 +35,12 @@ import "react-native-gesture-handler";
 import {BotTabs} from "./src/Navigation/tabs";
 import Login from "./src/Screens/LoginPage"
 import {useAuth,auth} from "../orbital-project/firebase";
+import Loading from "./src/Screens/Loading"
 const Wholelogin = createStackNavigator();
 const Mix = createStackNavigator()
 
 function App() {
   const loggedIn = useAuth()
-  const [user,setUser] = useState(false)
-  console.log(user)
-  useEffect(()=>{
-    setUser(loggedIn)
-  },[loggedIn])
   const Mixture = () =>{
     return(
         <Mix.Navigator>
@@ -59,13 +55,18 @@ function App() {
            component={CreateAccount}
            options={{ title: "Create Account" }}
          />
+         <Mix.Screen
+           name="Loading page"
+           component={Loading}
+           options={{ header: ()=> null}}
+         />
 
         </Mix.Navigator>
     )
   }
   return (
     <NavigationContainer>
-    {user ? <BotTabs/> : <Mixture/>}
+    {loggedIn ? <BotTabs/> : <Mixture/>}
     
     </NavigationContainer>
 

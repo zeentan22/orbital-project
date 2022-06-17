@@ -4,14 +4,7 @@ import LottieView from "lottie-react-native";
 import { login, useAuth, logout,auth} from "../../firebase";
 
 export default Loading = ({navigation}) => {
-  const user = useAuth();
-  useEffect(()=>{
-    if (user) {
-      logout();
-    };
-    navigation.navigate("Login Stack");
 
-  },[])
   return(
     <View style = {styles.body}>
         <Image

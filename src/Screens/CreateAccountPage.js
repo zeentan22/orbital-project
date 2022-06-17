@@ -53,7 +53,8 @@ export default function CreateAccount({ navigation }) {
   //   const passwordRef = useRef();
 
   async function handleSignup() {
-    setLoading(true);
+    navigation.navigate("Loading page");
+    setTimeout(async ()=>{
     try {
       console.log("hello");
       console.log(email);
@@ -75,8 +76,7 @@ export default function CreateAccount({ navigation }) {
     } catch (err) {
       alert("Error!");
       console.log(err);
-    }
-    setLoading(false);
+    }},1000)
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

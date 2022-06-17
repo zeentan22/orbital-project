@@ -42,13 +42,15 @@ export default function Login({ navigation }) {
   };
 
   async function handleLogin() {
+    navigation.navigate("Loading page");
+    setTimeout(async ()=>{
     try {
       await login(email, password);
       console.log("logged in!");
       alert("Welcome back!");
     } catch {
       alert("Error!");
-    }
+    }},2000)
   };
   return (
 

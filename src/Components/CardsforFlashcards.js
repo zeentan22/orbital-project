@@ -1,19 +1,47 @@
 import { Card,Title, Subheading } from "react-native-paper";
 import React, {component, useState, useEffect} from "react";
-import {View, Image,Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, FlatList} from "react-native";
+import {View, Image,Text, StyleSheet, Pressable, TouchableWithoutFeedback, TouchableOpacity, FlatList} from "react-native";
 import ProceedButton from "./ProceedButton";
 
 export default FlipCard = (p) =>{
+    const [bcolor,setBColor] = useState("#dcdcdc")
+    const [display,setDisplay] = useState()
+    useEffect(()=>{
+        setDisplay(p.test);
+        if (bcolor != "#dcdcdc"){
+        setBColor(p.bcolor);
+        }},[p.test])
+    const [c1,setC1] = useState("red");
+    const [c2,setC2] = useState("#32cd32");
+    const changeColor = (a) => {
+        if (a == c1) {
+        setC1("#dcdcdc")
+        setTimeout(()=>{
+            setC1("red")
+        },150)}
+        else{setC2("#dcdcdc")
+        setTimeout(()=>{
+            setC2("#32cd32")
+        },150)}
+    }
     return(
-        <Card style = {styles.card}>
+        <Card style = {[styles.card,{borderColor: bcolor}]}>
             <Card.Content style = {{alignItems:"center",justifyContent:"center"}}>
                 <View style = {{flexDirection:"row",alignItems:"center", justifyContent:"center",marginBottom:30}}>
-                <Image source = {{uri:p.image}} style ={{height: 45,width: 45, marginRight:34,justifyContent:"center"}}></Image>
+                <Image resizeMode="contain" source = {{uri:p.image}} style ={{height: 45,width: 45, marginRight:34,justifyContent:"center"}}></Image>
                 <Title style = {{alignSelf:"center",marginRight:76}}>{p.heading}</Title>
                 </View>
                 <Subheading style = {{alignSelf:"center"}}>{p.title}</Subheading>
-                <View style = {{flex:1,justifyContent:"flex-end"}}>
-                    <Text style = {{fontSize:20}}>{p.pageNum}</Text>
+                <View style = {{flex:1,justifyContent: "center",alignItems: "flex-end", alignSelf:"center",flexDirection:"row"}}>
+                    {display && (<Pressable style = {{marginRight:50}}
+                    onPress={()=> {[changeColor(c1),setBColor("red"),setDisplay(false)]}}>
+                        <Image tintColor = {c1} style = {styles.image} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/linear-icon-44/wrong-21.png"}}/>
+                    </Pressable>)}
+                    <Text style = {{fontSize:18}}>{p.pageNum}</Text>
+                    {display && (<Pressable style = {({pressed})=> [{marginLeft:50}]}
+                    onPress={()=> {[changeColor(c2),setBColor("#32cd32"),setDisplay(false),p.onPress2()]}}>
+                        <Image  tintColor = {c2} style = {styles.image} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/szj/correct-40.png"}}/>
+                    </Pressable>)}
                 </View>
             </Card.Content>
 
@@ -27,6 +55,7 @@ const styles = StyleSheet.create({
     card:{
         width:"100%",
         height:"100%",
+        borderWidth:2,
         borderRadius:16,
         shadowColor: "#000",
         shadowOffset:{
@@ -39,6 +68,11 @@ const styles = StyleSheet.create({
         alignItems:"center",
         justifyContent:"center"
     },
+    image:{
+        height: 55,
+        width: 55,
+        resizeMode:"cover",
+      },
 
 
 

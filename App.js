@@ -32,44 +32,41 @@ import { createStackNavigator, Header } from "@react-navigation/stack";
 import CreateAccount from "./src/Screens/CreateAccountPage";
 // import Screenc from "./src/Screens/Screen_C";
 import "react-native-gesture-handler";
-import {BotTabs} from "./src/Navigation/tabs";
-import Login from "./src/Screens/LoginPage"
-import {useAuth,auth} from "../orbital-project/firebase";
-import Loading from "./src/Screens/Loading"
+import { BotTabs } from "./src/Navigation/tabs";
+import Login from "./src/Screens/LoginPage";
+import { useAuth, auth } from "./firebase";
+import Loading from "./src/Screens/Loading";
 const Wholelogin = createStackNavigator();
-const Mix = createStackNavigator()
+const Mix = createStackNavigator();
 
 function App() {
-  const loggedIn = useAuth()
-  const Mixture = () =>{
-    return(
-        <Mix.Navigator>
-          <Mix.Screen
-           name="Login Page"
-           component={Login}
-           options={{ title: "Login" }}
-         />
+  const loggedIn = useAuth();
+  const Mixture = () => {
+    return (
+      <Mix.Navigator>
+        <Mix.Screen
+          name="Login Page"
+          component={Login}
+          options={{ title: "Login" }}
+        />
 
-          <Mix.Screen
-           name="Createpage"
-           component={CreateAccount}
-           options={{ title: "Create Account" }}
-         />
-         <Mix.Screen
-           name="Loading page"
-           component={Loading}
-           options={{ header: ()=> null}}
-         />
-
-        </Mix.Navigator>
-    )
-  }
+        <Mix.Screen
+          name="Createpage"
+          component={CreateAccount}
+          options={{ title: "Create Account" }}
+        />
+        <Mix.Screen
+          name="Loading page"
+          component={Loading}
+          options={{ header: () => null }}
+        />
+      </Mix.Navigator>
+    );
+  };
   return (
     <NavigationContainer>
-    {loggedIn ? <BotTabs/> : <Mixture/>}
-    
+      {loggedIn ? <BotTabs /> : <Mixture />}
     </NavigationContainer>
-
   );
 }
 

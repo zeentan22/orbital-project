@@ -115,7 +115,6 @@ const SetCalendar = ({ navigation }) => {
     console.log("effect run 2");
     let result = {};
     let unmodifiedResult = [];
-    if (user) {
     return onSnapshot( 
       doc(dbInit, "users", getAuth().currentUser.uid),
       (doc) => {
@@ -133,7 +132,7 @@ const SetCalendar = ({ navigation }) => {
         setUnmodifiedItems(unmodifiedResult);
       }
     );
-  }}, [updateItem]);
+  }, [updateItem]);
 
   const convertTime = (time) => {
     const hours = Math.floor(time / 60);

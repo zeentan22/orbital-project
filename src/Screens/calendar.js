@@ -67,6 +67,9 @@ const SetCalendar = ({ navigation }) => {
     setDate(selectedDate);
     setDateFormat(convertDate(selectedDate));
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
+    if (os === false && chooseDate === true) {
+      setChooseDate(false);
+    }
   };
 
   const onChangeTime = (event, selectedTime) => {
@@ -76,6 +79,9 @@ const SetCalendar = ({ navigation }) => {
     const minutes = time.split(":")[1];
     setDate(selectedTime);
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
+    if (os === false && chooseTime === true) {
+      setChooseTime(false);
+    }
   };
 
   const handleUpdate = async (oldData, obj, docRef) => {
@@ -249,20 +255,26 @@ const SetCalendar = ({ navigation }) => {
         </Modal>
       );
     } else {
-      <DateTimePicker
-        isVisible={true}
-        testID="dateTimePicker"
-        value={date}
-        mode={"date"}
-        display="default"
-        is24Hour={true}
-        onChange={onChange}
-        style={{ width: 200, marginRight: 70 }}
-      />;
+      if (chooseDate) {
+        return (
+          <DateTimePicker
+            // isVisible={chooseDate}
+            testID="dateTimePicker"
+            value={date}
+            mode={"date"}
+            display="default"
+            is24Hour={true}
+            onChange={onChange}
+            style={{ width: 200, marginRight: 70 }}
+          />
+        );
+      }
     }
   };
 
   const renderIOSOrAndroidTimePicker = () => {
+    console.log(os);
+    console.log(chooseTime);
     if (os) {
       return (
         <Modal visible={chooseTime} animationType="fade">
@@ -291,15 +303,19 @@ const SetCalendar = ({ navigation }) => {
         </Modal>
       );
     } else {
-      <DateTimePicker
-        isVisible={true}
-        testID="dateTimePicker"
-        value={date}
-        mode={"time"}
-        display="default"
-        is24Hour={true}
-        onChange={onChangeTime}
-      />;
+      if (chooseTime) {
+        return (
+          <DateTimePicker
+            isVisible={chooseTime}
+            testID="dateTimePicker"
+            value={date}
+            mode={"time"}
+            display="default"
+            is24Hour={chooseDate}
+            onChange={onChangeTime}
+          />
+        );
+      }
     }
   };
 

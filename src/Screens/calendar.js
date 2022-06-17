@@ -11,6 +11,7 @@ import {
   Pressable,
   TextInput,
   Animated,
+  Platform,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import {
@@ -25,6 +26,9 @@ import { Card, Avatar } from "react-native-paper";
 import { dbInit,useAuth } from "../../firebase";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Swipeable } from "react-native-gesture-handler";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { SafeAreaView } from "react-native-safe-area-context";
 const SetCalendar = ({ navigation }) => {
   const user = useAuth()
   const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null
@@ -37,6 +41,9 @@ const SetCalendar = ({ navigation }) => {
   const [visible, setVisibility] = useState(false);
   const [itemFocus, setItemFocus] = useState({});
   const [updateItem, setupdateItem] = useState(false);
+  const [chooseDate, setChooseDate] = useState(false);
+  const [chooseTime, setChooseTime] = useState(false);
+  const [os, setOS] = useState(true);
 
   const convertDate = (date) => {
     const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
@@ -62,6 +69,9 @@ const SetCalendar = ({ navigation }) => {
     setDate(selectedDate);
     setDateFormat(convertDate(selectedDate));
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
+    if (os === false && chooseDate === true) {
+      setChooseDate(false);
+    }
   };
 
   const onChangeTime = (event, selectedTime) => {
@@ -72,7 +82,9 @@ const SetCalendar = ({ navigation }) => {
     const minutes = time.split(":")[1];
     setDate(selectedTime);
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
-    
+    if (os === false && chooseTime === true) {
+      setChooseTime(false);
+    }
   };
 
   const handleUpdate = async (oldData, obj, docRef) => {
@@ -99,6 +111,7 @@ const SetCalendar = ({ navigation }) => {
   };
 
   useEffect(() => {
+    setOS(Platform.OS === "ios");
     console.log("effect run 2");
     let result = {};
     let unmodifiedResult = [];
@@ -217,6 +230,99 @@ const SetCalendar = ({ navigation }) => {
     );
   };
 
+  const renderIOSOrAndroidDatePicker = () => {
+    if (os) {
+      return (
+        <Modal visible={chooseDate} animationType="fade">
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              onPress={() => setChooseDate(false)}
+              style={{ alignSelf: "flex-end" }}
+            >
+              <Image
+                source={require("../../assets/cross.png")}
+                style={styles.modalClose}
+              />
+            </TouchableOpacity>
+
+            <DateTimePicker
+              isVisible={true}
+              testID="dateTimePicker"
+              value={date}
+              mode={"date"}
+              display="default"
+              is24Hour={true}
+              onChange={onChange}
+              style={{ width: 200, marginRight: 70 }}
+            />
+          </View>
+        </Modal>
+      );
+    } else {
+      if (chooseDate) {
+        return (
+          <DateTimePicker
+            // isVisible={chooseDate}
+            testID="dateTimePicker"
+            value={date}
+            mode={"date"}
+            display="default"
+            is24Hour={true}
+            onChange={onChange}
+            style={{ width: 200, marginRight: 70 }}
+          />
+        );
+      }
+    }
+  };
+
+  const renderIOSOrAndroidTimePicker = () => {
+    console.log(os);
+    console.log(chooseTime);
+    if (os) {
+      return (
+        <Modal visible={chooseTime} animationType="fade">
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              onPress={() => setChooseTime(false)}
+              style={{ alignSelf: "flex-end" }}
+            >
+              <Image
+                source={require("../../assets/cross.png")}
+                style={styles.modalClose}
+              />
+            </TouchableOpacity>
+
+            <DateTimePicker
+              isVisible={true}
+              testID="dateTimePicker"
+              value={date}
+              mode={"time"}
+              display="default"
+              is24Hour={true}
+              onChange={onChangeTime}
+              style={{ width: 200, marginRight: 70 }}
+            />
+          </View>
+        </Modal>
+      );
+    } else {
+      if (chooseTime) {
+        return (
+          <DateTimePicker
+            isVisible={chooseTime}
+            testID="dateTimePicker"
+            value={date}
+            mode={"time"}
+            display="default"
+            is24Hour={chooseDate}
+            onChange={onChangeTime}
+          />
+        );
+      }
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Modal visible={modalOpen} animationType="slide">
@@ -230,6 +336,7 @@ const SetCalendar = ({ navigation }) => {
               style={styles.modalClose}
             />
           </TouchableOpacity>
+
           <View
             style={{
               display: "flex",
@@ -242,27 +349,28 @@ const SetCalendar = ({ navigation }) => {
               borderWidth: 2,
             }}
           >
-             (<DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode={"date"}
-              display="default"
-              is24Hour={true}
-              onChange={onChange}
-              // style={{ width: 200, marginRight: 70 }}  
-            />)
+            <TouchableOpacity
+              style={{ borderRadius: 20, borderWidth: 2 }}
+              onPress={() => setChooseDate(true)}
+            >
+              <Text> Pick a date </Text>
+            </TouchableOpacity>
+            {renderIOSOrAndroidDatePicker()}
+            <Text style={{ marginTop: 25, marginBottom: 25 }}>
+              Date Chosen: {dateFormat}
+            </Text>
 
-            <Text> </Text>
+            <TouchableOpacity
+              style={{ borderRadius: 20, borderWidth: 2 }}
+              onPress={() => setChooseTime(true)}
+            >
+              <Text> Pick a Time </Text>
+            </TouchableOpacity>
+            {renderIOSOrAndroidTimePicker()}
 
-            (<DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode={"time"}
-              display="default"
-              is24Hour={true}
-              style={{ width: 200, margnRight: 70 }}
-              onChange={onChangeTime}
-            />)
+            <Text style={{ marginTop: 25, marginBottom: 25 }}>
+              Time Chosen: {convertTime(startTime)}
+            </Text>
 
             <TextInput
               style={styles.input}
@@ -272,7 +380,6 @@ const SetCalendar = ({ navigation }) => {
                 console.log(task);
               }}
             />
-
             <TouchableOpacity
               style={{ borderColor: "black", borderWidth: 2, borderRadius: 5 }}
               onPress={() => {

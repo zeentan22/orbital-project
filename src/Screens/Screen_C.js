@@ -108,6 +108,7 @@ export function Screenc({ navigation }) {
     return onSnapshot(
       doc(dbInit, "users", getAuth()?.currentUser.uid),
       (doc) => {
+        console.log("onSnapshot");
         getData(convertDate(date));
       }
     );

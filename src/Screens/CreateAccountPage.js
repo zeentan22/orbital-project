@@ -34,6 +34,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MashButton from "../Components/CustomButton";
+// import { registerIndieID } from "native-notify";
+// import axios from "axios";
 
 export default function CreateAccount({ navigation }) {
   const [email, setEmail] = useState("");
@@ -62,6 +64,23 @@ export default function CreateAccount({ navigation }) {
         try {
           alert(`Welcome to the app, ${last_name}!`);
           const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
+          // await registerIndieID(
+          //   getAuth().currentUser.uid,
+          //   2943,
+          //   "BmROKxqlbzefNiBbzAbRXt"
+          // );
+
+          // axios
+          //   .post(`https://app.nativenotify.com/api/indie/notification`, {
+          //     subID: getAuth().currentUser.uid,
+          //     appId: 2943,
+          //     appToken: "BmROKxqlbzefNiBbzAbRXt",
+          //     title: "!Procastinate",
+          //     message: "Signed up!",
+          //     dateSent: "13-6-2022 8:30PM",
+          //   })
+          //   .catch((e) => console.log(e));
+
           setDoc(wdoc, {
             firstname: first_name,
             lastname: last_name,

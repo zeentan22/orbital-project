@@ -26,6 +26,7 @@ import {
 } from "react-native-paper";
 import { logout, dbInit, useAuth, auth } from "../../firebase";
 import { getDoc, onSnapshot, doc } from "firebase/firestore";
+import Loading from "../Screens/Loading";
 
 const homeStackTab = createBottomTabNavigator();
 const homeDrawer = createDrawerNavigator();
@@ -33,7 +34,7 @@ const homeDrawer = createDrawerNavigator();
 export const BotTabs = () => {
   const HomeStacks = () => {
     return (
-      <homeStackTab.Navigator initialRouteName="Home Page" screenOptions={({route}) => ({ 
+      <homeStackTab.Navigator initialRouteName="Home" screenOptions={({route}) => ({ 
         tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarLabel: ({focused}) => {let textStyle;
@@ -41,7 +42,7 @@ export const BotTabs = () => {
         return <Text style = {textStyle}>{route.name}</Text> },
         tabBarActiveTintColor: "#32cd32",
         tabBarInactiveTintColor: "#555",
-        tabBarActiveBackgroundColor: "#fff",
+        tabBarActiveBackgroundColor: "#defafc",
         })}>
         
         <homeStackTab.Screen
@@ -59,7 +60,7 @@ export const BotTabs = () => {
           }}
         />
         <homeStackTab.Screen
-          name="Home Page"
+          name="Home"
           component={Screenc}
           options={{
             tabBarIcon: ({focused}) => (
@@ -81,21 +82,32 @@ export const BotTabs = () => {
                 style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
                 tintColor = {focused ? "#32cd32" : "black"}
               />
-            ),
+            )
           }
 
           }       
         />
+      
       </homeStackTab.Navigator>
   );
 };
 return(
-  <homeDrawer.Navigator drawerStatusBarAnimation = "slide" DrawerActions = "closeDrawer()"   swipeEnabled = {true} drawerContent={(props) => <DrawerContent {...props}/>}>
+  <homeDrawer.Navigator drawerStatusBarAnimation = "slide" DrawerActions = "closeDrawer"   swipeEnabled = {true} drawerContent={(props) => <DrawerContent {...props}/>}>
     <homeDrawer.Screen
-    name = "Home"
+    name = "Home Page"
     component={HomeStacks}
     options={{title:false,}}
     />
+    <homeStackTab.Screen
+        name = "loading"
+        component={Loading}
+        options={{
+          drawerLockMode: "locked-closed",
+          tabBarButton: () => null,
+          tabBarVisible: false,
+          header:()=>null,
+          swipeEnabled: false,
+        }}/>
   </homeDrawer.Navigator>
 
 )}
@@ -126,13 +138,20 @@ export function DrawerContent (props) {
             </View>
           </View>
           <Drawer.Section style={{flex:1, marginTop:40, marginLeft : 10}}>
-            <DrawerItem label = "Home" onPress={()=> [props.navigation.closeDrawer(),props.navigation.navigate("Home Page")]}></DrawerItem>
+            <DrawerItem label = "Home" onPress={()=> {props.navigation.closeDrawer(),props.navigation.navigate("Home")}}></DrawerItem>
           </Drawer.Section>
           <Drawer.Section style={{flex:1, marginLeft : 10}}>
-            <DrawerItem label = "Sign Out" onPress = {async () =>
+            <DrawerItem label = "Sign Out" onPress = {() =>{
+            props.navigation.navigate("loading");
+            setTimeout(async()=>{
             await logout()
             .then(()=>{alert("logged out");})
-            .catch(error=>alert(error.message))}></DrawerItem>
+            .catch(error=>alert(error.message))},1500)}}
+            
+            
+            
+            
+            ></DrawerItem>
 
   
   

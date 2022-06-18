@@ -7,10 +7,10 @@ const ProceedButton = (p) => {
         onPress={p.onPress}
         hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }}
         style={({ pressed }) => [
-          { backgroundColor: pressed ? "#b0c4de" : "#32cd32"},
+          { backgroundColor: pressed ? "#b0c4de" : "#4169e1"},
           styles.button,
-          {borderRadius:8, borderWidth:1},
-          {borderBottomWidth: pressed ? 1 : 4},
+          {borderRadius:8},
+          {borderBottomWidth: pressed ? 0 : 4},
           { disabled: pressed ? true : false },
           { ...p.style },
         ]}
@@ -36,6 +36,7 @@ const ProceedButton = (p) => {
       justifyContent: "center",
       margin: 10,
       borderRadius: 3,
+      borderColor:"#c8d2e3",
     },
   });
   export default ProceedButton;

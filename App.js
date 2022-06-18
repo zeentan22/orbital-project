@@ -34,7 +34,7 @@ import CreateAccount from "./src/Screens/CreateAccountPage";
 import "react-native-gesture-handler";
 import {BotTabs} from "./src/Navigation/tabs";
 import Login from "./src/Screens/LoginPage"
-import {useAuth,auth} from "../orbital-project/firebase";
+import {useAuth,auth} from "./firebase";
 import Loading from "./src/Screens/Loading"
 const Wholelogin = createStackNavigator();
 const Mix = createStackNavigator()

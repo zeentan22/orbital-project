@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
       justifyContent:"center",
       alignItems:"center",
       justifyContent:"flex-end",
-      marginTop:200,
+      marginTop:180,
+      alignSelf: "flex-end"
       
     }
   });

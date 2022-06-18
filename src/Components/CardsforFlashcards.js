@@ -35,12 +35,12 @@ export default FlipCard = (p) =>{
                 <View style = {{flex:1,justifyContent: "center",alignItems: "flex-end", alignSelf:"center",flexDirection:"row"}}>
                     {display && (<Pressable style = {{marginRight:50}}
                     onPress={()=> {[changeColor(c1),setBColor("red"),setDisplay(false)]}}>
-                        <Image tintColor = {c1} style = {styles.image} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/linear-icon-44/wrong-21.png"}}/>
+                        <Image style = {[styles.image,{tintColor : `${c1}`}]} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/linear-icon-44/wrong-21.png"}}/>
                     </Pressable>)}
                     <Text style = {{fontSize:18}}>{p.pageNum}</Text>
                     {display && (<Pressable style = {({pressed})=> [{marginLeft:50}]}
                     onPress={()=> {[changeColor(c2),setBColor("#32cd32"),setDisplay(false),p.onPress2()]}}>
-                        <Image  tintColor = {c2} style = {styles.image} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/szj/correct-40.png"}}/>
+                        <Image  style = {[styles.image,{tintColor : `${c2}`}]} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/szj/correct-40.png"}}/>
                     </Pressable>)}
                 </View>
             </Card.Content>
@@ -60,11 +60,11 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOffset:{
             width:0,
-            height:0
+            height:2
         },
         shadowOpacity:1,
         shadowRadius:16,
-        elevation:10,
+        elevation:8,
         alignItems:"center",
         justifyContent:"center"
     },

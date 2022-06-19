@@ -119,7 +119,7 @@ const SetCalendar = ({ navigation }) => {
       updatedTasks.sort((a, b) => {
         return parseInt(a.startTime) - parseInt(b.startTime);
       });
-      let newObj = { date: dateFormat, tasks: updatedTasks };
+      let newObj = { date: obj.date, tasks: updatedTasks };
       await updateDoc(docRef, { tasks: arrayUnion(newObj) });
       alert("added task successfully");
     }

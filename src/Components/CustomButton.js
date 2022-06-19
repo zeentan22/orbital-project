@@ -28,13 +28,13 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
   },
   button: {
-    width: 120,
-    height: 30,
+    width: 200,
+    height: 45,
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     margin: 10,
-    borderRadius: 3,
+    borderRadius: 10,
   },
 });
 export default MashButton;

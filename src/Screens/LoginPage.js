@@ -50,7 +50,8 @@ export default function Login({ navigation }) {
       alert("Welcome back!");
     } catch {
       alert("Error!");
-    }},2000)
+      navigation.navigate("Login Page")
+    }},1800)
   };
   return (
 

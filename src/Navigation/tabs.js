@@ -26,6 +26,7 @@ import {
 } from "react-native-paper";
 import { logout, dbInit, useAuth, auth } from "../../firebase";
 import { getDoc, onSnapshot, doc } from "firebase/firestore";
+import Loading from "../Screens/Loading";
 
 const homeStackTab = createBottomTabNavigator();
 const homeDrawer = createDrawerNavigator();
@@ -78,7 +79,7 @@ export const BotTabs = () => {
           }}
         />
         <homeStackTab.Screen
-          name="Home Page"
+          name="Home"
           component={Screenc}
           options={{
             tabBarIcon: ({ focused }) => (
@@ -111,24 +112,30 @@ export const BotTabs = () => {
             ),
           }}
         />
+      
       </homeStackTab.Navigator>
     );
   };
-  return (
-    <homeDrawer.Navigator
-      drawerStatusBarAnimation="slide"
-      DrawerActions="closeDrawer()"
-      swipeEnabled={true}
-      drawerContent={(props) => <DrawerContent {...props} />}
-    >
-      <homeDrawer.Screen
-        name="Home"
-        component={HomeStacks}
-        options={{ title: false }}
-      />
-    </homeDrawer.Navigator>
-  );
-};
+return(
+  <homeDrawer.Navigator drawerStatusBarAnimation = "slide" DrawerActions = "closeDrawer"   swipeEnabled = {true} drawerContent={(props) => <DrawerContent {...props}/>}>
+    <homeDrawer.Screen
+    name = "Home Page"
+    component={HomeStacks}
+    options={{title:false,}}
+    />
+    <homeStackTab.Screen
+        name = "loading"
+        component={Loading}
+        options={{
+          drawerLockMode: "locked-closed",
+          tabBarButton: () => null,
+          tabBarVisible: false,
+          header:()=>null,
+          swipeEnabled: false,
+        }}/>
+  </homeDrawer.Navigator>
+
+);}
 
 export function DrawerContent(props) {
   const user = useAuth();
@@ -187,7 +194,7 @@ export function DrawerContent(props) {
       </DrawerContentScrollView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   text: {

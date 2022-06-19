@@ -1,7 +1,10 @@
 import React, { userState, useState, useEffect, useRef,useCallback } from "react";
 import { logout, dbInit, useAuth } from "../../firebase";
 import { getAuth } from "firebase/auth";
-import { getDoc, onSnapshot, doc } from "firebase/firestore";
+import { getDoc, onSnapshot, doc ,updateDoc,
+  arrayUnion,
+  arrayRemove, } from "firebase/firestore";
+
 import {
   StyleSheet,
   Text,
@@ -21,12 +24,14 @@ import {
   TouchableRipple,
   Switch,
 } from "react-native-paper";
+import NotiFlipCard from "../Components/CardsforNoti"
 const {width, height} = Dimensions.get("screen")
 const cW = width * 0.7
 const cH = cW * 1.54
 
 
 export function Screenc({ navigation }) {
+  const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null
   const user = useAuth()
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([]);
@@ -77,7 +82,6 @@ export function Screenc({ navigation }) {
 
   const getData = async (date) => {
     let result = [];
-    if (user) {
     const docRef = doc(dbInit, "users", getAuth()?.currentUser.uid);
     const docSnap = await getDoc(docRef);
     const allData = docSnap.data().tasks;
@@ -91,7 +95,7 @@ export function Screenc({ navigation }) {
       console.log(result);
       setItems(result);
     }
-  ;}else{}}
+  ;}
 
   const convertDate = (date) => {
     const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
@@ -101,35 +105,47 @@ export function Screenc({ navigation }) {
     }-${extraDayFormat}${date.getDate()}`;
   };
 
+  const updateData = async (item,index) => {
+    item.done = true;
+    console.log(item);
+    await updateDoc(docRef, )
+
+  };
+
   useEffect(() => {
     let result = {};
     const todayTasks = getData(convertDate(date));
-    if (user) {
     return onSnapshot(
       doc(dbInit, "users", getAuth()?.currentUser.uid),
       (doc) => {
         console.log("onSnapshot");
         getData(convertDate(date));
       }
-    );
-  }else{null}}, [user]);
+    );}, []);
 
   const keyExtractor=(item,index)=> index.toString()
   const renderItem = useCallback(({item,index})=>(
     <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{[handleFlip()]}}>  
           <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
-          <FlipCard
+          <NotiFlipCard
           heading = {`Task ${index + 1}`}
-          image = {null}
+          button = {false}
+          image = "https://icons.veryicon.com/png/o/business/erp-system-background-icon/task-6.png"
+          imagedone = {item.done ? "https://icons.veryicon.com/png/o/business/intranet-portal/already-done-1.png" : "https://icons.veryicon.com/png/o/system/system-icon-line/order-incomplete.png"}
+          tC = {item.done? "#32cd32" : "red"}
           title = {item.name}
+          btitle = {null}
           pageNum = {`${index + 1}/${items.length}`}/>
 
           </Animated.View>
         
         <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
-          <FlipCard
-          heading = "Done"
-          image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
+          <NotiFlipCard
+          heading = "Mark As:"
+          onPress = {()=>updateData(item)}
+          button = {true}
+          image = "https://icons.veryicon.com/png/o/miscellaneous/core-music/task-42.png"
+          btitle = "Completed"
           title = {item.done}
           pageNum = {`${index + 1}/${items.length}`}/>
         </Animated.View>
@@ -194,6 +210,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: "bold",
     fontSize: 20,
+    alignSelf:"center"
   },
 
   noTasks: {

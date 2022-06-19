@@ -18,6 +18,7 @@ import  { color } from "react-native-reanimated";
 import CustomTabHeading from "../Components/CustomTabHeading";
 import DropDown from "../Components/DropDown";
 import { render } from "react-dom";
+import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
 const FlashCardStack = createStackNavigator();
 const {width, height} = Dimensions.get("screen")
 const cW = width * 0.7
@@ -245,16 +246,28 @@ const TopicList = ({navigation, route}) => {
     ); }
 
   const DisplayCards = ({navigation,route}) =>{
+    const [attempted,setAttempted] = useState("-") 
+    const cList = useRef([])
+    const wList = useRef([])
+    const [appear,setAppear] = useState(false)
     const totCount = useRef(0)
     const [sco,setSco] = useState("-");
     const totalsco = useRef("-");
+    const [s,setS] = useState("-");
+    const totals = useRef("-");
     const [test,setTest] = useState(true);
     const tracking = () =>{
+      setAppear(true);
       console.log("h",test);
       if (test){
+        setAppear(false);
+        cList.current = [];
+        wList.current = [];
         setSco(0);
+        setAttempted(0);
         totalsco.current = totCount.current;
-      }else{ setSco("-");totalsco.current = "-"}
+      }else{ setAppear(true); setS(sco); totals.current = totalsco.current;setSco("-");totalsco.current = "-";cList.current = [];
+      wList.current = [];setAttempted("-")}
   
 
 
@@ -269,6 +282,19 @@ const TopicList = ({navigation, route}) => {
       setSelectedItem(viewableItems[0].index);
     },[selectedItem]);
 
+    const selectC = (a,b,c) =>{
+      if (a.current.includes(c)) {
+        return(
+        "red")
+      }
+      else if (b.current.includes(c)){return(
+        "#32cd32")
+      }
+      else{
+        return(
+        "#dcdcdc")
+      }
+    }
     const flipback = useCallback((f,g)=>{
       if (f){
         g();
@@ -303,7 +329,7 @@ const TopicList = ({navigation, route}) => {
             <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
             <FlipCard
             test = {false}
-            bcolor= "#dcdcdc"
+            bc = {selectC(wList,cList,index)}
             heading = "Question"
             image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/ask-q.png"
             title = {item.Ques}
@@ -314,7 +340,8 @@ const TopicList = ({navigation, route}) => {
           <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
             <FlipCard
             test = {!test}
-            onPress2 = {()=>{setSco(sco + 1)}}
+            onPress1 = {()=>{wList.current.push(index);setAttempted(attempted + 1)}}
+            onPress2 = {()=>{setSco(sco + 1);cList.current.push(index);setAttempted(attempted + 1)}}
             bcolor= "#dcdcdc"
             heading = "Answer"
             image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
@@ -345,8 +372,33 @@ const TopicList = ({navigation, route}) => {
       setTList(dList);totCount.current = dList.length})}else{}},[])
     return(
     <View style={[styles.flashCardBody,{backgroundColor:"#f5f5dc"}]}>
+      <Modal
+      visible = {appear}
+      transparent = {true}
+      onRequestClose={()=> setAppear(false)}>
+        <View style = {styles.modalOver}>
+        <View style = {styles.modalStyle}>
+          <View style = {{flexDirection:"row",justifyContent:"space-evenly",borderBottomWidth:2,height:50,alignItems:"center",backgroundColor:"#fcfa7c",borderTopLeftRadius:10,borderTopRightRadius:10}}>
+            <Image source = {{uri:"https://icons.veryicon.com/png/o/construction-tools/function-icon-6/performance-management-8.png"}}style = {styles.iconimage}></Image>
+            <Text style = {styles.text}>Results</Text>
+            <Text style = {styles.text}>      </Text>
+          </View>
+          <View style = {{justifyContent:"center",alignItems:"center",height:205,backgroundColor:"#d5f5f3"}}>
+          <Text style = {styles.text}>You Have Scored : </Text>
+          <Text style = {[styles.text,{marginTop:40}]}>{s}/{totals.current}</Text>
+          </View>
+          <Pressable onPress ={()=> setAppear(false)}  style = {{alignSelf:"center",justifyContent:"center",height:45,backgroundColor:"#ebd7cc",width:300,borderBottomLeftRadius:10,borderBottomRightRadius:10}}>
+            <Text style = {styles.text}>Ok</Text>
+          </Pressable>
+        </View>
+        </View>
+
+
+      </Modal>
       <View style = {{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+      <Text style = {{fontSize:15}}>Attempted: {attempted}/{totalsco.current}</Text>
       <MashButton
+      style = {{width: 150}}
       title = {test ? "Start Scoring" : "Stop Scoring" }
       onPress={()=>{setTest(!test);tracking()}}
       />
@@ -492,4 +544,18 @@ const styles = StyleSheet.create({
     position:"absolute",
     top: 0
   },
+  modalOver:{
+    flex:1,
+    alignItems:"center",
+    justifyContent:"center",
+    backgroundColor:"#00000099",
+
+  },
+  modalStyle:{
+    borderRadius:10,
+    height:300,
+    width:300,
+    backgroundColor:"#ffffff",
+  },
+
 });

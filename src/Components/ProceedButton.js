@@ -10,7 +10,7 @@ const ProceedButton = (p) => {
           { backgroundColor: pressed ? "#b0c4de" : "#4169e1"},
           styles.button,
           {borderRadius:8},
-          {borderBottomWidth: pressed ? 0 : 4},
+          {borderBottomWidth: pressed ? 0 : 4, borderWidth:0.1},
           { disabled: pressed ? true : false },
           { ...p.style },
         ]}

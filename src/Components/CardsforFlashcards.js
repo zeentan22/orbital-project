@@ -25,7 +25,7 @@ export default FlipCard = (p) =>{
         },150)}
     }
     return(
-        <Card style = {[styles.card,{borderColor: bcolor}]}>
+        <Card style = {[styles.card,{borderColor: (p.heading == "Answer") ? bcolor : p.bc}]}>
             <Card.Content style = {{alignItems:"center",justifyContent:"center"}}>
                 <View style = {{flexDirection:"row",alignItems:"center", justifyContent:"center",marginBottom:30}}>
                 <Image resizeMode="contain" source = {{uri:p.image}} style ={{height: 45,width: 45, marginRight:34,justifyContent:"center"}}></Image>
@@ -34,7 +34,7 @@ export default FlipCard = (p) =>{
                 <Subheading style = {{alignSelf:"center"}}>{p.title}</Subheading>
                 <View style = {{flex:1,justifyContent: "center",alignItems: "flex-end", alignSelf:"center",flexDirection:"row"}}>
                     {display && (<Pressable style = {{marginRight:50}}
-                    onPress={()=> {[changeColor(c1),setBColor("red"),setDisplay(false)]}}>
+                    onPress={()=> {[changeColor(c1),setBColor("red"),setDisplay(false),p.onPress1()]}}>
                         <Image style = {[styles.image,{tintColor : `${c1}`}]} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/linear-icon-44/wrong-21.png"}}/>
                     </Pressable>)}
                     <Text style = {{fontSize:18}}>{p.pageNum}</Text>

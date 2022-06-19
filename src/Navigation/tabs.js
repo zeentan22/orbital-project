@@ -34,28 +34,47 @@ const homeDrawer = createDrawerNavigator();
 export const BotTabs = () => {
   const HomeStacks = () => {
     return (
-      <homeStackTab.Navigator initialRouteName="Home" screenOptions={({route}) => ({ 
-        tabBarHideOnKeyboard: true,
-        headerShown: false,
-        tabBarLabel: ({focused}) => {let textStyle;
-        textStyle = focused? { fontSize: 14, paddingBottom: 2, fontWeight: "bold", color: "#32cd32"} : { fontSize: 11, paddingBottom: 2, fontWeight: "normal", color: "black"};
-        return <Text style = {textStyle}>{route.name}</Text> },
-        tabBarActiveTintColor: "#32cd32",
-        tabBarInactiveTintColor: "#555",
-        tabBarActiveBackgroundColor: "#defafc",
-        })}>
-        
+      <homeStackTab.Navigator
+        initialRouteName="Home Page"
+        screenOptions={({ route }) => ({
+          tabBarHideOnKeyboard: true,
+          headerShown: false,
+          tabBarLabel: ({ focused }) => {
+            let textStyle;
+            textStyle = focused
+              ? {
+                  fontSize: 14,
+                  paddingBottom: 2,
+                  fontWeight: "bold",
+                  color: "#32cd32",
+                }
+              : {
+                  fontSize: 11,
+                  paddingBottom: 2,
+                  fontWeight: "normal",
+                  color: "black",
+                };
+            return <Text style={textStyle}>{route.name}</Text>;
+          },
+          tabBarActiveTintColor: "#32cd32",
+          tabBarInactiveTintColor: "#555",
+          tabBarActiveBackgroundColor: "#fff",
+        })}
+      >
         <homeStackTab.Screen
           name="Set Schedule"
           component={Schedule}
           options={{
-            tabBarIcon: ({focused}) => (
+            tabBarIcon: ({ focused }) => (
               <Image
                 source={require("../../assets/schedule.png")}
-                style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
-                tintColor = {focused ? "#32cd32" : "black"}
+                style={{
+                  width: focused ? 27 : 20,
+                  height: focused ? 27 : 20,
+                  marginTop: 3,
+                }}
+                tintColor={focused ? "#32cd32" : "black"}
               />
-              
             ),
           }}
         />
@@ -63,11 +82,15 @@ export const BotTabs = () => {
           name="Home"
           component={Screenc}
           options={{
-            tabBarIcon: ({focused}) => (
+            tabBarIcon: ({ focused }) => (
               <Image
                 source={require("../../assets/home.png")}
-                style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
-                tintColor = {focused ? "#32cd32" : "black"}
+                style={{
+                  width: focused ? 27 : 20,
+                  height: focused ? 27 : 20,
+                  marginTop: 3,
+                }}
+                tintColor={focused ? "#32cd32" : "black"}
               />
             ),
           }}
@@ -76,21 +99,23 @@ export const BotTabs = () => {
           name="Flash Card"
           component={FlashCard}
           options={{
-            tabBarIcon: ({focused}) => (
+            tabBarIcon: ({ focused }) => (
               <Image
                 source={require("../../assets/flash-cards.png")}
-                style={{ width: focused ? 27 : 20, height: focused ? 27 : 20, marginTop: 3}}
-                tintColor = {focused ? "#32cd32" : "black"}
+                style={{
+                  width: focused ? 27 : 20,
+                  height: focused ? 27 : 20,
+                  marginTop: 3,
+                }}
+                tintColor={focused ? "#32cd32" : "black"}
               />
-            )
-          }
-
-          }       
+            ),
+          }}
         />
       
       </homeStackTab.Navigator>
-  );
-};
+    );
+  };
 return(
   <homeDrawer.Navigator drawerStatusBarAnimation = "slide" DrawerActions = "closeDrawer"   swipeEnabled = {true} drawerContent={(props) => <DrawerContent {...props}/>}>
     <homeDrawer.Screen
@@ -110,68 +135,77 @@ return(
         }}/>
   </homeDrawer.Navigator>
 
-)}
+);}
 
-
-export function DrawerContent (props) {
-  const user = useAuth()
+export function DrawerContent(props) {
+  const user = useAuth();
   const [username, setUserName] = useState("");
   const [trying, setTrying] = useState();
-  useEffect(()=>{
-  if (user){
-  const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
-  const dat = () => { 
-      onSnapshot(wdoc, (doc) => {
-      setUserName(doc.data().firstname);})};
-  dat()
-  }else{null}},[user])
-     return (
-      <View style ={{flex:1}}>
-        <DrawerContentScrollView {...props}>
-          <View style = {styles.body}>
-            <View style = {[styles.body, {alignItems: "flex-start", marginLeft: 10}]}>
-              <Avatar.Image
-              source = {{
-                uri: "https://www.kindpng.com/picc/m/21-214439_free-high-quality-person-icon-default-profile-picture.png"}}
-                size = {50}/>
-              <Text style = {styles.text}>Welcome, {username}</Text>
-            </View>
+  useEffect(() => {
+    if (user) {
+      const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
+      const dat = () => {
+        onSnapshot(wdoc, (doc) => {
+          setUserName(doc.data().firstname);
+        });
+      };
+      dat();
+    } else {
+      null;
+    }
+  }, [user]);
+  return (
+    <View style={{ flex: 1 }}>
+      <DrawerContentScrollView {...props}>
+        <View style={styles.body}>
+          <View
+            style={[styles.body, { alignItems: "flex-start", marginLeft: 10 }]}
+          >
+            <Avatar.Image
+              source={{
+                uri: "https://www.kindpng.com/picc/m/21-214439_free-high-quality-person-icon-default-profile-picture.png",
+              }}
+              size={50}
+            />
+            <Text style={styles.text}>Welcome, {username}</Text>
           </View>
-          <Drawer.Section style={{flex:1, marginTop:40, marginLeft : 10}}>
-            <DrawerItem label = "Home" onPress={()=> {props.navigation.closeDrawer(),props.navigation.navigate("Home")}}></DrawerItem>
-          </Drawer.Section>
-          <Drawer.Section style={{flex:1, marginLeft : 10}}>
-            <DrawerItem label = "Sign Out" onPress = {() =>{
-            props.navigation.navigate("loading");
-            setTimeout(async()=>{
-            await logout()
-            .then(()=>{alert("logged out");})
-            .catch(error=>alert(error.message))},1500)}}
-            
-            
-            
-            
-            ></DrawerItem>
+        </View>
+        <Drawer.Section style={{ flex: 1, marginTop: 40, marginLeft: 10 }}>
+          <DrawerItem
+            label="Home"
+            onPress={() => [
+              props.navigation.closeDrawer(),
+              props.navigation.navigate("Home Page"),
+            ]}
+          ></DrawerItem>
+        </Drawer.Section>
+        <Drawer.Section style={{ flex: 1, marginLeft: 10 }}>
+          <DrawerItem
+            label="Sign Out"
+            onPress={async () =>
+              await logout()
+                .then(() => {
+                  alert("logged out");
+                })
+                .catch((error) => alert(error.message))
+            }
+          ></DrawerItem>
+        </Drawer.Section>
+      </DrawerContentScrollView>
+    </View>
+  );
+};
 
-  
-  
-          </Drawer.Section>
-        
-        </DrawerContentScrollView>
-      </View>
-     )
-  }
-
-  const styles = StyleSheet.create({
-    text: {
-      fontSize: 15,
-      alignSelf: "center",
-      justifyContent: "center",
-      marginLeft: 20,
-    },
-    body: {
-      flex: 1,
-      flexDirection: "row",
-      alignItems: "center",
-    },
-  });
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 15,
+    alignSelf: "center",
+    justifyContent: "center",
+    marginLeft: 20,
+  },
+  body: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+});

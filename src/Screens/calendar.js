@@ -23,18 +23,23 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { Card, Avatar } from "react-native-paper";
-import { dbInit,useAuth } from "../../firebase";
+import { dbInit, useAuth } from "../../firebase";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Swipeable } from "react-native-gesture-handler";
+import DropDown from "../Components/DropDown";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DropDownAcadYr from "../Components/DropDownAcadYr";
+import { fetchDataFromNusMods, getExamDate } from "./utils";
+
 const SetCalendar = ({ navigation }) => {
-  const user = useAuth()
-  const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null
+  const user = useAuth();
+  const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null;
   const [items, setItems] = useState({});
   const [unmodfiedItems, setUnmodifiedItems] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [examModalOpen, setExamModalOpen] = useState(false);
   const [task, setTask] = useState("");
   const [date, setDate] = useState(new Date());
   const [startTime, setStartTime] = useState(0);
@@ -43,7 +48,21 @@ const SetCalendar = ({ navigation }) => {
   const [updateItem, setupdateItem] = useState(false);
   const [chooseDate, setChooseDate] = useState(false);
   const [chooseTime, setChooseTime] = useState(false);
+  const [semester, setSemester] = useState({ name: 1 });
+  const [acadYear, setAcadYear] = useState({ name: "2022-2023" });
+  const [moduleCode, setModuleCode] = useState("");
   const [os, setOS] = useState(true);
+
+  const tList = [
+    { name: "2022-2023" },
+    { name: "2021-2022" },
+    { name: "2020-2021" },
+  ];
+
+  const semList = [{ name: "1" }, { name: "2" }];
+  const onSelect = (item) => {
+    setAcadYear(item);
+  };
 
   const convertDate = (date) => {
     const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
@@ -60,7 +79,6 @@ const SetCalendar = ({ navigation }) => {
   }-${date.getDate()}`;
 
   const onChange = (event, selectedDate) => {
-    console.log("hifk")
     fDateTime = convertDate(selectedDate);
     let x = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
@@ -75,7 +93,6 @@ const SetCalendar = ({ navigation }) => {
   };
 
   const onChangeTime = (event, selectedTime) => {
-    console.log("hifk2");
     let x = moment(selectedTime).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
     const hour = time.split(":")[0];
@@ -88,8 +105,12 @@ const SetCalendar = ({ navigation }) => {
   };
 
   const handleUpdate = async (oldData, obj, docRef) => {
+    console.log(obj);
+    console.log(oldData);
+    console.log("---&&");
     if (Object.keys(oldData).length === 0) {
       await updateDoc(docRef, { tasks: arrayUnion(obj) });
+      alert("added task successfully");
     } else {
       await updateDoc(docRef, {
         tasks: arrayRemove(oldData),
@@ -98,8 +119,9 @@ const SetCalendar = ({ navigation }) => {
       updatedTasks.sort((a, b) => {
         return parseInt(a.startTime) - parseInt(b.startTime);
       });
-      let newObj = { date: dateFormat, tasks: updatedTasks };
+      let newObj = { date: obj.date, tasks: updatedTasks };
       await updateDoc(docRef, { tasks: arrayUnion(newObj) });
+      alert("added task successfully");
     }
     setupdateItem(!updateItem);
   };
@@ -115,7 +137,7 @@ const SetCalendar = ({ navigation }) => {
     console.log("effect run 2");
     let result = {};
     let unmodifiedResult = [];
-    return onSnapshot( 
+    return onSnapshot(
       doc(dbInit, "users", getAuth().currentUser.uid),
       (doc) => {
         let allData = doc.data().tasks;
@@ -133,6 +155,50 @@ const SetCalendar = ({ navigation }) => {
       }
     );
   }, [updateItem]);
+
+  const retrieveExamDate = async (acadYear, moduleCode, semester) => {
+    console.log(acadYear);
+    console.log(semester);
+    console.log(moduleCode);
+    console.log("---");
+
+    const data = await fetchDataFromNusMods(acadYear, moduleCode);
+    const value = getExamDate(data, semester);
+    console.log(value);
+    if (value.length === 0) {
+      alert("Wrong information or module does not have final exam");
+      return;
+    } else {
+      const selectedDate = new Date(value[1]);
+      let x = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
+      let time = x.split(" ")[1];
+      const hour = time.split(":")[0];
+      const minutes = time.split(":")[1];
+      setDateFormat(convertDate(selectedDate));
+      setStartTime(parseInt(hour) * 60 + parseInt(minutes));
+      setTask(value[0] + " exam");
+      const obj = {
+        date: convertDate(selectedDate),
+        tasks: [
+          {
+            name: value[0] + " exam",
+            done: false,
+            startTime: parseInt(hour) * 60 + parseInt(minutes),
+            date: convertDate(selectedDate),
+          },
+        ],
+      };
+      console.log(obj);
+      console.log("---");
+      let oldData = {};
+      unmodfiedItems.forEach((item) => {
+        if (item.date === convertDate(selectedDate)) {
+          oldData = item;
+        }
+      });
+      handleUpdate(oldData, obj, docRef);
+    }
+  };
 
   const convertTime = (time) => {
     const hours = Math.floor(time / 60);
@@ -276,8 +342,6 @@ const SetCalendar = ({ navigation }) => {
   };
 
   const renderIOSOrAndroidTimePicker = () => {
-    console.log(os);
-    console.log(chooseTime);
     if (os) {
       return (
         <Modal visible={chooseTime} animationType="fade">
@@ -376,7 +440,6 @@ const SetCalendar = ({ navigation }) => {
               placeholder="task 1..."
               onChangeText={(val) => {
                 setTask(val);
-                console.log(task);
               }}
             />
             <TouchableOpacity
@@ -407,12 +470,108 @@ const SetCalendar = ({ navigation }) => {
           </View>
         </View>
       </Modal>
-      <TouchableOpacity
-        style={{ alignSelf: "flex-end" }}
-        onPress={() => setModalOpen(true)}
-      >
-        <Text style={styles.add}> + </Text>
-      </TouchableOpacity>
+      <Modal visible={examModalOpen} animationType="slide">
+        <View style={styles.modalContent}>
+          <TouchableOpacity
+            onPress={() => setExamModalOpen(false)}
+            style={{ alignSelf: "flex-end" }}
+          >
+            <Image
+              source={require("../../assets/cross.png")}
+              style={styles.modalClose}
+            />
+          </TouchableOpacity>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: 300,
+              height: 700,
+              borderColor: "black",
+              borderRadius: 5,
+              borderWidth: 2,
+            }}
+          >
+            <Text
+              style={{
+                position: "absolute",
+                top: 5,
+                fontSize: 20,
+                borderBottomColor: "blue",
+                borderWidth: 2,
+                marginBottom: 50,
+              }}
+            >
+              Get Your Exam Dates
+            </Text>
+
+            <View style={{ position: "absolute", top: 90, zIndex: 2 }}>
+              <DropDownAcadYr
+                item={acadYear}
+                data={tList}
+                onSelect={onSelect}
+                title={"Select Academic Year"}
+              />
+            </View>
+
+            <View style={{ position: "absolute", top: 200, zIndex: 1 }}>
+              <DropDownAcadYr
+                item={semester}
+                data={semList}
+                onSelect={(val) => setSemester(val)}
+                title={"Select Semester"}
+              />
+            </View>
+
+            <Text style={{ position: "absolute", top: 330, fontSize: 20 }}>
+              Module Code:
+            </Text>
+            <TextInput
+              placeholder="CS1010S"
+              style={{
+                position: "absolute",
+                top: 380,
+                borderWidth: 1,
+                width: 200,
+                height: 30,
+                borderRadius: 2,
+              }}
+              onChangeText={(val) => {
+                setModuleCode(val);
+              }}
+            />
+            <TouchableOpacity
+              style={{
+                borderColor: "black",
+                borderWidth: 2,
+                borderRadius: 5,
+                position: "absolute",
+                top: 500,
+                height: 50,
+                justifyContent: "center",
+              }}
+              onPress={() => {
+                retrieveExamDate(acadYear.name, moduleCode, semester.name);
+              }}
+            >
+              <Text> Insert exam date into my calendar </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <View>
+        <TouchableOpacity onPress={() => setExamModalOpen(true)}>
+          <Text> Get my exam dates </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ marginLeft: "auto" }}
+          onPress={() => setModalOpen(true)}
+        >
+          <Text style={styles.add}> + </Text>
+        </TouchableOpacity>
+      </View>
       <Agenda
         items={items}
         minDate={"2018-05-10"}
@@ -451,7 +610,7 @@ const styles = StyleSheet.create({
 
   add: {
     fontSize: 30,
-    margin: 1,
+    // margin: 1,
   },
 
   modalClose: {
@@ -465,9 +624,6 @@ const styles = StyleSheet.create({
   },
 
   deleteTaskBtn: {
-    // marginTop: 50,
-    // marginRight: 10,
-
     alignSelf: "flex-end",
     justifyContent: "center",
     marginBottom: -20,

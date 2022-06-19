@@ -1,4 +1,10 @@
-import React, { userState, useState, useEffect, useRef,useCallback } from "react";
+import React, {
+  userState,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { logout, dbInit, useAuth } from "../../firebase";
 import { getAuth } from "firebase/auth";
 import { getDoc, onSnapshot, doc ,updateDoc,
@@ -36,49 +42,51 @@ export function Screenc({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([]);
   const [date, setDate] = useState(new Date());
-  const [isFlipped,setIsFlipped] = useState(false)
-  const [selectedItem,setSelectedItem] = items ? useState(0) : null
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [selectedItem, setSelectedItem] = items ? useState(0) : null;
   const _viewabilityConfig = {
     itemVisiblePercentThreshold: 40,
   };
-  const _onViewableItemsChanged = useCallback(({ viewableItems,changed}) => {
-    console.log("Visible items are", viewableItems);
-    console.log("Changed in this iteration", changed);
-    console.log(viewableItems[0].index);
-    setSelectedItem(viewableItems[0].index);
-  },[selectedItem]);
+  const _onViewableItemsChanged = useCallback(
+    ({ viewableItems, changed }) => {
+      console.log("Visible items are", viewableItems);
+      console.log("Changed in this iteration", changed);
+      console.log(viewableItems[0].index);
+      setSelectedItem(viewableItems[0].index);
+    },
+    [selectedItem]
+  );
 
-  const viewabilityConfigCallbackPairs = useRef([
-    { _onViewableItemsChanged },
-  ]);
+  const viewabilityConfigCallbackPairs = useRef([{ _onViewableItemsChanged }]);
 
-  const flipback = useCallback((f,g)=>{
-    if (f){
+  const flipback = useCallback((f, g) => {
+    if (f) {
       g();
-    }else{}
-  },[])
+    } else {
+    }
+  }, []);
 
   const animate = useRef(new Animated.Value(0.01));
 
   const interpolateFront = animate.current.interpolate({
-    inputRange:[0.01,180],
-    outputRange: ['0.01deg','180deg'],
+    inputRange: [0.01, 180],
+    outputRange: ["0.01deg", "180deg"],
   });
 
   const interpolateBack = animate.current.interpolate({
-    inputRange:[0.01,180],
-    outputRange: ['180deg','360deg'],
+    inputRange: [0.01, 180],
+    outputRange: ["180deg", "360deg"],
   });
-  
+
   const handleFlip = () => {
-    Animated.timing(animate.current,{
+    Animated.timing(animate.current, {
       duration: 200,
-      toValue : isFlipped ? 0.01 : 180, 
+      toValue: isFlipped ? 0.01 : 180,
       useNativeDriver: true,
-    }).start(()=>{
+    }).start(() => {
       setIsFlipped(!isFlipped);
     });
-  }
+  };
 
   const getData = async (date) => {
     let result = [];
@@ -87,13 +95,15 @@ export function Screenc({ navigation }) {
     const allData = docSnap.data().tasks;
     let todayTasks = allData.filter((item) => item.date === date);
 
-    if (todayTasks.length != 0) {
-      todayTasks[0].tasks.forEach((item) => {
-        result.push(item);
-        console.log(item);
-      });
-      console.log(result);
-      setItems(result);
+      if (todayTasks.length != 0) {
+        todayTasks[0].tasks.forEach((item) => {
+          result.push(item);
+          console.log(item);
+        });
+        console.log(result);
+        setItems(result);
+      }
+     else {
     }
   ;}
 
@@ -108,7 +118,6 @@ export function Screenc({ navigation }) {
   const updateData = async (item,index) => {
     item.done = true;
     console.log(item);
-    await updateDoc(docRef, )
 
   };
 
@@ -146,14 +155,11 @@ export function Screenc({ navigation }) {
           button = {true}
           image = "https://icons.veryicon.com/png/o/miscellaneous/core-music/task-42.png"
           btitle = "Completed"
-          title = {item.done}
+          title = {item.name}
           pageNum = {`${index + 1}/${items.length}`}/>
         </Animated.View>
-
     </Pressable>
-    
-    
-    ))
+  ));
 
   const checkTasks = (items) => {
     if (items.length === 0) {
@@ -167,18 +173,21 @@ export function Screenc({ navigation }) {
         <View>
           <Text style={styles.taskHeader}>Today's Task: </Text>
           <FlatList
-          onScrollBeginDrag={()=>{flipback(isFlipped,handleFlip)}}
-          viewabilityConfigCallbackPairs={
-            viewabilityConfigCallbackPairs.current
-          }
-          viewabilityConfig={_viewabilityConfig}
-          horizontal = {true}
-          keyExtractor={keyExtractor}
-          extraData = {selectedItem}
-          decelerationRate = "fast"
-          pagingEnabled
-          data = {items}
-          renderItem={renderItem}/>
+            onScrollBeginDrag={() => {
+              flipback(isFlipped, handleFlip);
+            }}
+            viewabilityConfigCallbackPairs={
+              viewabilityConfigCallbackPairs.current
+            }
+            viewabilityConfig={_viewabilityConfig}
+            horizontal={true}
+            keyExtractor={keyExtractor}
+            extraData={selectedItem}
+            decelerationRate="fast"
+            pagingEnabled
+            data={items}
+            renderItem={renderItem}
+          />
         </View>
       );
     }
@@ -231,7 +240,6 @@ const styles = StyleSheet.create({
     backfaceVisibility: "hidden",
   },
 
-
   done: {
     backgroundColor: "#4dff4d",
   },
@@ -247,17 +255,17 @@ const styles = StyleSheet.create({
   cardBack: {
     backfaceVisibility: "hidden",
   },
-  hidden:{
-    backfaceVisibility:"hidden",
+  hidden: {
+    backfaceVisibility: "hidden",
   },
-  back:{
-    position:"absolute",
-    top: 0
+  back: {
+    position: "absolute",
+    top: 0,
   },
   flashCardBody: {
     flex: 1,
-    alignItems:"center",
-    justifyContent:"center",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "white",
   },
 });

@@ -1,4 +1,10 @@
-import React, { userState, useState, useEffect, useRef,useCallback } from "react";
+import React, {
+  userState,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { logout, dbInit, useAuth } from "../../firebase";
 import { getAuth } from "firebase/auth";
 import { getDoc, onSnapshot, doc } from "firebase/firestore";
@@ -21,77 +27,80 @@ import {
   TouchableRipple,
   Switch,
 } from "react-native-paper";
-const {width, height} = Dimensions.get("screen")
-const cW = width * 0.7
-const cH = cW * 1.54
-
+const { width, height } = Dimensions.get("screen");
+const cW = width * 0.7;
+const cH = cW * 1.54;
 
 export function Screenc({ navigation }) {
-  const user = useAuth()
+  const user = useAuth();
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([]);
   const [date, setDate] = useState(new Date());
-  const [isFlipped,setIsFlipped] = useState(false)
-  const [selectedItem,setSelectedItem] = items ? useState(0) : null
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [selectedItem, setSelectedItem] = items ? useState(0) : null;
   const _viewabilityConfig = {
     itemVisiblePercentThreshold: 40,
   };
-  const _onViewableItemsChanged = useCallback(({ viewableItems,changed}) => {
-    console.log("Visible items are", viewableItems);
-    console.log("Changed in this iteration", changed);
-    console.log(viewableItems[0].index);
-    setSelectedItem(viewableItems[0].index);
-  },[selectedItem]);
+  const _onViewableItemsChanged = useCallback(
+    ({ viewableItems, changed }) => {
+      console.log("Visible items are", viewableItems);
+      console.log("Changed in this iteration", changed);
+      console.log(viewableItems[0].index);
+      setSelectedItem(viewableItems[0].index);
+    },
+    [selectedItem]
+  );
 
-  const viewabilityConfigCallbackPairs = useRef([
-    { _onViewableItemsChanged },
-  ]);
+  const viewabilityConfigCallbackPairs = useRef([{ _onViewableItemsChanged }]);
 
-  const flipback = useCallback((f,g)=>{
-    if (f){
+  const flipback = useCallback((f, g) => {
+    if (f) {
       g();
-    }else{}
-  },[])
+    } else {
+    }
+  }, []);
 
   const animate = useRef(new Animated.Value(0.01));
 
   const interpolateFront = animate.current.interpolate({
-    inputRange:[0.01,180],
-    outputRange: ['0.01deg','180deg'],
+    inputRange: [0.01, 180],
+    outputRange: ["0.01deg", "180deg"],
   });
 
   const interpolateBack = animate.current.interpolate({
-    inputRange:[0.01,180],
-    outputRange: ['180deg','360deg'],
+    inputRange: [0.01, 180],
+    outputRange: ["180deg", "360deg"],
   });
-  
+
   const handleFlip = () => {
-    Animated.timing(animate.current,{
+    Animated.timing(animate.current, {
       duration: 200,
-      toValue : isFlipped ? 0.01 : 180, 
+      toValue: isFlipped ? 0.01 : 180,
       useNativeDriver: true,
-    }).start(()=>{
+    }).start(() => {
       setIsFlipped(!isFlipped);
     });
-  }
+  };
 
   const getData = async (date) => {
     let result = [];
     if (user) {
-    const docRef = doc(dbInit, "users", getAuth()?.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    const allData = docSnap.data().tasks;
-    let todayTasks = allData.filter((item) => item.date === date);
+      const docRef = doc(dbInit, "users", getAuth()?.currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      const allData = docSnap.data().tasks;
+      let todayTasks = allData.filter((item) => item.date === date);
 
-    if (todayTasks.length != 0) {
-      todayTasks[0].tasks.forEach((item) => {
-        result.push(item);
-        console.log(item);
-      });
-      console.log(result);
-      setItems(result);
+      if (todayTasks.length != 0) {
+        todayTasks[0].tasks.forEach((item) => {
+          result.push(item);
+          console.log(item);
+        });
+        console.log(result);
+        setItems(result);
+      }
+    } else {
     }
-  ;}else{}}
+  };
 
   const convertDate = (date) => {
     const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
@@ -105,39 +114,66 @@ export function Screenc({ navigation }) {
     let result = {};
     const todayTasks = getData(convertDate(date));
     if (user) {
-    return onSnapshot(
-      doc(dbInit, "users", getAuth()?.currentUser.uid),
-      (doc) => {
-        console.log("onSnapshot");
-        getData(convertDate(date));
-      }
-    );
-  }else{null}}, [user]);
+      return onSnapshot(
+        doc(dbInit, "users", getAuth()?.currentUser.uid),
+        (doc) => {
+          console.log("onSnapshot");
+          getData(convertDate(date));
+        }
+      );
+    } else {
+      null;
+    }
+  }, [user]);
 
-  const keyExtractor=(item,index)=> index.toString()
-  const renderItem = useCallback(({item,index})=>(
-    <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{[handleFlip()]}}>  
-          <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
-          <FlipCard
-          heading = {`Task ${index + 1}`}
-          image = {null}
-          title = {item.name}
-          pageNum = {`${index + 1}/${items.length}`}/>
+  const keyExtractor = (item, index) => index.toString();
 
-          </Animated.View>
-        
-        <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
-          <FlipCard
-          heading = "Done"
-          image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
-          title = {item.done}
-          pageNum = {`${index + 1}/${items.length}`}/>
-        </Animated.View>
+  const renderItem = useCallback(({ item, index }) => (
+    <Pressable
+      style={{
+        alignSelf: "center",
+        justifyContent: "center",
+        alignItems: "center",
+        width,
+        height: cH,
+      }}
+      onPress={() => {
+        [handleFlip()];
+      }}
+    >
+      <Animated.View
+        style={[
+          { transform: [{ rotateY: interpolateFront }] },
+          styles.hidden,
+          { width: cW, height: cH },
+        ]}
+      >
+        <FlipCard
+          heading={`Task ${index + 1}`}
+          image={null}
+          title={item.name}
+          pageNum={`${index + 1}/${items.length}`}
+          style={{ ...(item.done ? styles.done : styles.notDone) }}
+        />
+      </Animated.View>
 
+      <Animated.View
+        style={[
+          styles.back,
+          styles.hidden,
+          { width: cW, height: cH },
+          { transform: [{ rotateY: interpolateBack }] },
+        ]}
+      >
+        <FlipCard
+          heading="Done"
+          image="https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
+          title={item.done}
+          pageNum={`${index + 1}/${items.length}`}
+        />
+      </Animated.View>
     </Pressable>
-    
-    
-    ))
+  ));
 
   const checkTasks = (items) => {
     if (items.length === 0) {
@@ -151,18 +187,21 @@ export function Screenc({ navigation }) {
         <View>
           <Text style={styles.taskHeader}>Today's Task: </Text>
           <FlatList
-          onScrollBeginDrag={()=>{flipback(isFlipped,handleFlip)}}
-          viewabilityConfigCallbackPairs={
-            viewabilityConfigCallbackPairs.current
-          }
-          viewabilityConfig={_viewabilityConfig}
-          horizontal = {true}
-          keyExtractor={keyExtractor}
-          extraData = {selectedItem}
-          decelerationRate = "fast"
-          pagingEnabled
-          data = {items}
-          renderItem={renderItem}/>
+            onScrollBeginDrag={() => {
+              flipback(isFlipped, handleFlip);
+            }}
+            viewabilityConfigCallbackPairs={
+              viewabilityConfigCallbackPairs.current
+            }
+            viewabilityConfig={_viewabilityConfig}
+            horizontal={true}
+            keyExtractor={keyExtractor}
+            extraData={selectedItem}
+            decelerationRate="fast"
+            pagingEnabled
+            data={items}
+            renderItem={renderItem}
+          />
         </View>
       );
     }
@@ -214,7 +253,6 @@ const styles = StyleSheet.create({
     backfaceVisibility: "hidden",
   },
 
-
   done: {
     backgroundColor: "#4dff4d",
   },
@@ -230,17 +268,17 @@ const styles = StyleSheet.create({
   cardBack: {
     backfaceVisibility: "hidden",
   },
-  hidden:{
-    backfaceVisibility:"hidden",
+  hidden: {
+    backfaceVisibility: "hidden",
   },
-  back:{
-    position:"absolute",
-    top: 0
+  back: {
+    position: "absolute",
+    top: 0,
   },
   flashCardBody: {
     flex: 1,
-    alignItems:"center",
-    justifyContent:"center",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "white",
   },
 });

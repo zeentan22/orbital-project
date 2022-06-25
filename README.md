@@ -47,8 +47,8 @@
 >>> Third Week of Jun
 >>> 
 >>>> Users are able to view the flash cards that they have created.
->>>> 
-###Instructions to test our project
+
+### Intructions to test our project
 >>
 >>> Clone our repository by typing the command below
 >>>

@@ -6,53 +6,47 @@ import SetCalendar from "./calendar";
 const ScheduleStack = createStackNavigator();
 
 export default function Schedule() {
-
-
-
-
-
-
-const Trial = ({navigation}) =>{
-  return (
-    <View style={styles.body}>
-      <Text style={styles.text}>Set your schedule</Text>
-      <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress ={()=> navigation.navigate("SetCalendar")}>
-          <Text> Set Schedule </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text> Custom notifications </Text>
-        </TouchableOpacity>
+  const Trial = ({ navigation }) => {
+    return (
+      <View style={styles.body}>
+        <Text style={styles.text}>Set your schedule</Text>
+        <View style={styles.buttons}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate("SetCalendar")}
+          >
+            <Text> Set Schedule </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text> Custom notifications </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
-};
-const Trial2 = ({navigation}) =>{
+    );
+  };
+  const Trial2 = ({ navigation }) => {
+    return (
+      <View style={styles.body}>
+        <MashButton
+          title="GO back"
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+        <Text style={styles.text}>Set your schedule 2</Text>
+      </View>
+    );
+  };
   return (
-    <View style={styles.body}>
-      <MashButton title = "GO back" onPress={()=>{navigation.goBack()}}/>
-      <Text style={styles.text}>Set your schedule 2</Text>
-    </View>
+    <ScheduleStack.Navigator
+      initialRouteName="first"
+      screenOptions={{ header: () => null }}
+    >
+      <ScheduleStack.Screen name="first" component={Trial} />
+
+      <ScheduleStack.Screen name="SetCalendar" component={SetCalendar} />
+    </ScheduleStack.Navigator>
   );
-};
-return (
-<ScheduleStack.Navigator
-initialRouteName="first"
-screenOptions={{header: ()=> null}}>
-<ScheduleStack.Screen
-  name = "first"
-    component={Trial}/>
-
-    <ScheduleStack.Screen
-    name = "SetCalendar"
-    component={SetCalendar}/>
-
-
-
-
-  </ScheduleStack.Navigator>
-  );
-
 }
 
 const styles = StyleSheet.create({
@@ -69,7 +63,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    width:300,
+    width: 300,
     borderRadius: 20,
     borderWidth: 2,
     padding: 10,

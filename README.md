@@ -48,18 +48,23 @@
 >>> 
 >>>> Users are able to view the flash cards that they have created.
 
+### Milestone 2
+> Cores features that have been developed and problems that we have faced during our project is documented inside the link below.
+
+> https://docs.google.com/document/d/1l6AuI0llQmc8ZgIAgsnCiBRWVnUrRSHOelk7tYotWXA/edit?usp=sharing
+
 ### Intructions to test our project
->>
->>> Clone our repository by typing the command below
->>>
->>> ```git clone git@github.com:zeentan22/orbital-project.git```
->>> 
->>> Install all packages with following code
->>>
->>> ```npm install```
->>> 
->>> Due to some naming issue in our git, users cloning our project will have go this directory ../src/Screens/flashCard.js and rename the file to flashcard.js
->>> 
->>> Type the following command to run our code
->>> 
->>> ```npm start```
+
+ Clone our repository by typing the command below
+ 
+ ```git clone git@github.com:zeentan22/orbital-project.git```
+
+Install all packages with following code
+
+ ```npm install```
+ 
+ Due to some naming issue in our git, users cloning our project will have go this directory ../src/Screens/flashCard.js and rename the file to flashcard.js
+ 
+ Type the following command to run our code
+ 
+ ```npm start```

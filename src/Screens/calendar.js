@@ -300,15 +300,9 @@ const SetCalendar = ({ navigation }) => {
       return (
         <Modal visible={chooseDate} animationType="fade">
           <View style={styles.modalContent}>
-            <TouchableOpacity
-              onPress={() => setChooseDate(false)}
-              style={{ alignSelf: "flex-end" }}
-            >
-              <Image
-                source={require("../../assets/cross.png")}
-                style={styles.modalClose}
-              />
-            </TouchableOpacity>
+            <View style = {{display: "flex",justifyContent:"center",alignItems:"center",width:300,height:200,borderColor:"black",borderRadius:5,
+            borderWidth:2,}}>
+            <Text style = {{marginBottom:20}}>Set Your Date Here</Text>
 
             <DateTimePicker
               isVisible={true}
@@ -320,6 +314,12 @@ const SetCalendar = ({ navigation }) => {
               onChange={onChange}
               style={{ width: 200, marginRight: 70 }}
             />
+            <TouchableOpacity
+              style={{marginTop:25, borderWidth:1,borderColor:"black",borderRadius:5}}
+              onPress = {()=>{setChooseDate(false);setModalOpen(true)}}>
+                <Text>Close Modal</Text>
+            </TouchableOpacity>
+          </View>
           </View>
         </Modal>
       );
@@ -346,15 +346,9 @@ const SetCalendar = ({ navigation }) => {
       return (
         <Modal visible={chooseTime} animationType="fade">
           <View style={styles.modalContent}>
-            <TouchableOpacity
-              onPress={() => setChooseTime(false)}
-              style={{ alignSelf: "flex-end" }}
-            >
-              <Image
-                source={require("../../assets/cross.png")}
-                style={styles.modalClose}
-              />
-            </TouchableOpacity>
+          <View style = {{display: "flex",justifyContent:"center",alignItems:"center",width:300,height:200,borderColor:"black",borderRadius:5,
+            borderWidth:2,}}>
+              <Text style = {{marginBottom:20}}>Set Your Start Time Here</Text>
 
             <DateTimePicker
               isVisible={true}
@@ -366,6 +360,12 @@ const SetCalendar = ({ navigation }) => {
               onChange={onChangeTime}
               style={{ width: 200, marginRight: 70 }}
             />
+            <TouchableOpacity
+              style={{marginTop:25, borderWidth:1,borderColor:"black",borderRadius:5}}
+              onPress = {()=>{setChooseTime(false);setModalOpen(true)}}>
+                <Text>Close Modal</Text>
+            </TouchableOpacity>
+          </View>
           </View>
         </Modal>
       );

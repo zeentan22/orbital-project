@@ -14,7 +14,7 @@ const MashButton = (p) => {
         { ...p.style },
       ]}
     >
-      <Text style={styles.text}>{p.title}</Text>
+      <Text style={[styles.text,p.textStyle]}>{p.title}</Text>
     </Pressable>
   );
 };
@@ -28,13 +28,13 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
   },
   button: {
-    width: 200,
+    width: 350,
     height: 45,
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 8,
   },
 });
 export default MashButton;

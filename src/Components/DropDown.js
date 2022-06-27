@@ -6,7 +6,8 @@ import {View, Image,Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity
 export default Dropdown = ({
     data =[],
     item = {},
-    onSelect = () =>{}
+    onSelect = () =>{},
+    sItem = {},
 
 
 
@@ -17,19 +18,22 @@ export default Dropdown = ({
         onSelect(item)
     }
         return (
-        <View styles = {styles.input}>
+        <View style = {{flex:1}}>
             <TouchableOpacity
-            style = {{alignItems: "center", justifyContent:"center", width:300}}
+            style = {{alignItems: "center", justifyContent:"center", width:350,borderRadius:20,height:65}}
             activeOpacity={0.8}
             onPress={()=> setShowOption(!showOption)}>
                 <View style = {styles.dropDownStyle}>
-                <Text style = {[styles.text,{alignSelf:"center",alignItems:"center"}]}>{!! item? item.name : "Select An Option"}</Text>
+                <Text style = {[styles.text,{alignSelf:"center",alignItems:"center",width:"88%"}]}>{!! item? item.name : "Select An Option"}</Text>
+                <View style = {{flexDirection:"row",width:"12%",justifyContent:"space-around",alignItems:"center"}}>
+                <View style = {{flex:1, backgroundColor:"black", width:1,height:65}}></View>
                 <Image
                 style = {[styles.image, {transform:[{rotate: showOption? "180deg" : "0deg"}]}]}
-                source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/dowell/drop-down-25.png"}}></Image>
+                source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/eva-icon-fill/arrow-down-38.png"}}></Image>
+                </View>
                 </View>
             </TouchableOpacity>
-            {showOption && (<View style = {{backgroundColor: "#add8e6", padding: 8, height:300, width:300,}}> 
+            {showOption && (<View style = {{backgroundColor: "#add8e6", padding: 8, height:300, width:350,}}> 
                 <Text style={[styles.text,{justifyContent:"center",marginBottom:10}]}>Topics</Text>
                 <FlatList
                         keyExtractor={(item,index) => index.toString()}
@@ -42,7 +46,7 @@ export default Dropdown = ({
                         borderRadius: 4,
                         paddingHorizontal: 6,
                         marginBottom: 8,
-                        backgroundColor: "white"
+                        backgroundColor: (sItem && sItem.name == item.name) ? "yellow" : "white"
                     }}>
                       {(item.name == "Add New Topic") ?
                       <View style = {{flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
@@ -84,11 +88,11 @@ const styles = StyleSheet.create({
       backgroundColor: "white",
     },
     image:{
-      height: 30,
-      width: 30,
-      marginTop:8,
+      height: 35,
+      width: 35,
       alignSelf: "center",
       justifyContent:"center",
+      marginLeft:1.5,
     },
     listSize:{
       flex:1,
@@ -105,14 +109,14 @@ const styles = StyleSheet.create({
       justifyContent:"center",
     },
     dropDownStyle:{
-        backgroundColor : "#d3d3d3",
         padding: 8,
-        borderRadius: 6,
-        minHeight: 42,
+        borderRadius: 20,
+        borderWidth:2,
+        height: 65,
         justifyContent: "center",
         flexDirection:"row",
         marginBottom: 2,
-        width:300,
+        width:350,
         alignItems: "center",
 
     },

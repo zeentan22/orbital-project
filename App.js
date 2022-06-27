@@ -35,7 +35,8 @@ import "react-native-gesture-handler";
 import {BotTabs} from "./src/Navigation/tabs";
 import Login from "./src/Screens/LoginPage"
 import {useAuth,auth} from "./firebase";
-import Loading from "./src/Screens/Loading"
+import Loading from "./src/Screens/Loading";
+import StartPage from "./src/Screens/StartingPage"
 const Wholelogin = createStackNavigator();
 const Mix = createStackNavigator();
 
@@ -44,16 +45,22 @@ function App() {
   const Mixture = () => {
     return (
       <Mix.Navigator>
+
+        <Mix.Screen
+          name="Start Page"
+          component={StartPage}
+          options={{ header: () => null }}
+        />
         <Mix.Screen
           name="Login Page"
           component={Login}
-          options={{ title: "Login" }}
+          options={{ header: ()=>null}}
         />
 
         <Mix.Screen
           name="Createpage"
           component={CreateAccount}
-          options={{ title: "Create Account" }}
+          options={{ header: ()=>null }}
         />
         <Mix.Screen
           name="Loading page"

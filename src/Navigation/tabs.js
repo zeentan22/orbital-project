@@ -1,5 +1,5 @@
 "use strict";
-import React, { userState, useState, useEffect } from "react";
+import React, { userState, useState, useEffect, TouchableOpacity } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -31,11 +31,12 @@ import Loading from "../Screens/Loading";
 const homeStackTab = createBottomTabNavigator();
 const homeDrawer = createDrawerNavigator();
 
+
 export const BotTabs = () => {
   const HomeStacks = () => {
     return (
       <homeStackTab.Navigator
-        initialRouteName="Home Page"
+        initialRouteName="Home"
         screenOptions={({ route }) => ({
           tabBarHideOnKeyboard: true,
           headerShown: false,
@@ -72,8 +73,9 @@ export const BotTabs = () => {
                   width: focused ? 27 : 20,
                   height: focused ? 27 : 20,
                   marginTop: 3,
+                  tintColor: focused ? "#32cd32" : "black"
                 }}
-                tintColor={focused ? "#32cd32" : "black"}
+                
               />
             ),
           }}
@@ -89,8 +91,8 @@ export const BotTabs = () => {
                   width: focused ? 27 : 20,
                   height: focused ? 27 : 20,
                   marginTop: 3,
+                  tintColor: focused ? "#32cd32" : "black"
                 }}
-                tintColor={focused ? "#32cd32" : "black"}
               />
             ),
           }}
@@ -106,8 +108,8 @@ export const BotTabs = () => {
                   width: focused ? 27 : 20,
                   height: focused ? 27 : 20,
                   marginTop: 3,
+                  tintColor: focused ? "#32cd32" : "black"
                 }}
-                tintColor={focused ? "#32cd32" : "black"}
               />
             ),
           }}
@@ -123,7 +125,7 @@ return(
     component={HomeStacks}
     options={{title:false,}}
     />
-    <homeStackTab.Screen
+    <homeDrawer.Screen
         name = "loading"
         component={Loading}
         options={{
@@ -174,21 +176,20 @@ export function DrawerContent(props) {
           <DrawerItem
             label="Home"
             onPress={() => [
+              props.navigation.navigate("Home"),
               props.navigation.closeDrawer(),
-              props.navigation.navigate("Home Page"),
             ]}
           ></DrawerItem>
         </Drawer.Section>
         <Drawer.Section style={{ flex: 1, marginLeft: 10 }}>
           <DrawerItem
             label="Sign Out"
-            onPress={async () =>
+            onPress={async () => {
               await logout()
                 .then(() => {
-                  alert("logged out");
                 })
-                .catch((error) => alert(error.message))
-            }
+                .catch((error) => {alert(error.message)})
+            }}
           ></DrawerItem>
         </Drawer.Section>
       </DrawerContentScrollView>

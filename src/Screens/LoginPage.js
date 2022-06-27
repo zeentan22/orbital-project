@@ -42,7 +42,7 @@ export default function Login({ navigation }) {
   };
 
   async function handleLogin() {
-    navigation.navigate("Loading page");
+    navigation.replace("Loading page");
     setTimeout(async ()=>{
     try {
       await login(email, password);
@@ -50,13 +50,18 @@ export default function Login({ navigation }) {
       alert("Welcome back!");
     } catch {
       alert("Error!");
-      navigation.navigate("Login Page")
-    }},1800)
+      navigation.replace("Login Page")
+    }},1500)
   };
   return (
 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.body}>
+        <Image
+        resizeMode="cover"
+        source = {{uri:"https://i.pinimg.com/564x/3c/3a/35/3c3a357172fb7a9f153bfae96c2d5e17.jpg"}}
+        style = {StyleSheet.absoluteFillObject}
+        blurRadius = {60}/>
         <View style={styles.body1}>
           <Image
             style={styles.image}
@@ -66,26 +71,41 @@ export default function Login({ navigation }) {
           <Text style={styles.textintro}>Welcome !</Text>
         </View>
         <TextInput
-          style={styles.input}
+          style={[{marginBottom:0,borderBottomWidth:0.5,borderBottomLeftRadius:0,borderBottomRightRadius:0},styles.input]}
           placeholder="E.g. xxx@gmail.com"
           onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
         />
         <TextInput
-          style={styles.input}
+          style={[{marginTop:0,borderTopWidth:0.5,borderTopLeftRadius:0,borderTopRightRadius:0},styles.input]}
           placeholder="Enter Password"
           onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
           secureTextEntry
         />
         <MashButton //havent create the login button function yet
-          title="Login"
-          color="#D3D3D3"
+          title="LOGIN"
+          color="red"
+          textStyle = {{color: "white", fontWeight: "bold",fontStyle: "normal"}}
+          style = {{borderWidth:1,borderColor:"red",marginBottom:20}}
           onPress={handleLogin}
         />
-        <MashButton
-          title="Create Account"
-          color="#D3D3D3"
+
+        <View style = {{flex:1/4,alignItems:"center",marginTop:40}}>
+        <View style={{flexDirection: 'row', alignItems: 'center',width:350, height:50,marginBottom:0}}>
+          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:100}} />
+          <View>
+            <Text style={[styles.textintro2,{width: 100,fontStyle: "normal", textAlign: 'center'}]}>New User?</Text>
+          </View>
+          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:100}} />
+        </View>
+
+        <MashButton 
+          style = {{borderWidth:1}}
+          textStyle = {{fontWeight: "bold",fontStyle: "normal"}}
+          title="GET STARTED"
           onPress={onPressHandler}
         />
+        </View>
+
       </View>
 
     </TouchableWithoutFeedback>
@@ -107,9 +127,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   body1: {
-    flex: 1 / 3,
+    flex: 0.5,
     flexDirection: "column",
-    backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "flex-end",
   },
@@ -123,12 +142,20 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 20,
   },
+
+  textintro2: {
+    fontSize: 17,
+    alignSelf: "center",
+    fontStyle: "italic",
+    color:"black",
+  },
   input: {
     margin: 5,
-    borderWidth: 2,
+    backgroundColor:"white",
+    borderWidth: 1,
     alignSelf: "center",
-    width: 300,
-    height: 55,
+    width: 350,
+    height: 50,
     borderColor: "#555",
     borderRadius: 5,
     textAlign: "center",

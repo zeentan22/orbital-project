@@ -16,6 +16,7 @@ import {
   Text,
   FlatList,
   Dimensions,
+  Image,
   View,
   Pressable,
   Animated,
@@ -37,6 +38,7 @@ const cH = cW * 1.54
 
 
 export function Screenc({ navigation }) {
+  const [show,setShow] = useState(true)
   const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null
   const user = useAuth()
   const [loading, setLoading] = useState(false);
@@ -85,6 +87,7 @@ export function Screenc({ navigation }) {
       useNativeDriver: true,
     }).start(() => {
       setIsFlipped(!isFlipped);
+      setShow(!show)
     });
   };
 
@@ -151,6 +154,7 @@ export function Screenc({ navigation }) {
         <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
           <NotiFlipCard
           heading = "Mark As:"
+          shows = {show}
           onPress = {()=>updateData(item)}
           button = {true}
           image = "https://icons.veryicon.com/png/o/miscellaneous/core-music/task-42.png"
@@ -182,7 +186,7 @@ export function Screenc({ navigation }) {
             viewabilityConfig={_viewabilityConfig}
             horizontal={true}
             keyExtractor={keyExtractor}
-            extraData={selectedItem}
+            extraData={[selectedItem,items]}
             decelerationRate="fast"
             pagingEnabled
             data={items}
@@ -195,6 +199,11 @@ export function Screenc({ navigation }) {
 
   return (
     <View style={styles.body}>
+      <Image
+        resizeMode="cover"
+        source = {{uri:"https://i.pinimg.com/564x/73/bc/d3/73bcd34f81b6dcc9aac810ff321e419c.jpg"}}
+        style = {StyleSheet.absoluteFillObject}
+        blurRadius = {70}/>
       <Text style={styles.date}>Date : {convertDate(date)}</Text>
       {checkTasks(items)}
     </View>

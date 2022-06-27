@@ -1,4 +1,4 @@
-import React, { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, Header } from "@react-navigation/stack";
 import MashButton from "../Components/CustomButton";
@@ -15,6 +15,11 @@ export default function Schedule() {
 const Trial = ({navigation}) =>{
   return (
     <View style={styles.body}>
+      <Image
+        resizeMode="cover"
+        source = {{uri:"https://i.pinimg.com/564x/62/8a/e2/628ae22269e50e2b4e335770c3bbc742.jpg"}}
+        style = {StyleSheet.absoluteFillObject}
+        blurRadius = {70}/>
       <Text style={styles.text}>Set your schedule</Text>
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.button} onPress ={()=> navigation.navigate("SetCalendar")}>

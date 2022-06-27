@@ -33,15 +33,34 @@ export default FlipCard = (p) =>{
                 </View>
                 <Subheading style = {{alignSelf:"center"}}>{p.title}</Subheading>
                 <View style = {{flex:1,justifyContent: "center",alignItems: "flex-end", alignSelf:"center",flexDirection:"row"}}>
-                    {display && (<Pressable style = {{marginRight:50}}
+                    {display ? <Pressable disabled = {p.shows}
+                    style = {{height:55,width:55,marginRight:50}}
                     onPress={()=> {[changeColor(c1),setBColor("red"),setDisplay(false),p.onPress1()]}}>
                         <Image style = {[styles.image,{tintColor : `${c1}`}]} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/linear-icon-44/wrong-21.png"}}/>
-                    </Pressable>)}
+                    </Pressable>
+                    :
+                    null
+
+
+                    
+                    }
+
+
                     <Text style = {{fontSize:18}}>{p.pageNum}</Text>
-                    {display && (<Pressable style = {({pressed})=> [{marginLeft:50}]}
+
+
+
+
+                    {display ? <Pressable  disabled = {p.shows}
+                    style = {({pressed})=> [{height:55,width:55,marginLeft:50}]}
                     onPress={()=> {[changeColor(c2),setBColor("#32cd32"),setDisplay(false),p.onPress2()]}}>
                         <Image  style = {[styles.image,{tintColor : `${c2}`}]} source = {{uri:"https://icons.veryicon.com/png/o/miscellaneous/szj/correct-40.png"}}/>
-                    </Pressable>)}
+                    </Pressable>
+                    :
+                    null
+                    
+                    
+                    }
                 </View>
             </Card.Content>
 

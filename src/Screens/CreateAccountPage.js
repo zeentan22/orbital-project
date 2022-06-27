@@ -55,7 +55,7 @@ export default function CreateAccount({ navigation }) {
   //   const passwordRef = useRef();
 
   async function handleSignup() {
-    navigation.navigate("Loading page");
+    navigation.replace("Loading page");
     setTimeout(async ()=>{
     try {
       console.log("hello");
@@ -95,13 +95,30 @@ export default function CreateAccount({ navigation }) {
     } catch (err) {
       alert("Error!");
       console.log(err);
-    }},1000)
+      navigation.replace("Createpage")
+    }},900)
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.body}>
+      <Image
+        resizeMode="cover"
+        source = {{uri:"https://i.pinimg.com/736x/b0/5c/80/b05c80ef1dfc5df58f63086e45267bda.jpg"}}
+        style = {[StyleSheet.absoluteFillObject]}
+        blurRadius = {60}/>
+        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:2, marginRight:166,}} onPress={()=>
+          navigation.goBack()}>
+        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
+        <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
+      </TouchableOpacity>
         <View style={styles.body1}>
-          <Text style={styles.textintro}>Create your account</Text>
+        <Image
+        resizeMode="cover"
+        source = {{uri:"https://i.pinimg.com/564x/58/c8/51/58c851da1dd0d65cd196de3d3de2916d.jpg"}}
+        style = {[StyleSheet.absoluteFillObject,{borderRadius:20}]}
+        blurRadius = {0}/>
+          <Text style={[styles.textintro]}>Sign up Now</Text>
+          <Text style={[styles.textintroSmall]}>It's quick and easy.</Text>
         </View>
         <TextInput
           style={styles.input}
@@ -124,11 +141,11 @@ export default function CreateAccount({ navigation }) {
           onChangeText={(value) => setPassword(value)}
           secureTextEntry
         />
-        <MashButton //havent create the signup button function yet to store into database,
-          // for now it goes back to login page when you lick create account
-          title="Create Account"
-          color="#D3D3D3"
-          style={{ marginTop: 40 }}
+         <MashButton //havent create the login button function yet
+          title="SIGN UP"
+          color="red"
+          textStyle = {{color: "white", fontWeight: "bold",fontStyle: "normal"}}
+          style = {{borderWidth:1,borderColor:"red",marginBottom:10,marginTop:40}}
           onPress={handleSignup}
         />
       </View>
@@ -151,10 +168,14 @@ const styles = StyleSheet.create({
   },
   body1: {
     flex: 0.4,
+    width: "90%",
+    borderRadius:20,
     flexDirection: "column",
     backgroundColor: "#ffffff",
     alignItems: "flex-end",
-    justifyContent: "flex-start",
+    alignSelf:"center",
+    justifyContent: "center",
+    marginBottom:30,
   },
   text: {
     fontSize: 40,
@@ -162,7 +183,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   textintro: {
-    fontSize: 35,
+    fontSize: 45,
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  textintroSmall: {
+    fontSize: 20,
     alignSelf: "center",
     marginBottom: 20,
   },
@@ -187,5 +213,11 @@ const styles = StyleSheet.create({
     width: 200,
     alignSelf: "center",
     justifyContent: "center",
+  },
+  iconimage:{
+    height: 30,
+    width: 30,
+    alignSelf: "center",
+    justifyContent:"center",
   },
 });

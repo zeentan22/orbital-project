@@ -24,6 +24,20 @@ const {width, height} = Dimensions.get("screen")
 const cW = width * 0.7
 const cH = cW * 1.54
 
+
+
+const config = {
+  animation: 'spring',
+  config: {
+    stiffness: 1000,
+    damping: 500,
+    mass: 3,
+    overshootClamping: true,
+    restDisplacementThreshold: 0.01,
+    restSpeedThreshold: 0.01,
+  },
+};
+
 export function FlashCard({ navigation, route }) {
   const user = useAuth();
 const horizontalAnimation = {
@@ -58,27 +72,32 @@ const reverseHorizontalAnimation = {
     };
   },
 };
-  const CreateFlashCard = ({navigation}) => { 
-  return (
-    <View style={styles.body}>
-      <CustomTabHeading
-      onPage = {true}
-      title1 = "Create"
-      title2 = "Test"
-      onPress2 = {()=>{navigation.navigate("View Flash Card")}}
-      onPress1 = {()=>{null}}/>
-      <Text style={styles.text}>Start using Flashcards now!</Text>
-      <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("Topic List")}>
-          <Text> Create new flashcard </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("View Flash Card")}>
-          <Text> Test Yourself! </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
+//   const CreateFlashCard = ({navigation}) => { 
+//   return (
+//     <View style={styles.body}>
+//       <Image
+//         resizeMode="cover"
+//         source = {{uri:"https://i.pinimg.com/564x/62/8a/e2/628ae22269e50e2b4e335770c3bbc742.jpg"}}
+//         style = {StyleSheet.absoluteFillObject}
+//         blurRadius = {70}/>
+//       <CustomTabHeading
+//       onPage = {true}
+//       title1 = "Create"
+//       title2 = "Test"
+//       onPress2 = {()=>{navigation.navigate("View Flash Card")}}
+//       onPress1 = {()=>{null}}/>
+//       <Text style={styles.text}>Start using Flashcards now!</Text>
+//       <View style={styles.buttons}>
+//         <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("Topic List")}>
+//           <Text> Create new flashcard </Text>
+//         </TouchableOpacity>
+//         <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate("View Flash Card")}>
+//           <Text> Test Yourself! </Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+// };
 const TopicList = ({navigation, route}) => { 
   const tList = [{name: "Add New Topic"}];
   const [selectedItem, setSelectedItem] = useState(null);
@@ -102,14 +121,17 @@ const TopicList = ({navigation, route}) => {
     else{null}})}else{}},[selectedItem])
   return (
     <View style={styles.body}>
-      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20,marginLeft:2}} onPress={()=>navigation.goBack()}>
-        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
-        <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
-      </TouchableOpacity>
-      <Text style={[styles.subtitle, {marginTop:10}]}>Choose Your Topic</Text>
+      <CustomTabHeading
+          onPage = {true}
+          title1 = "Create"
+          title2 = "Test"
+          onPress2 = {()=>{navigation.navigate("View Flash Card")}}
+          onPress1 = {()=>{navigation.navigate("Topic List")}}/>
+      <Text style={[styles.subtitle, {marginTop:25}]}>Choose Your Topic</Text>
       <View style={[styles.listSize, {marginTop:60}]}>
           <DropDown
           item={selectedItem}
+          sItem = {selectedItem}
           data = {tList}
           onSelect={onSelect}/>
       </View>
@@ -125,7 +147,7 @@ const TopicList = ({navigation, route}) => {
   ); }
 
   const FlashCardInput = ({route,navigation}) => { 
-    const topic =  route.params.topicSelected
+    const topic =  (route.params) ? route.params["topicSelected"] : null
     const passedTopic = topic
     const [currentTopic, setCurrentTopic] = useState((topic != "Add New Topic") ? topic : null)
     const wdoc = user ? doc(dbInit, "users", auth?.currentUser.uid) : null ;
@@ -151,7 +173,7 @@ const TopicList = ({navigation, route}) => {
           } catch (err){
             alert("Error!");
             console.log(err);
-          };navigation.navigate("Create Or View Flash Card")}}>
+          };navigation.navigate("Topic List")}}>
         <Image style = {{marginRight:3,height: 27.3,width: 27.3, alignSelf: "center", justifyContent:"center",}} source = {{uri: "https://cdn.icon-icons.com/icons2/1946/PNG/512/1904674-accept-approved-check-checked-confirm-done-tick_122524.png"}} tintColor= '#008b8b' ></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Confirm</Text>
       </TouchableOpacity>
@@ -221,15 +243,12 @@ const TopicList = ({navigation, route}) => {
           title1 = "Create"
           title2 = "Test"
           onPress2 = {()=>{navigation.navigate("View Flash Card")}}
-          onPress1 = {()=>{null}}/>
-        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20,marginLeft:2}} onPress={()=>navigation.goBack()}>
-          <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
-          <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
-        </TouchableOpacity>
-        <Text style={[styles.subtitle, {marginTop:10}]}>Choose Your Topic</Text>
+          onPress1 = {()=>{navigation.navigate("Topic List")}}/>
+        <Text style={[styles.subtitle, {marginTop:25}]}>Choose Your Topic</Text>
         <View style={[styles.listSize, {marginTop:60}]}>
             <DropDown
             item={selectedItem}
+            sItem = {selectedItem}
             data = {tList}
             onSelect={onSelect}/>
         </View>
@@ -246,6 +265,7 @@ const TopicList = ({navigation, route}) => {
     ); }
 
   const DisplayCards = ({navigation,route}) =>{
+    const [show,setShow] = useState(true)
     const [attempted,setAttempted] = useState("-") 
     const cList = useRef([])
     const wList = useRef([])
@@ -310,6 +330,7 @@ const TopicList = ({navigation, route}) => {
         useNativeDriver: true,
       }).start(()=>{
         setIsFlipped(!isFlipped);
+        setShow(!show)
       });
     }
 
@@ -340,6 +361,7 @@ const TopicList = ({navigation, route}) => {
           <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
             <FlipCard
             test = {!test}
+            shows = {show}
             onPress1 = {()=>{wList.current.push(index);setAttempted(attempted + 1)}}
             onPress2 = {()=>{setSco(sco + 1);cList.current.push(index);setAttempted(attempted + 1)}}
             bcolor= "#dcdcdc"
@@ -354,7 +376,9 @@ const TopicList = ({navigation, route}) => {
       
       ))
     const [tList,setTList] = useState()
-    const topic =  route.params.topicSelected
+    console.log(tList)
+    const topic =  (route.params) ? route.params["topicSelected"] : null
+    console.log(topic)
     useEffect(()=>{
       console.log("yoloo",test)
       if (user) {
@@ -395,16 +419,31 @@ const TopicList = ({navigation, route}) => {
 
 
       </Modal>
-      <View style = {{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
-      <Text style = {{fontSize:15}}>Attempted: {attempted}/{totalsco.current}</Text>
-      <MashButton
-      style = {{width: 150}}
-      title = {test ? "Start Scoring" : "Stop Scoring" }
-      onPress={()=>{setTest(!test);tracking()}}
-      />
-      <Text style = {{fontSize:20}}>{sco}/{totalsco.current}</Text>
+      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:2, marginRight:166,}} onPress={()=>
+          navigation.goBack()}>
+        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
+        <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
+      </TouchableOpacity>
+      <View style = {{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
+      <View style = {{width:"40%", backgroundColor:"yellow", alignItems:"stretch",borderRadius:5,height:60,justifyContent:"flex-end",marginRight:"5%"}}>
+      <Text style = {{fontSize:18,alignSelf:"center"}}>Attempted</Text>
+      <View style = {{height:"60%",backgroundColor:"white",borderBottomLeftRadius:5,borderBottomRightRadius:5}}>
+        <Text style = {{fontSize:20,alignSelf:"center"}}>{attempted}/{totalsco.current}</Text>
+      </View>
+
+
+      </View>
+      <View style = {{width:"40%", backgroundColor:"#07bab4", alignItems:"stretch",borderRadius:5,height:60,justifyContent:"flex-end",marginLeft:"5%"}}>
+      <Text style = {{fontSize:18,alignSelf:"center"}}>Score</Text>
+      <View style = {{height:"60%",backgroundColor:"white",borderBottomLeftRadius:5,borderBottomRightRadius:5}}>
+      <Text style = {{fontSize:20,alignSelf:"center"}}>{sco}/{totalsco.current}</Text>
+      </View>
+
+
+      </View>
       </View>
       <FlatList
+        showsHorizontalScrollIndicator={false}
         onScrollBeginDrag={()=>{flipback(isFlipped,handleFlip)}}
         onViewableItemsChanged={_onViewableItemsChanged}
         viewabilityConfig={_viewabilityConfig}
@@ -415,23 +454,29 @@ const TopicList = ({navigation, route}) => {
         pagingEnabled
         data = {tList}
         renderItem={renderItem}/>
+
+      <MashButton
+      style = {{width: 150,borderWidth:1,marginBottom:15}}
+      title = {test ? "Start Scoring" : "Stop Scoring" }
+      onPress={()=>{setTest(!test);tracking()}}
+      />
     </View>
   )}
 
-      
+
+
   return(
-    <FlashCardStack.Navigator>
-          <FlashCardStack.Screen
-          name = "Create Or View Flash Card"
-          component={CreateFlashCard}
-          options = {{
-            header : ()=> null,
-          }}/>
+    <FlashCardStack.Navigator
+    initialRouteName="Topic List">
         <FlashCardStack.Screen
           name = "Topic List"
           component={TopicList}
           options = {{
             header : ()=> null,
+            transitionSpec: {
+              open: config,
+              close: config,
+            },
           }}/>
         <FlashCardStack.Screen
           name = "Input for Flashcard"
@@ -444,6 +489,10 @@ const TopicList = ({navigation, route}) => {
           component={SelectTopic}
           options = {{
             header : ()=> null,
+            transitionSpec: {
+              open: config,
+              close: config,
+            },
           }}/> 
           <FlashCardStack.Screen
           name= "Display Cards"

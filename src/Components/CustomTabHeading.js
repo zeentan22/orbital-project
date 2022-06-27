@@ -4,7 +4,7 @@ import { Pressable, View, StyleSheet, Text, Button } from "react-native";
 export default CustomTabHeading = (p) => {
   const onPage = p.onPage
     return (
-    <View style = {{flexDirection: "row",borderWidth:1,borderRadius:12,width:"90%",height:40,justifyContent:"center",alignItems:"center",backgroundColor:"#008080"}}>
+    <View style = {{flexDirection: "row",borderWidth:1,borderRadius:12,width:"90%",height:40,justifyContent:"center",alignItems:"center",backgroundColor:"#008080", marginTop:15}}>
       <Pressable
         onPress={p.onPress1}
         hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}

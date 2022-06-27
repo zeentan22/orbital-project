@@ -19,7 +19,7 @@ export default NotiFlipCard = (p) =>{
           styles.button,
           {borderRadius:8,marginTop:50},
           {borderBottomWidth: pressed ? 0 : 4},
-          { disabled: pressed ? true : false },
+          { disabled: p.shows},
           { borderRadius:10, width:180, height:50,alignItems:"center",justifyContent:"center",borderWidth:0.1},
         ]}>
                     <Text style = {{fontSize:20}}>{p.btitle}</Text>

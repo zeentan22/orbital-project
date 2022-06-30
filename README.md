@@ -68,3 +68,10 @@ Install all packages with following code
  Type the following command to run our code
  
  ```npm start```
+ 
+ ### Plans for milestone 3
+ > First Week of July - Beautify our UI design
+ >
+ > Second Week of July - Allow users to set notifications.
+ >
+ > Third week of July - Testing

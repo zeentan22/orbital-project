@@ -72,6 +72,6 @@ Install all packages with following code
  ### Plans for milestone 3
  > First Week of July - Beautify our UI design
  >
- > Second Week of July - Allow users to set notifications.
+ > Second Week of July - Allow users to set notifications by using native notify package
  >
- > Third week of July - Testing
+ > Third week of July - Conducting Unit Testing by using React Native Testing Library 

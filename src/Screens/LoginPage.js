@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { login, useAuth, logout,auth} from "../../firebase";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {getDoc, collection, doc, setDoc} from "firebase/firestore"
 // import type Node from 'react';
 // import { NavigationContainer } from "@react-navigation/native";
@@ -56,6 +57,7 @@ export default function Login({ navigation }) {
   return (
 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAwareScrollView enableOnAndroid={true}  contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.body}>
         <Image
         resizeMode="cover"
@@ -67,7 +69,7 @@ export default function Login({ navigation }) {
             style={styles.image}
             resizeMode="stretch"
             source={require("../../assets/!Procrastinate_Logo.png")}
-          ></Image>
+          />
           <Text style={styles.textintro}>Welcome !</Text>
         </View>
         <TextInput
@@ -89,17 +91,17 @@ export default function Login({ navigation }) {
           onPress={handleLogin}
         />
 
-        <View style = {{flex:1/4,alignItems:"center",marginTop:40}}>
-        <View style={{flexDirection: 'row', alignItems: 'center',width:350, height:50,marginBottom:0}}>
-          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:100}} />
-          <View>
-            <Text style={[styles.textintro2,{width: 100,fontStyle: "normal", textAlign: 'center'}]}>New User?</Text>
+        <View style = {{flex:1/4,alignItems:"center",marginTop:40,width:"94%"}}>
+        <View style={{flexDirection: 'row', alignItems: 'center',width:"100%", height:50}}>
+          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:"35%"}} />
+          <View style = {{width: "30%",justifyContent:"center",alignItems:"center"}}>
+            <Text style={[styles.textintro2,{fontStyle: "normal", textAlign: 'center'}]}>New User?</Text>
           </View>
-          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:100}} />
+          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:"35%"}} />
         </View>
 
         <MashButton 
-          style = {{borderWidth:1}}
+          style = {{borderWidth:1,width:"100%"}}
           textStyle = {{fontWeight: "bold",fontStyle: "normal"}}
           title="GET STARTED"
           onPress={onPressHandler}
@@ -107,7 +109,7 @@ export default function Login({ navigation }) {
         </View>
 
       </View>
-
+      </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
 }
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor:"white",
     borderWidth: 1,
     alignSelf: "center",
-    width: 350,
+    width: "94%",
     height: 50,
     borderColor: "#555",
     borderRadius: 5,
@@ -168,8 +170,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   image: {
-    height: 200,
-    width: 200,
+    height: 250,
+    width: 250,
     alignSelf: "center",
     justifyContent: "center",
   },

@@ -18,23 +18,26 @@ export default Dropdown = ({
         onSelect(item)
     }
         return (
-        <View style = {{flex:1}}>
+        <View style = {{flex:1, width:"75%",alignItems:"center"}}>
             <TouchableOpacity
-            style = {{alignItems: "center", justifyContent:"center", width:350,borderRadius:20,height:65}}
+            style = {{alignItems: "center", justifyContent:"center",borderRadius:20, borderBottomRightRadius:showOption ? 0 : 20,height:40}}
             activeOpacity={0.8}
             onPress={()=> setShowOption(!showOption)}>
-                <View style = {styles.dropDownStyle}>
-                <Text style = {[styles.text,{alignSelf:"center",alignItems:"center",width:"88%"}]}>{!! item? item.name : "Select An Option"}</Text>
-                <View style = {{flexDirection:"row",width:"12%",justifyContent:"space-around",alignItems:"center"}}>
-                <View style = {{flex:1, backgroundColor:"black", width:1,height:65}}></View>
+                <View style = {[styles.dropDownStyle,{borderBottomRightRadius: showOption ? 0 : 13,borderBottomLeftRadius: showOption ? 0 : 13,borderBottomWidth: showOption ? 1: 2}]}>
+                <Text style = {[styles.text,{width:"88%",paddingBottom: showOption ? 1 : 0}]}>{!! item? item.name : "Please Select..."}</Text>
+                <View style = {{flexDirection:"row",marginBottom: showOption ? 1 : 0,width:"12%",justifyContent:"space-around",alignItems:"center",alignSelf:"center",backgroundColor:"#ccc9c8",borderTopRightRadius:13.5,borderBottomRightRadius: showOption ? 0 : 11.5,borderLeftWidth:2,height:41}}>
                 <Image
                 style = {[styles.image, {transform:[{rotate: showOption? "180deg" : "0deg"}]}]}
                 source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/eva-icon-fill/arrow-down-38.png"}}></Image>
                 </View>
                 </View>
             </TouchableOpacity>
-            {showOption && (<View style = {{backgroundColor: "#add8e6", padding: 8, height:300, width:350,}}> 
-                <Text style={[styles.text,{justifyContent:"center",marginBottom:10}]}>Topics</Text>
+            {showOption ?<View style = {{backgroundColor: "white", padding: 8, height:"80%", borderLeftWidth:2,borderRightWidth:2,borderBottomWidth:2,borderBottomRightRadius:20,borderBottomLeftRadius:20,alignSelf:"stretch"}}> 
+            <Image
+            resizeMode="cover"
+            source = {{uri:"https://images.pexels.com/photos/6404231/pexels-photo-6404231.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"}}
+            style = {[StyleSheet.absoluteFillObject,{borderBottomRightRadius:18,borderBottomLeftRadius:18}]}
+            blurRadius = {60}/>
                 <FlatList
                         keyExtractor={(item,index) => index.toString()}
                         data = {data}
@@ -44,23 +47,32 @@ export default Dropdown = ({
                     style={{
                         paddingVertical:8,
                         borderRadius: 4,
+                        height:45,
                         paddingHorizontal: 6,
                         marginBottom: 8,
-                        backgroundColor: (sItem && sItem.name == item.name) ? "yellow" : "white"
+                        backgroundColor: (sItem && sItem.name == item.name) ? "#fceb92" : "white",
+                        borderWidth:2,
+                        borderRadius:5,
+                        alignItems:"center",
+                        justifyContent:"center"
                     }}>
                       {(item.name == "Add New Topic") ?
                       <View style = {{flexDirection:"row", alignItems: "center", justifyContent: "center"}}>
                         <Image
-                        style={[styles.iconimage,{alignSelf:"center",marginBottom:7,marginRight:8}]}
+                        style={[styles.iconimage,{alignSelf:"center"}]}
                         source = {{uri : "https://icons.veryicon.com/png/o/internet--web/myicon/add-41.png"}}/>
 
                       </View>
                         :
-                        <Text style = {{alignSelf: "center", fontSize:25,marginBottom:9, justifyContent:"center"}}>{item.name}</Text>
+                        <View style = {{flexDirection:"row", alignItems: "center", justifyContent: "center",marginTop:-5}}>
+                        <Text style = {{fontSize:20,}}>{item.name}</Text>
+                        </View>
                   }
                       </TouchableOpacity>
                         )}/>
-            </View>)}
+            </View>
+            :
+          null}
         </View>
     )
 }
@@ -69,10 +81,11 @@ export default Dropdown = ({
 
 const styles = StyleSheet.create({
     text: {
-      fontSize: 30,
+      fontSize: 22,
       textAlign: "center",
       color: "black",
       alignSelf:"center",
+      justifyContent:"center"
     },
 
     inputText: {
@@ -88,15 +101,14 @@ const styles = StyleSheet.create({
       backgroundColor: "white",
     },
     image:{
-      height: 35,
-      width: 35,
+      height: 25,
+      width: 25,
       alignSelf: "center",
       justifyContent:"center",
-      marginLeft:1.5,
     },
     listSize:{
       flex:1,
-      height: 250,
+      height: 270,
       width: "100%",
       alignItems: "center",
       justifyContent: "flex-start",
@@ -109,14 +121,13 @@ const styles = StyleSheet.create({
       justifyContent:"center",
     },
     dropDownStyle:{
-        padding: 8,
-        borderRadius: 20,
+        borderRadius: 15,
         borderWidth:2,
-        height: 65,
+        height: 45,
         justifyContent: "center",
         flexDirection:"row",
         marginBottom: 2,
-        width:350,
+        width:"90%",
         alignItems: "center",
 
     },

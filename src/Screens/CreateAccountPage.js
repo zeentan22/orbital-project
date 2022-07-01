@@ -4,6 +4,7 @@ import React, { userState, useState, useRef, useEffect} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {
   StatusBar,
   Alert,
@@ -100,6 +101,7 @@ export default function CreateAccount({ navigation }) {
   }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAwareScrollView enableOnAndroid={true} contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.body}>
       <Image
         resizeMode="cover"
@@ -149,6 +151,7 @@ export default function CreateAccount({ navigation }) {
           onPress={handleSignup}
         />
       </View>
+      </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
 }
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
   },
   body1: {
     flex: 0.4,
-    width: "90%",
+    width: "94%",
     borderRadius:20,
     flexDirection: "column",
     backgroundColor: "#ffffff",
@@ -196,7 +199,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderWidth: 2,
     alignSelf: "center",
-    width: 300,
+    width: "94%",
     borderColor: "#555",
     borderRadius: 5,
     textAlign: "center",

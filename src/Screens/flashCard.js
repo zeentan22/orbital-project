@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput,FlatList, Pressable, Animated,Dimensions,Modal} from "react-native";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import React, { userState, useState, useEffect, useRef, useCallback } from "react";
 import MashButton from "../Components/CustomButton";
 import { DrawerActions } from '@react-navigation/native';
@@ -121,20 +122,29 @@ const TopicList = ({navigation, route}) => {
     else{null}})}else{}},[selectedItem])
   return (
     <View style={styles.body}>
+      <View style = {{justifyContent:"flex-start",alignItems:"center",flex:1}}>
       <CustomTabHeading
           onPage = {true}
           title1 = "Create"
           title2 = "Test"
           onPress2 = {()=>{navigation.navigate("View Flash Card")}}
           onPress1 = {()=>{navigation.navigate("Topic List")}}/>
-      <Text style={[styles.subtitle, {marginTop:25}]}>Choose Your Topic</Text>
-      <View style={[styles.listSize, {marginTop:60}]}>
+      </View>
+      <View style = {{justifyContent:"center",alignItems:"center",flex:2.5,width:"100%",alignSelf:"stretch"}}>
+      <Image
+              source={require("../../assets/HeaderForChoosing.png")}
+              style={styles.imageHeader}
+              resizeMode = "cover"
+            />
+      </View>
+      <View style={[styles.listSize, {marginTop:30}]}>
           <DropDown
           item={selectedItem}
           sItem = {selectedItem}
           data = {tList}
           onSelect={onSelect}/>
       </View>
+      <View style = {{justifyContent:"center",alignItems:"center",flex:0.5,marginBottom:2}}>
       <ProceedButton
       title = "Proceed"
       style = {{marginBottom:25}}
@@ -143,6 +153,7 @@ const TopicList = ({navigation, route}) => {
         else {alert("Please select a topic!")}}}
 
         />
+      </View>
     </View>
   ); }
 
@@ -159,14 +170,15 @@ const TopicList = ({navigation, route}) => {
       setAnswer("Null");
     },[])
     return (
+      <KeyboardAwareScrollView enableOnAndroid={true}   contentContainerStyle={{flexGrow: 1}}> 
       <View style={styles.body}>
-        <View style = {{flexDirection:"row", flex:0.2, alignItems: "flex-start",justifyContent: "flex-start",}}>
-        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:2, marginRight:166,}} onPress={()=>
+        <View style = {{flexDirection:"row", flex:0.2, alignItems: "flex-start",justifyContent: "space-evenly",width:"94%",}}>
+        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginRight:166,}} onPress={()=>
           navigation.goBack()}>
         <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
       </TouchableOpacity>
-      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom:20,marginRight:8}} onPress={async ()=>{
+      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom:20}} onPress={async ()=>{
           try {
             let newObj = {topic: currentTopic, Question: question, Answer:answer}
             await updateDoc(wdoc, {FlashCardContent:arrayUnion(newObj)})
@@ -214,6 +226,7 @@ const TopicList = ({navigation, route}) => {
 
 
       </View >
+      </KeyboardAwareScrollView>
     ); }
   const SelectTopic = ({route,navigation}) => { 
     const tList = [{name: "Add New Topic"}];
@@ -238,20 +251,29 @@ const TopicList = ({navigation, route}) => {
       else{null};})}else{}},[selectedItem])
     return (
       <View style={styles.body}>
+        <View style = {{justifyContent:"flex-start",alignItems:"center",flex:1}}>
         <CustomTabHeading
           onPage = {false}
           title1 = "Create"
           title2 = "Test"
           onPress2 = {()=>{navigation.navigate("View Flash Card")}}
           onPress1 = {()=>{navigation.navigate("Topic List")}}/>
-        <Text style={[styles.subtitle, {marginTop:25}]}>Choose Your Topic</Text>
-        <View style={[styles.listSize, {marginTop:60}]}>
+          </View>
+          <View style = {{justifyContent:"center",alignItems:"center",flex:2.5,width:"100%",alignSelf:"stretch"}}>
+        <Image
+              source={require("../../assets/HeaderForChoosing2.png")}
+              style={styles.imageHeader}
+              resizeMode = "cover"
+            />
+        </View>
+        <View style={[styles.listSize, {marginTop:30}]}>
             <DropDown
             item={selectedItem}
             sItem = {selectedItem}
             data = {tList}
             onSelect={onSelect}/>
         </View>
+        <View style = {{justifyContent:"center",alignItems:"center",flex:0.5,marginBottom:2}}>
         <ProceedButton
           title = "Proceed"
           style = {{marginBottom:25}}
@@ -261,6 +283,7 @@ const TopicList = ({navigation, route}) => {
             else {alert("Please select a topic!")}}}
 
         />
+        </View>
       </View>
     ); }
 
@@ -419,11 +442,13 @@ const TopicList = ({navigation, route}) => {
 
 
       </Modal>
-      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:2, marginRight:166,}} onPress={()=>
+      <View style = {{width:"97%"}}>
+      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{width:"94%",alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:8, marginRight:166,}} onPress={()=>
           navigation.goBack()}>
         <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
       </TouchableOpacity>
+      </View>
       <View style = {{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
       <View style = {{width:"40%", backgroundColor:"yellow", alignItems:"stretch",borderRadius:5,height:60,justifyContent:"flex-end",marginRight:"5%"}}>
       <Text style = {{fontSize:18,alignSelf:"center"}}>Attempted</Text>
@@ -454,12 +479,13 @@ const TopicList = ({navigation, route}) => {
         pagingEnabled
         data = {tList}
         renderItem={renderItem}/>
-
+      <View style = {{flex:1.5,alignItems:"center",justifyContent:"flex-end",width:"50%"}}>
       <MashButton
-      style = {{width: 150,borderWidth:1,marginBottom:15}}
+      style = {{borderWidth:1}}
       title = {test ? "Start Scoring" : "Stop Scoring" }
       onPress={()=>{setTest(!test);tracking()}}
       />
+      </View>
     </View>
   )}
 
@@ -561,13 +587,15 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent:"center",
   },
+  imageHeader:{
+    height: 210,
+    marginTop:20,
+    width: 320,
+  },
   listSize:{
-    flex:1,
-    height: 250,
-    width: "100%",
+    flex:4,
     alignItems: "center",
     justifyContent: "flex-start",
-    margin: 20,
   },
   iconimage:{
     height: 30,

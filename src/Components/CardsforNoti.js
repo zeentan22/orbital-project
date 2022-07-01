@@ -1,6 +1,6 @@
 import { Card,Title, Subheading } from "react-native-paper";
 import React, {component, useState, useEffect} from "react";
-import {View, Image,Text, StyleSheet, Pressable, TouchableWithoutFeedback, TouchableOpacity, FlatList} from "react-native";
+import {View, Image,Text, StyleSheet, Pressable, TouchableWithoutFeedback, TouchableOpacity, FlatList, ImageBackground} from "react-native";
 import ProceedButton from "./ProceedButton";
 
 export default NotiFlipCard = (p) =>{
@@ -13,13 +13,12 @@ export default NotiFlipCard = (p) =>{
                 <Image resizeMode="contain" source = {{uri:p.imagedone}} style ={{height: 45,width: 45,alignSelf: "center", justifyContent:"center",tintColor: p.tC}}></Image>
                 </View>
                 <Subheading style = {{alignSelf:"center"}}>{p.title}</Subheading>
-                {p.button && (<Pressable onPress = {p.onPress} hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }}
+                {p.button && (<Pressable onPress = {p.onPress} disabled = {p.shows} hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }}
                 style={({ pressed }) => [
           { backgroundColor: pressed ? "#b0c4de" : "#86f09f"},
           styles.button,
           {borderRadius:8,marginTop:50},
           {borderBottomWidth: pressed ? 0 : 4},
-          { disabled: p.shows},
           { borderRadius:10, width:180, height:50,alignItems:"center",justifyContent:"center",borderWidth:0.1},
         ]}>
                     <Text style = {{fontSize:20}}>{p.btitle}</Text>

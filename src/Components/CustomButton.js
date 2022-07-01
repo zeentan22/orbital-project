@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
   },
   button: {
-    width: 350,
-    height: 45,
+    width: "94%",
+    height: 40,
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",

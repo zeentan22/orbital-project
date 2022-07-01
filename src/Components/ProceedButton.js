@@ -29,8 +29,8 @@ const ProceedButton = (p) => {
       fontStyle: "italic",
     },
     button: {
-      width: 140,
-      height: 45,
+      width: 150,
+      height: 40,
       alignSelf: "center",
       alignItems: "center",
       justifyContent: "center",

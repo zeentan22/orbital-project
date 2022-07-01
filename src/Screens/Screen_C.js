@@ -31,10 +31,13 @@ import {
   TouchableRipple,
   Switch,
 } from "react-native-paper";
-import NotiFlipCard from "../Components/CardsforNoti"
+import NotiFlipCard from "../Components/NotiCardsTrial"
+import { createNativeWrapper } from "react-native-gesture-handler";
 const {width, height} = Dimensions.get("screen")
 const cW = width * 0.7
-const cH = cW * 1.54
+const cH = cW * 1.7
+const hH = height * 0.24
+const wH = cW *1.6
 
 
 export function Screenc({ navigation }) {
@@ -138,44 +141,48 @@ export function Screenc({ navigation }) {
   const keyExtractor=(item,index)=> index.toString()
   const renderItem = useCallback(({item,index})=>(
     <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{[handleFlip()]}}>  
-          <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
+          <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: "90%",height: cH}]}>
           <NotiFlipCard
           heading = {`Task ${index + 1}`}
           button = {false}
           image = "https://icons.veryicon.com/png/o/business/erp-system-background-icon/task-6.png"
-          imagedone = {item.done ? "https://icons.veryicon.com/png/o/business/intranet-portal/already-done-1.png" : "https://icons.veryicon.com/png/o/system/system-icon-line/order-incomplete.png"}
+          imagedone = {item.done ? require("../../assets/Correct.png") : require("../../assets/Wrong.png")}
           tC = {item.done? "#32cd32" : "red"}
+          marking = {true}
           title = {item.name}
           btitle = {null}
           pageNum = {`${index + 1}/${items.length}`}/>
 
           </Animated.View>
         
-        <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
+        <Animated.View style = {[styles.back, styles.hidden,{width: "90%",height: cH},{transform:[{rotateY:interpolateBack}]}]}>
           <NotiFlipCard
           heading = "Mark As:"
           shows = {show}
+          marking = {false}
           onPress = {()=>updateData(item)}
           button = {true}
-          image = "https://icons.veryicon.com/png/o/miscellaneous/core-music/task-42.png"
+          image = "https://icons.veryicon.com/png/o/business/erp-system-background-icon/task-6.png"
           btitle = "Completed"
-          title = {item.name}
+          title = {null}
           pageNum = {`${index + 1}/${items.length}`}/>
         </Animated.View>
     </Pressable>
   ));
 
   const checkTasks = (items) => {
-    if (items.length === 0) {
       return (
-        <View style={{ marginTop: 20 }}>
-          <Text style={{ fontSize: 30 }}> No Schedule Set </Text>
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <Text style={styles.taskHeader}>Today's Task: </Text>
+        <View style={{ flex:1,justifyContent:"center",alignItems:"center" }}>
+          <View style = {{height:hH, justifyContent:"center",alignItems:"center",width:"100%"}}>
+          <Image
+              source={require("../../assets/HeaderForTasks.png")}
+              style={styles.imageHeader}
+              resizeMode = "cover"
+            />
+          <Text style={[styles.date,{position:"absolute",top:75}]}>Date : {convertDate(date)}</Text>
+          <Text style={[styles.taskHeader,{position:"absolute",top:120}]}>Today's Tasks: {items.length}</Text>
+          </View>
+          <View style = {{width:"100%",height:cH}}>
           <FlatList
             onScrollBeginDrag={() => {
               flipback(isFlipped, handleFlip);
@@ -192,19 +199,19 @@ export function Screenc({ navigation }) {
             data={items}
             renderItem={renderItem}
           />
+          </View>
         </View>
       );
-    }
   };
 
   return (
     <View style={styles.body}>
       <Image
-        resizeMode="cover"
-        source = {{uri:"https://i.pinimg.com/564x/73/bc/d3/73bcd34f81b6dcc9aac810ff321e419c.jpg"}}
-        style = {StyleSheet.absoluteFillObject}
-        blurRadius = {70}/>
-      <Text style={styles.date}>Date : {convertDate(date)}</Text>
+          resizeMode="cover"
+          source = {require("../../assets/BoardBG.png")}
+          style = {[StyleSheet.absoluteFillObject,{width:"100%",height:"100%"}]}
+          
+          />
       {checkTasks(items)}
     </View>
   );
@@ -225,9 +232,8 @@ const styles = StyleSheet.create({
   },
 
   taskHeader: {
-    marginTop: 10,
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 25,
     alignSelf:"center"
   },
 
@@ -276,5 +282,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
+  }
+  ,
+  imageHeader:{
+    height: wH,
+    width: cW,
+    alignSelf:"center",
+    justifyContent:"center",
+    top:17
   },
 });

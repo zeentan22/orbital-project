@@ -25,7 +25,7 @@ const {width, height} = Dimensions.get("screen")
 const cW = width * 0.7
 const cH = cW * 1.54
 const iW = width * 0.9
-const iH = iW * 0.8
+const iH = iW * 0.68
 
 
 
@@ -132,14 +132,14 @@ const TopicList = ({navigation, route}) => {
           onPress2 = {()=>{navigation.navigate("View Flash Card")}}
           onPress1 = {()=>{navigation.navigate("Topic List")}}/>
       </View>
-      <View style = {{justifyContent:"center",alignItems:"center",flex:2.5,width:"100%",alignSelf:"stretch",alignSelf:"center"}}>
+      <View style = {{justifyContent:"center",alignItems:"center",flex:3.3,width:"100%",alignSelf:"stretch",alignSelf:"center"}}>
       <Image
               source={require("../../assets/HeaderForChoosing.png")}
               style={styles.imageHeader}
               resizeMode = "cover"
             />
       </View>
-      <View style={[styles.listSize, {marginTop:30}]}>
+      <View style={[styles.listSize, {marginTop:0}]}>
           <DropDown
           item={selectedItem}
           sItem = {selectedItem}
@@ -261,14 +261,14 @@ const TopicList = ({navigation, route}) => {
           onPress2 = {()=>{navigation.navigate("View Flash Card")}}
           onPress1 = {()=>{navigation.navigate("Topic List")}}/>
           </View>
-          <View style = {{justifyContent:"center",alignItems:"center",flex:2.5,width:"100%",alignSelf:"stretch"}}>
+          <View style = {{justifyContent:"center",alignItems:"center",flex:3.3,width:"100%",alignSelf:"stretch"}}>
         <Image
               source={require("../../assets/HeaderForChoosing2.png")}
               style={styles.imageHeader}
               resizeMode = "cover"
             />
         </View>
-        <View style={[styles.listSize, {marginTop:30}]}>
+        <View style={[styles.listSize, {marginTop:0}]}>
             <DropDown
             item={selectedItem}
             sItem = {selectedItem}
@@ -591,8 +591,8 @@ const styles = StyleSheet.create({
   },
   imageHeader:{
     height: iH,
-    width: "90%",
-    alignSelf:"center",
+    width: "86%",
+    flex:1
   },
   listSize:{
     flex:4,

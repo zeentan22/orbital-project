@@ -48,7 +48,8 @@
 >>> 
 >>>> Users are able to view the flash cards that they have created.
 
-### Milestone 2
+### Core features that have been developed in Milestone 2
+
 > Cores features that have been developed and problems that we have faced during our project is documented inside the link below.
 
 > https://docs.google.com/document/d/1l6AuI0llQmc8ZgIAgsnCiBRWVnUrRSHOelk7tYotWXA/edit?usp=sharing

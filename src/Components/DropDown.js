@@ -25,7 +25,7 @@ export default Dropdown = ({
             onPress={()=> setShowOption(!showOption)}>
                 <View style = {[styles.dropDownStyle,{borderBottomRightRadius: showOption ? 0 : 13,borderBottomLeftRadius: showOption ? 0 : 13,borderBottomWidth: showOption ? 1: 2}]}>
                 <Text style = {[styles.text,{width:"88%",paddingBottom: showOption ? 1 : 0}]}>{!! item? item.name : "Please Select..."}</Text>
-                <View style = {{flexDirection:"row",marginBottom: showOption ? 1 : 0,width:"12%",justifyContent:"space-around",alignItems:"center",alignSelf:"center",backgroundColor:"#ccc9c8",borderTopRightRadius:13.5,borderBottomRightRadius: showOption ? 0 : 11.5,borderLeftWidth:2,height:41}}>
+                <View style = {{flexDirection:"row",marginBottom: showOption ? 1 : 0,width:"12%",justifyContent:"space-around",alignItems:"center",alignSelf:"center",backgroundColor:"#ccc9c8",borderTopRightRadius:13.5,borderBottomRightRadius: showOption ? 0 : 11.5,borderLeftWidth:2,height:40.5}}>
                 <Image
                 style = {[styles.image, {transform:[{rotate: showOption? "180deg" : "0deg"}]}]}
                 source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/eva-icon-fill/arrow-down-38.png"}}></Image>

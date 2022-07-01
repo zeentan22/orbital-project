@@ -24,6 +24,8 @@ const FlashCardStack = createStackNavigator();
 const {width, height} = Dimensions.get("screen")
 const cW = width * 0.7
 const cH = cW * 1.54
+const iW = width * 0.9
+const iH = iW * 0.8
 
 
 
@@ -130,7 +132,7 @@ const TopicList = ({navigation, route}) => {
           onPress2 = {()=>{navigation.navigate("View Flash Card")}}
           onPress1 = {()=>{navigation.navigate("Topic List")}}/>
       </View>
-      <View style = {{justifyContent:"center",alignItems:"center",flex:2.5,width:"100%",alignSelf:"stretch"}}>
+      <View style = {{justifyContent:"center",alignItems:"center",flex:2.5,width:"100%",alignSelf:"stretch",alignSelf:"center"}}>
       <Image
               source={require("../../assets/HeaderForChoosing.png")}
               style={styles.imageHeader}
@@ -588,9 +590,9 @@ const styles = StyleSheet.create({
     justifyContent:"center",
   },
   imageHeader:{
-    height: 210,
-    marginTop:20,
-    width: 320,
+    height: iH,
+    width: "90%",
+    alignSelf:"center",
   },
   listSize:{
     flex:4,

@@ -10,7 +10,6 @@
 > we decide to include other features such as flashcards to help students with their revision. Hence, we envision our application
 > be a platform that host all sorts of services that a student will find useful during their learning.
 
-
 ## Proposed features
 > Users are able to create and customize their schedule based on their needs.
 > 
@@ -34,17 +33,38 @@
 >>> 
 >>>![IMG_0958_adobe_express (5)](https://user-images.githubusercontent.com/98390645/170870478-f1d6b8f7-1c72-48e9-8d71-0d5b141ecbe0.jpeg)
 
->> Development Plan
->> 
->>> First Week of Jun 
->>> 
->>>> Users are able to create and customize their schedule based on their needs.
->>>> 
->>> Second Week of Jun
->>> 
->>>> Users are able to see their daily task appearing on their home screen
->>>> 
->>> Third Week of Jun
->>> 
->>>> Users are able to view the flash cards that they have created.
 
+### Core features that have been developed in Milestone 2
+
+> Cores features that have been developed and problems that we have faced during our project is documented inside the link below.
+
+> https://docs.google.com/document/d/1l6AuI0llQmc8ZgIAgsnCiBRWVnUrRSHOelk7tYotWXA/edit?usp=sharing
+
+### Tehnology Stack
+
+> 1) React Native (front-end and back-end)
+
+> 2) Firebase (to store data and perform user authentication)
+
+### Intructions to test our project
+
+ Clone our repository by typing the command below
+ 
+ ```git clone git@github.com:zeentan22/orbital-project.git```
+
+Install all packages with following code
+
+ ```npm install```
+ 
+ Due to some naming issue in our git, users cloning our project will have go this directory ../src/Screens/flashCard.js and rename the file to flashcard.js
+ 
+ Type the following command to run our code
+ 
+ ```npm start```
+ 
+ ### Plans for milestone 3
+ > First Week of July - Beautify our UI design
+ >
+ > Second Week of July - Allow users to set notifications by using native notify package
+ >
+ > Third week of July - Conducting Unit Testing by using React Native Testing Library 

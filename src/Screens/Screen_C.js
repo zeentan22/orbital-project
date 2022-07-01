@@ -7,9 +7,14 @@ import React, {
 } from "react";
 import { logout, dbInit, useAuth } from "../../firebase";
 import { getAuth } from "firebase/auth";
-import { getDoc, onSnapshot, doc ,updateDoc,
+import {
+  getDoc,
+  onSnapshot,
+  doc,
+  updateDoc,
   arrayUnion,
-  arrayRemove, } from "firebase/firestore";
+  arrayRemove,
+} from "firebase/firestore";
 
 import {
   StyleSheet,
@@ -49,14 +54,12 @@ export function Screenc({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [isFlipped, setIsFlipped] = useState(false);
   const [selectedItem, setSelectedItem] = items ? useState(0) : null;
+  const [updateItem, setupdateItem] = useState(false);
   const _viewabilityConfig = {
     itemVisiblePercentThreshold: 40,
   };
   const _onViewableItemsChanged = useCallback(
     ({ viewableItems, changed }) => {
-      console.log("Visible items are", viewableItems);
-      console.log("Changed in this iteration", changed);
-      console.log(viewableItems[0].index);
       setSelectedItem(viewableItems[0].index);
     },
     [selectedItem]
@@ -94,24 +97,41 @@ export function Screenc({ navigation }) {
     });
   };
 
+  const handleUpdate = async (oldData, obj, docRef) => {
+    await updateDoc(docRef, { tasks: arrayRemove(oldData) });
+
+    obj.done = true;
+    let updatedTasks = [...oldData.tasks];
+
+    updatedTasks.sort((a, b) => {
+      return parseInt(a.startTime) - parseInt(b.startTime);
+    });
+
+    let newObj = { date: obj.date, tasks: updatedTasks };
+    await updateDoc(docRef, { tasks: arrayUnion(newObj) });
+
+    alert("tasks updated successfully");
+    setupdateItem(!updateItem);
+  };
+
   const getData = async (date) => {
     let result = [];
     const docRef = doc(dbInit, "users", getAuth()?.currentUser.uid);
     const docSnap = await getDoc(docRef);
     const allData = docSnap.data().tasks;
+
     let todayTasks = allData.filter((item) => item.date === date);
 
-      if (todayTasks.length != 0) {
-        todayTasks[0].tasks.forEach((item) => {
-          result.push(item);
-          console.log(item);
-        });
-        console.log(result);
-        setItems(result);
-      }
-     else {
+    if (todayTasks.length != 0) {
+      todayTasks[0].tasks.forEach((item) => {
+        result.push(item);
+      });
+
+      setItems(result);
+    } else {
+      setItems([]);
     }
-  ;}
+  };
 
   const convertDate = (date) => {
     const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
@@ -121,22 +141,22 @@ export function Screenc({ navigation }) {
     }-${extraDayFormat}${date.getDate()}`;
   };
 
-  const updateData = async (item,index) => {
+  const updateData = async (item, index) => {
     item.done = true;
-    console.log(item);
-
+    const newObj = item;
+    const oldObj = { date: item.date, tasks: items };
+    await handleUpdate(oldObj, newObj, docRef);
   };
 
   useEffect(() => {
-    let result = {};
-    const todayTasks = getData(convertDate(date));
     return onSnapshot(
       doc(dbInit, "users", getAuth()?.currentUser.uid),
       (doc) => {
         console.log("onSnapshot");
         getData(convertDate(date));
       }
-    );}, []);
+    );
+  }, [updateItem]);
 
   const keyExtractor=(item,index)=> index.toString()
   const renderItem = useCallback(({item,index})=>(

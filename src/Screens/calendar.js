@@ -105,9 +105,6 @@ const SetCalendar = ({ navigation }) => {
   };
 
   const handleUpdate = async (oldData, obj, docRef) => {
-    console.log(obj);
-    console.log(oldData);
-    console.log("---&&");
     if (Object.keys(oldData).length === 0) {
       await updateDoc(docRef, { tasks: arrayUnion(obj) });
       alert("added task successfully");
@@ -134,7 +131,6 @@ const SetCalendar = ({ navigation }) => {
 
   useEffect(() => {
     setOS(Platform.OS === "ios");
-    console.log("effect run 2");
     let result = {};
     let unmodifiedResult = [];
     return onSnapshot(
@@ -157,14 +153,9 @@ const SetCalendar = ({ navigation }) => {
   }, [updateItem]);
 
   const retrieveExamDate = async (acadYear, moduleCode, semester) => {
-    console.log(acadYear);
-    console.log(semester);
-    console.log(moduleCode);
-    console.log("---");
-
     const data = await fetchDataFromNusMods(acadYear, moduleCode);
     const value = getExamDate(data, semester);
-    console.log(value);
+
     if (value.length === 0) {
       alert("Wrong information or module does not have final exam");
       return;
@@ -188,8 +179,6 @@ const SetCalendar = ({ navigation }) => {
           },
         ],
       };
-      console.log(obj);
-      console.log("---");
       let oldData = {};
       unmodfiedItems.forEach((item) => {
         if (item.date === convertDate(selectedDate)) {
@@ -237,7 +226,6 @@ const SetCalendar = ({ navigation }) => {
         .filter((ele) => ele !== item);
       const newData = { date: date, tasks: newtasks };
       handleDelete(oldData, newData, docRef);
-      // console.log(items);
     };
     return (
       <View style={{ justifyContent: "center" }}>
@@ -298,28 +286,48 @@ const SetCalendar = ({ navigation }) => {
   const renderIOSOrAndroidDatePicker = () => {
     if (os) {
       return (
-        <Modal visible={chooseDate} animationType="fade">
+        <Modal
+          visible={chooseDate}
+          animationType="fade"
+          style={{ borderWidth: 2, zIndex: 2 }}
+        >
           <View style={styles.modalContent}>
-            <View style = {{display: "flex",justifyContent:"center",alignItems:"center",width:300,height:200,borderColor:"black",borderRadius:5,
-            borderWidth:2,}}>
-            <Text style = {{marginBottom:20}}>Set Your Date Here</Text>
-
-            <DateTimePicker
-              isVisible={true}
-              testID="dateTimePicker"
-              value={date}
-              mode={"date"}
-              display="default"
-              is24Hour={true}
-              onChange={onChange}
-              style={{ width: 200, marginRight: 70 }}
-            />
             <TouchableOpacity
-              style={{marginTop:25, borderWidth:1,borderColor:"black",borderRadius:5}}
-              onPress = {()=>{setChooseDate(false);setModalOpen(true)}}>
-                <Text>Close Modal</Text>
+              onPress={() => {
+                setChooseDate(false);
+                setModalOpen(true);
+              }}
+              style={{ alignSelf: "flex-end" }}
+            >
+              <Image
+                source={require("../../assets/cross.png")}
+                style={styles.modalClose}
+              />
             </TouchableOpacity>
-          </View>
+            <View
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: 300,
+                height: 200,
+                borderColor: "black",
+                borderRadius: 5,
+                borderWidth: 2,
+              }}
+            >
+              <Text style={{ marginBottom: 20 }}> Set your Date Below </Text>
+              <DateTimePicker
+                isVisible={true}
+                testID="dateTimePicker"
+                value={date}
+                mode={"date"}
+                display="default"
+                is24Hour={true}
+                onChange={onChange}
+                style={{ width: 120 }}
+              />
+            </View>
           </View>
         </Modal>
       );
@@ -346,26 +354,42 @@ const SetCalendar = ({ navigation }) => {
       return (
         <Modal visible={chooseTime} animationType="fade">
           <View style={styles.modalContent}>
-          <View style = {{display: "flex",justifyContent:"center",alignItems:"center",width:300,height:200,borderColor:"black",borderRadius:5,
-            borderWidth:2,}}>
-              <Text style = {{marginBottom:20}}>Set Your Start Time Here</Text>
-
-            <DateTimePicker
-              isVisible={true}
-              testID="dateTimePicker"
-              value={date}
-              mode={"time"}
-              display="default"
-              is24Hour={true}
-              onChange={onChangeTime}
-              style={{ width: 200, marginRight: 70 }}
-            />
             <TouchableOpacity
-              style={{marginTop:25, borderWidth:1,borderColor:"black",borderRadius:5}}
-              onPress = {()=>{setChooseTime(false);setModalOpen(true)}}>
-                <Text>Close Modal</Text>
+              onPress={() => {
+                setChooseTime(false);
+                setModalOpen(true);
+              }}
+              style={{ alignSelf: "flex-end" }}
+            >
+              <Image
+                source={require("../../assets/cross.png")}
+                style={styles.modalClose}
+              />
             </TouchableOpacity>
-          </View>
+            <View
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: 300,
+                height: 200,
+                borderColor: "black",
+                borderRadius: 5,
+                borderWidth: 2,
+              }}
+            >
+              <Text style={{ marginBottom: 20 }}>Set Your Start Time here</Text>
+              <DateTimePicker
+                isVisible={true}
+                testID="dateTimePicker"
+                value={date}
+                mode={"time"}
+                display="default"
+                is24Hour={true}
+                onChange={onChangeTime}
+                style={{ width: 200, marginRight: 70 }}
+              />
+            </View>
           </View>
         </Modal>
       );
@@ -414,27 +438,30 @@ const SetCalendar = ({ navigation }) => {
           >
             <TouchableOpacity
               style={{ borderRadius: 20, borderWidth: 2 }}
-              onPress={() => setChooseDate(true)}
+              onPress={() => {
+                setChooseDate(true);
+                setModalOpen(false);
+              }}
             >
               <Text> Pick a date </Text>
             </TouchableOpacity>
-            {renderIOSOrAndroidDatePicker()}
+
             <Text style={{ marginTop: 25, marginBottom: 25 }}>
               Date Chosen: {dateFormat}
             </Text>
-
             <TouchableOpacity
               style={{ borderRadius: 20, borderWidth: 2 }}
-              onPress={() => setChooseTime(true)}
+              onPress={() => {
+                setChooseTime(true);
+                setModalOpen(false);
+              }}
             >
               <Text> Pick a Time </Text>
             </TouchableOpacity>
-            {renderIOSOrAndroidTimePicker()}
 
             <Text style={{ marginTop: 25, marginBottom: 25 }}>
               Time Chosen: {convertTime(startTime)}
             </Text>
-
             <TextInput
               style={styles.input}
               placeholder="task 1..."
@@ -470,6 +497,8 @@ const SetCalendar = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+      {renderIOSOrAndroidDatePicker()}
+      {renderIOSOrAndroidTimePicker()}
       <Modal visible={examModalOpen} animationType="slide">
         <View style={styles.modalContent}>
           <TouchableOpacity

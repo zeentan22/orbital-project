@@ -29,35 +29,32 @@ const Trial = ({navigation}) =>{
           <Text> Custom notifications </Text>
         </TouchableOpacity>
       </View>
-    </View>
-  );
-};
-const Trial2 = ({navigation}) =>{
+      </View>
+    );
+  };
+  const Trial2 = ({ navigation }) => {
+    return (
+      <View style={styles.body}>
+        <MashButton
+          title="GO back"
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+        <Text style={styles.text}>Set your schedule 2</Text>
+      </View>
+    );
+  };
   return (
-    <View style={styles.body}>
-      <MashButton title = "GO back" onPress={()=>{navigation.goBack()}}/>
-      <Text style={styles.text}>Set your schedule 2</Text>
-    </View>
+    <ScheduleStack.Navigator
+      initialRouteName="first"
+      screenOptions={{ header: () => null }}
+    >
+      <ScheduleStack.Screen name="first" component={Trial} />
+
+      <ScheduleStack.Screen name="SetCalendar" component={SetCalendar} />
+    </ScheduleStack.Navigator>
   );
-};
-return (
-<ScheduleStack.Navigator
-initialRouteName="first"
-screenOptions={{header: ()=> null}}>
-<ScheduleStack.Screen
-  name = "first"
-    component={Trial}/>
-
-    <ScheduleStack.Screen
-    name = "SetCalendar"
-    component={SetCalendar}/>
-
-
-
-
-  </ScheduleStack.Navigator>
-  );
-
 }
 
 const styles = StyleSheet.create({
@@ -74,7 +71,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    width:300,
+    width: 300,
     borderRadius: 20,
     borderWidth: 2,
     padding: 10,

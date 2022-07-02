@@ -40,11 +40,18 @@
 
 > https://docs.google.com/document/d/1l6AuI0llQmc8ZgIAgsnCiBRWVnUrRSHOelk7tYotWXA/edit?usp=sharing
 
+### Testing done and software engineering practices in Milestone 2
+
+> https://docs.google.com/document/d/1ruVOX7JnNadeX8M5FUQDOpJcoEdmWq1E/edit?usp=sharing&ouid=106333389018730155277&rtpof=true&sd=true
+
 ### Tehnology Stack
 
 > 1) React Native (front-end and back-end)
 
 > 2) Firebase (to store data and perform user authentication)
+
+
+
 
 ### Intructions to test our project
 

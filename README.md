@@ -48,19 +48,37 @@
 
 ### Intructions to test our project
 
- Clone our repository by typing the command below
+ Users who are testing our project will have to install Node.js first by clicking on the link below (for users without Node.js)
+ 
+ https://nodejs.org/en/
+ 
+ To check if you have Node.js installed type the following command into your terminal
+ 
+ ```node --version```
+ 
+ If installation is successful, proceed with the following steps below.
+ 
+ 1) Clone our repository by typing the command below
  
  ```git clone git@github.com:zeentan22/orbital-project.git```
 
-Install all packages with following code
+ 2) Install all packages with following code
 
- ```npm install```
+ ```npm install --legacy-peer-deps```
  
- Due to some naming issue in our git, users cloning our project will have go this directory ../src/Screens/flashCard.js and rename the file to flashcard.js
+ 2.1) For Mac Users, continue with this command (if you do not have watchman)
  
- Type the following command to run our code
+ ```brew install watchman``` 
+ 
+ 3) Due to some naming issue in our git, users cloning our project will have go this directory ../src/Screens/flashCard.js and rename the file to flashcard.js. Ensure that the device u are using to scan the QR Code that appears on your terminal is running on WIFI.
+ 
+ 4) Type the following command to run our code
  
  ```npm start```
+ 
+ Users facing difficulties testing our project can email us below for assistance. We will try our best to help you!
+ 
+ Email address: zeenmqorbital@gmail.com
  
  ### Plans for milestone 3
  > First Week of July - Beautify our UI design

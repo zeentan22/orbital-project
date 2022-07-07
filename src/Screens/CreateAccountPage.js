@@ -44,19 +44,44 @@ export default function CreateAccount({ navigation }) {
   const [first_name, setFirstname] = useState("");
   const [last_name, setLastname] = useState("");
   const [loading, setLoading] = useState(false);
+  const [phFName,setPHFName] = useState();
+  const [phEmail,setPHEmail] = useState();
+  const [phLName,setPHLName] = useState();
+  const [phPassword,setPHPassword] = useState();
+  const [phFNameC,setPHFNameC] = useState();
+  const [phEmailC,setPHEmailC] = useState();
+  const [phLNameC,setPHLNameC] = useState();
+  const [phPasswordC,setPHPasswordC] = useState();
+
   const currentUser = useAuth();
   useEffect(()=>{
     setEmail("");
     setPassword("");
     setFirstname("");
     setLastname("");
+    setPHEmail("Enter your Email");
+    setPHFName("Enter your First Name");
+    setPHLName("Enter your Last Name");
+    setPHPassword("Enter your Password");
+    setPHEmailC("grey");
+    setPHFNameC("grey");
+    setPHLNameC("grey");
+    setPHPasswordC("grey")
+    
     
   },[])
   //   const emailRef = useRef();
   //   const passwordRef = useRef();
 
   async function handleSignup() {
-    navigation.replace("Loading page");
+    if ((email == "") || (password == "") || (first_name == "") || (last_name == "")) {
+      if (password == "") {setPHPassword ("Password: Input required !");setPHPasswordC("red")};
+      if (first_name == "") {setPHFName("First Name: Input required !");setPHFNameC("red")};
+      if (last_name == "") {setPHLName("Last Name: Input required !");setPHLNameC("red")};
+      if (email == "") {setPHEmail("Email: Input required !");setPHEmailC("red")};
+    }
+    else{
+    navigation.navigate("Loading page");
     setTimeout(async ()=>{
     try {
       console.log("hello");
@@ -94,11 +119,14 @@ export default function CreateAccount({ navigation }) {
         }
       });
     } catch (err) {
-      alert("Error!");
+      if (err == "FirebaseError: Firebase: Error (auth/email-already-in-use)."){
+      alert("Email is already in use! Did you forget your password?");}
+      else if (err ==  "FirebaseError: Firebase: Password should be at least 6 characters (auth/weak-password)."){alert("Password should be at least 6 characters!")}
+      else {alert("Error!")};
       console.log(err);
-      navigation.replace("Createpage")
+      navigation.goBack()
     }},900)
-  }
+  }}
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAwareScrollView enableOnAndroid={true} contentContainerStyle={{flexGrow: 1}}>
@@ -109,7 +137,7 @@ export default function CreateAccount({ navigation }) {
         style = {[StyleSheet.absoluteFillObject]}
         blurRadius = {60}/>
         <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:2, marginRight:166,}} onPress={()=>
-          navigation.goBack()}>
+          navigation.replace("Login Page")}>
         <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
       </TouchableOpacity>
@@ -124,24 +152,28 @@ export default function CreateAccount({ navigation }) {
         </View>
         <TextInput
           style={styles.input}
-          placeholder="First Name"
+          placeholder={phFName}
           onChangeText={(value) => setFirstname(value)}
+          placeholderTextColor={phFNameC}
         />
         <TextInput
           style={styles.input}
-          placeholder="Last Name"
+          placeholder={phLName}
           onChangeText={(value) => setLastname(value)}
+          placeholderTextColor={phLNameC}
         />
         <TextInput
           style={styles.input}
-          placeholder="E.g. xxx@gmail.com"
+          placeholder={phEmail}
           onChangeText={(value) => setEmail(value)}
+          placeholderTextColor={phEmailC}
         />
         <TextInput
           style={styles.input}
-          placeholder="Enter Password"
+          placeholder={phPassword}
           onChangeText={(value) => setPassword(value)}
-          secureTextEntry
+          secureTextEntry = {password === "" ? false : true}
+          placeholderTextColor={phPasswordC}
         />
          <MashButton //havent create the login button function yet
           title="SIGN UP"

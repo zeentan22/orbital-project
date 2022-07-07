@@ -22,8 +22,8 @@ import { render } from "react-dom";
 import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
 const FlashCardStack = createStackNavigator();
 const {width, height} = Dimensions.get("screen")
-const cW = width * 0.7
-const cH = cW * 1.54
+const cW = width * 0.75
+const cH = cW * 1.41
 const iW = width * 0.9
 const iH = iW * 0.68
 
@@ -290,6 +290,7 @@ const TopicList = ({navigation, route}) => {
     ); }
 
   const DisplayCards = ({navigation,route}) =>{
+    const wdoc = user ? doc(dbInit, "users", auth?.currentUser.uid) : null ;
     const [show,setShow] = useState(true)
     const [attempted,setAttempted] = useState("-") 
     const cList = useRef([])
@@ -301,6 +302,31 @@ const TopicList = ({navigation, route}) => {
     const [s,setS] = useState("-");
     const totals = useRef("-");
     const [test,setTest] = useState(true);
+    const [ref, setRef] = useState(null);
+    const [showInput, setShowInput] = useState(false)
+    const [newQ,setNewQ] = useState()
+    const [newA, setNewA] = useState();
+    const amendItems = (number,top,q,a) =>{
+      if (newQ == q && newA == a) {}
+      else{
+      if (tList) {
+        let tempList = tList
+        tList.forEach((element)=>{
+        updateDoc(wdoc, {FlashCardContent:arrayRemove(element)})});
+        tempList[number] = { Answer: newA, Question: newQ, topic: top};
+        tempList.forEach((element)=>{
+          updateDoc(wdoc, {FlashCardContent:arrayUnion(element)});
+        });
+        setChangeInTList(!changeInTList);
+        if (number === 0) {null}
+        else{ref.scrollToIndex({
+          animated: true,
+          index: number,
+          viewPosition: 0
+        });setSelectedItem(number)};
+        }
+      else {null}
+    }}
     const tracking = () =>{
       setAppear(true);
       console.log("h",test);
@@ -321,10 +347,12 @@ const TopicList = ({navigation, route}) => {
       itemVisiblePercentThreshold: 40,
     };
     const _onViewableItemsChanged = useCallback(({ viewableItems,changed}) => {
+      if (viewableItems != undefined || viewableItems) {
       console.log("Visible items are", viewableItems);
       console.log("Changed in this iteration", changed);
       console.log(viewableItems[0].index);
-      setSelectedItem(viewableItems[0].index);
+      setSelectedItem(viewableItems[0].index);}
+      else {setSelectedItem(0)}
     },[selectedItem]);
 
     const selectC = (a,b,c) =>{
@@ -359,6 +387,36 @@ const TopicList = ({navigation, route}) => {
       });
     }
 
+    const deleteFlashcards = (number) =>
+      {if (tList.length == 1) { 
+        try {
+          let newObj = tList[number];
+          updateDoc(wdoc, {FlashCardContent:arrayRemove(newObj)})
+          ;alert("Flashcard has been successfully deleted!")
+        } catch (err){
+          alert("Error!");
+          console.log(err);
+        }; navigation.navigate("View Flash Card")}
+        else {
+          try {
+            let newObj = tList[number];
+            updateDoc(wdoc, {FlashCardContent:arrayRemove(newObj)})
+            ;alert("Flashcard has been successfully deleted!");
+            setChangeInTList(!changeInTList);
+            if (number == 0) {ref.scrollToIndex({
+              animated: true,
+              index: 0,
+              viewPosition: 0
+            })}
+            else {ref.scrollToIndex({
+              animated: true,
+              index: number - 1,
+              viewPosition: 0
+            }); setSelectedItem(number - 1)}
+          } catch (err){
+            alert("Error!");
+            console.log(err);};
+    }}
 
     const interpolateFront = animate.current.interpolate({
       inputRange:[0.01,180],
@@ -371,28 +429,37 @@ const TopicList = ({navigation, route}) => {
     });
     const keyExtractor=(item,index)=> index.toString()
     const renderItem = useCallback(({item,index})=>(
-      <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{[handleFlip()]}}>  
-            <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH}]}>
+      <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{handleFlip()}}>  
+            <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH,zIndex: show ? 10 : 0}]}>
             <FlipCard
             test = {false}
+            shows = {show}
+            setNew={setNewQ}
+            onFinishEdit = {()=>{amendItems(index, item.topic,item.Question,item.Answer)}}
+            onPressLink = {()=>{setShowInput(!showInput);setNewA(item.Answer);setNewQ(item.Question)}}
+            showInputs = {showInput}
+            onPress4 = {()=> {deleteFlashcards(index);setShowInput(!showInput)}}
             bc = {selectC(wList,cList,index)}
             heading = "Question"
             image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/ask-q.png"
-            title = {item.Ques}
+            title = {item.Question}
             pageNum = {`${index + 1}/${tList.length}`}/>
 
             </Animated.View>
           
-          <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH},{transform:[{rotateY:interpolateBack}]}]}>
+          <Animated.View style = {[styles.back, styles.hidden,{width: cW,height: cH,zIndex: show ? 0 : 10},{transform:[{rotateY:interpolateBack}]}]}>
             <FlipCard
             test = {!test}
             shows = {show}
+            setNew={setNewA}
+            showInputs = {showInput}
+            onPress4 = {()=> {deleteFlashcards(index);setShowInput(!showInput)}}
             onPress1 = {()=>{wList.current.push(index);setAttempted(attempted + 1)}}
             onPress2 = {()=>{setSco(sco + 1);cList.current.push(index);setAttempted(attempted + 1)}}
             bcolor= "#dcdcdc"
             heading = "Answer"
             image = "https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/answer-a.png"
-            title = {item.Ans}
+            title = {item.Answer}
             pageNum = {`${index + 1}/${tList.length}`}/>
           </Animated.View>
 
@@ -401,6 +468,7 @@ const TopicList = ({navigation, route}) => {
       
       ))
     const [tList,setTList] = useState()
+    const [changeInTList, setChangeInTList] = useState(true)
     console.log(tList)
     const topic =  (route.params) ? route.params["topicSelected"] : null
     console.log(topic)
@@ -413,12 +481,12 @@ const TopicList = ({navigation, route}) => {
           let dList = [{}]
           if (Data != null) {
           Data.forEach((element)=> {
-            if (element.topic == topic) {dList.push({Ques:element.Question, Ans:element.Answer});}
+            if (element.topic == topic) {dList.push({Question:element.Question, Answer:element.Answer, topic: element.topic});}
             else {}
           })
         } else{null};
         dList.splice(0,1);
-      setTList(dList);totCount.current = dList.length})}else{}},[])
+      setTList(dList);totCount.current = dList.length})}else{}},[changeInTList])
     return(
     <View style={[styles.flashCardBody,{backgroundColor:"#f5f5dc"}]}>
       <Modal
@@ -470,13 +538,15 @@ const TopicList = ({navigation, route}) => {
       </View>
       </View>
       <FlatList
+        ref={(ref) => {
+          setRef(ref);
+        }}
         showsHorizontalScrollIndicator={false}
         onScrollBeginDrag={()=>{flipback(isFlipped,handleFlip)}}
-        onViewableItemsChanged={_onViewableItemsChanged}
         viewabilityConfig={_viewabilityConfig}
         horizontal = {true}
         keyExtractor={keyExtractor}
-        extraData = {selectedItem}
+        extraData = {[tList]}
         decelerationRate = "fast"
         pagingEnabled
         data = {tList}

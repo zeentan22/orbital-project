@@ -38,22 +38,42 @@ export default function Login({ navigation }) {
   const user = useAuth()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phEmail,setPHEmail] = useState();
+  const [phPassword,setPHPassword] = useState();
+  const [phEmailC,setPHEmailC] = useState();
+  const [phPasswordC,setPHPasswordC] = useState();
+
+  useEffect(()=>{
+    setEmail("");
+    setPassword("");
+    setPHEmail("Enter your Email");
+    setPHPassword("Enter your Password");
+    setPHEmailC("grey");
+    setPHPasswordC("grey")
+    
+    
+  },[])
   const onPressHandler = () => {
-    navigation.navigate("Createpage"); //used for when we click on Create Account Button, go to that page
+    navigation.replace("Createpage"); //used for when we click on Create Account Button, go to that page
   };
 
   async function handleLogin() {
-    navigation.replace("Loading page");
+    if ((email == "") || (password == "")) {
+      if (password == "") {setPHPassword ("Password: Input required !");setPHPasswordC("red")};
+      if (email == "") {setPHEmail("Email: Input required !");setPHEmailC("red")};
+    }
+    else{
+    navigation.navigate("Loading page");
     setTimeout(async ()=>{
     try {
       await login(email, password);
       console.log("logged in!");
       alert("Welcome back!");
     } catch {
-      alert("Error!");
-      navigation.replace("Login Page")
+      alert("Invalid Email/Password!");
+      navigation.goBack()
     }},1500)
-  };
+  }};
   return (
 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -74,14 +94,16 @@ export default function Login({ navigation }) {
         </View>
         <TextInput
           style={[{marginBottom:0,borderBottomWidth:0.5,borderBottomLeftRadius:0,borderBottomRightRadius:0},styles.input]}
-          placeholder="E.g. xxx@gmail.com"
+          placeholder={phEmail}
           onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
+          placeholderTextColor={phEmailC}
         />
         <TextInput
           style={[{marginTop:0,borderTopWidth:0.5,borderTopLeftRadius:0,borderTopRightRadius:0},styles.input]}
-          placeholder="Enter Password"
+          placeholder={phPassword}
           onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
-          secureTextEntry
+          secureTextEntry = {password == "" ? false : true}
+          placeholderTextColor={phPasswordC}
         />
         <MashButton //havent create the login button function yet
           title="LOGIN"

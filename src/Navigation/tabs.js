@@ -119,7 +119,7 @@ export const BotTabs = () => {
     );
   };
 return(
-  <homeDrawer.Navigator drawerStatusBarAnimation = "slide" DrawerActions = "closeDrawer"   swipeEnabled = {true} drawerContent={(props) => <DrawerContent {...props}/>}>
+  <homeDrawer.Navigator drawerStatusBarAnimation = "slide"  swipeEnabled = {false} drawerContent={(props) => <DrawerContent {...props}/>}>
     <homeDrawer.Screen
     name = "Home Page"
     component={HomeStacks}

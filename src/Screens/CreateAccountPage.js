@@ -29,6 +29,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Dimensions
 } from "react-native";
 import { signup, login, logout, useAuth, dbInit } from "../../firebase";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -39,6 +40,7 @@ import MashButton from "../Components/CustomButton";
 // import axios from "axios";
 
 export default function CreateAccount({ navigation }) {
+  const {width, height} = Dimensions.get("screen")
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [first_name, setFirstname] = useState("");
@@ -52,7 +54,7 @@ export default function CreateAccount({ navigation }) {
   const [phEmailC,setPHEmailC] = useState();
   const [phLNameC,setPHLNameC] = useState();
   const [phPasswordC,setPHPasswordC] = useState();
-
+  const mar = width * 0.01
   const currentUser = useAuth();
   useEffect(()=>{
     setEmail("");
@@ -86,7 +88,7 @@ export default function CreateAccount({ navigation }) {
     try {
       console.log("hello");
       console.log(email);
-      await signup(email, password).then(async () => {
+      await signup(email.trim(), password.trim()).then(async () => {
         try {
           alert(`Welcome to the app, ${last_name}!`);
           const wdoc = doc(dbInit, "users", getAuth().currentUser.uid);
@@ -136,11 +138,13 @@ export default function CreateAccount({ navigation }) {
         source = {{uri:"https://i.pinimg.com/736x/b0/5c/80/b05c80ef1dfc5df58f63086e45267bda.jpg"}}
         style = {[StyleSheet.absoluteFillObject]}
         blurRadius = {60}/>
-        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:2, marginRight:166,}} onPress={()=>
+        <View style = {{flex:0.2, alignItems:"flex-start",justifyContent:"flex-start",marginLeft:mar}}>
+        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start"}} onPress={()=>
           navigation.replace("Login Page")}>
         <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
       </TouchableOpacity>
+      </View>
         <View style={styles.body1}>
         <Image
         resizeMode="cover"

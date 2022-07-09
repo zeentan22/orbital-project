@@ -37,6 +37,7 @@ import Login from "./src/Screens/LoginPage"
 import {useAuth,auth} from "./firebase";
 import Loading from "./src/Screens/Loading";
 import StartPage from "./src/Screens/StartingPage"
+import ForgetPassword from "./src/Screens/ForgetPasswordPage";
 const Wholelogin = createStackNavigator();
 const Mix = createStackNavigator();
 
@@ -67,6 +68,14 @@ function App() {
           component={Loading}
           options={{ header: () => null }}
         />
+
+        <Mix.Screen
+          name="Forget Password Page"
+          component={ForgetPassword}
+          options={{ header: () => null }}
+        />
+
+
       </Mix.Navigator>
     );
   };

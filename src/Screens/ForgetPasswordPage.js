@@ -28,52 +28,41 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Dimensions,
   Keyboard,
 } from "react-native";
 // import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MashButton from "../Components/CustomButton";
-export default function Login({ navigation }) {
+export default function ForgetPassword({ navigation }) {
   const user = useAuth()
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [phEmail,setPHEmail] = useState();
-  const [phPassword,setPHPassword] = useState();
   const [phEmailC,setPHEmailC] = useState();
-  const [phPasswordC,setPHPasswordC] = useState();
+  const {width, height} = Dimensions.get("screen")
+  const mar = width * 0.01
 
   useEffect(()=>{
     setEmail("");
-    setPassword("");
     setPHEmail("Enter your Email");
-    setPHPassword("Enter your Password");
     setPHEmailC("grey");
-    setPHPasswordC("grey")
     
     
   },[])
-  const onPressHandler = () => {
-    navigation.replace("Createpage"); //used for when we click on Create Account Button, go to that page
-  };
 
-  async function handleLogin() {
-    if ((email == "") || (password == "")) {
-      if (password == "") {setPHPassword ("Password: Input required !");setPHPasswordC("red")};
-      if (email == "") {setPHEmail("Email: Input required !");setPHEmailC("red")};
-    }
+  async function handleForgetPassword() {
+      if (email == "") {setPHEmail("Email: Input required !");setPHEmailC("red")}
     else{
-    navigation.navigate("Loading page");
-    setTimeout(async ()=>{
     try {
-      await login(email.trim(), password.trim());
-      console.log("logged in!");
-      alert("Welcome back!");
+      await resetPasswordEmail(email.trim());
+      console.log("Email Sent");
+      alert("An Email has been sent to you to reset password!");
+      navigation.replace("Login Page");
     } catch {
-      alert("Invalid Email/Password!");
-      navigation.goBack()
-    }},1500)
-  }};
+      alert("Invalid Email!");
+    }}
+  };
   return (
 
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -84,53 +73,33 @@ export default function Login({ navigation }) {
         source = {{uri:"https://i.pinimg.com/564x/3c/3a/35/3c3a357172fb7a9f153bfae96c2d5e17.jpg"}}
         style = {StyleSheet.absoluteFillObject}
         blurRadius = {60}/>
-        <View style={styles.body1}>
+          <View style = {{flex:0.2, alignItems:"flex-start",justifyContent:"flex-start",marginLeft:mar}}>
+          <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start"}} onPress={()=>
+            navigation.replace("Login Page")}>
+          <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
+          <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
+        </TouchableOpacity>
+        </View>
+        <View style = {styles.body1}>
           <Image
             style={styles.image}
             resizeMode="stretch"
             source={require("../../assets/!Procrastinate_Logo.png")}
           />
-          <Text style={styles.textintro}>Welcome !</Text>
-        </View>
+        
+          <Text style={styles.textintro}>Enter the email associated with your account</Text>
         <TextInput
-          style={[{marginBottom:0,borderBottomWidth:0.5,borderBottomLeftRadius:0,borderBottomRightRadius:0},styles.input]}
+          style={[styles.input]}
           placeholder={phEmail}
           onChangeText={(text) => setEmail(text)} //connect to backend to login by checking with database
           placeholderTextColor={phEmailC}
         />
-        <TextInput
-          style={[{marginTop:0,borderTopWidth:0.5,borderTopLeftRadius:0,borderTopRightRadius:0},styles.input]}
-          placeholder={phPassword}
-          onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
-          secureTextEntry = {password == "" ? false : true}
-          placeholderTextColor={phPasswordC}
-        />
-        <View style = {{flex:0.1,alignItems:"center",justifyContent:"center"}}>
-          <Pressable style = {({ pressed }) => [{flex:1},{backgroundColor: pressed ? "#b0c4de" : null}]} onPress = {()=>{navigation.replace("Forget Password Page")}}>
-          <Text style = {{fontSize:15,borderBottomWidth:0.5}}>Forget Password ?</Text>
-          </Pressable>
-        </View>
         <MashButton //havent create the login button function yet
-          title="LOGIN"
+          title="SEND EMAIL"
           color="red"
           textStyle = {{color: "white", fontWeight: "bold",fontStyle: "normal"}}
-          style = {{borderWidth:1,borderColor:"red",marginBottom:20}}
-          onPress={handleLogin}
-        />
-        <View style = {{flex:1/3,alignItems:"center",marginTop:0,width:"94%"}}>
-        <View style={{flexDirection: 'row', alignItems: 'center',width:"100%", height:50}}>
-          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:"35%"}} />
-          <View style = {{width: "30%",justifyContent:"center",alignItems:"center"}}>
-            <Text style={[styles.textintro2,{fontStyle: "normal", textAlign: 'center'}]}>New User?</Text>
-          </View>
-          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:"35%"}} />
-        </View>
-
-        <MashButton 
-          style = {{borderWidth:1,width:"100%"}}
-          textStyle = {{fontWeight: "bold",fontStyle: "normal"}}
-          title="GET STARTED"
-          onPress={onPressHandler}
+          style = {{borderWidth:1,borderColor:"red"}}
+          onPress={handleForgetPassword}
         />
         </View>
 
@@ -143,22 +112,25 @@ export default function Login({ navigation }) {
 const styles = StyleSheet.create({
   scrollbody: {
     backgroundColor: "#ffffff",
-    justifyContent: 'center',
+    justifyContent: "center",
     flex: 1,
-
   },
   body: {
     flex: 1,
     flexDirection: "column",
     backgroundColor: "#ffffff",
-    alignItems: "center",
+    alignItems: "stretch",
     justifyContent: "center",
   },
   body1: {
-    flex: 0.5,
+    flex: 0.4,
+    width: "94%",
+    borderRadius:20,
     flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    alignSelf:"center",
+    justifyContent: "center",
+    marginBottom:30,
   },
   text: {
     fontSize: 40,
@@ -166,29 +138,26 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   textintro: {
-    fontSize: 40,
+    fontSize: 30,
+    alignSelf: "center",
+    marginBottom: 20,
+    textAlign:"center"
+  },
+  textintroSmall: {
+    fontSize: 20,
     alignSelf: "center",
     marginBottom: 20,
   },
-
-  textintro2: {
-    fontSize: 17,
-    alignSelf: "center",
-    fontStyle: "italic",
-    color:"black",
-  },
   input: {
     margin: 5,
-    backgroundColor:"white",
-    borderWidth: 1,
+    borderWidth: 2,
     alignSelf: "center",
     width: "94%",
-    height: 50,
     borderColor: "#555",
     borderRadius: 5,
     textAlign: "center",
     margin: 15,
-    paddingHorizontal: 10,
+    height: 55,
   },
   button: {
     height: 50,
@@ -200,5 +169,11 @@ const styles = StyleSheet.create({
     width: 250,
     alignSelf: "center",
     justifyContent: "center",
+  },
+  iconimage:{
+    height: 30,
+    width: 30,
+    alignSelf: "center",
+    justifyContent:"center",
   },
 });

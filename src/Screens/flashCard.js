@@ -26,6 +26,7 @@ const cW = width * 0.75
 const cH = cW * 1.41
 const iW = width * 0.9
 const iH = iW * 0.68
+const mar = width * 0.98 * 0.47
 
 
 
@@ -174,8 +175,8 @@ const TopicList = ({navigation, route}) => {
     return (
       <KeyboardAwareScrollView enableOnAndroid={true}   contentContainerStyle={{flexGrow: 1}}> 
       <View style={styles.body}>
-        <View style = {{flexDirection:"row", flex:0.2, alignItems: "flex-start",justifyContent: "space-evenly",width:"94%",}}>
-        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginRight:166,}} onPress={()=>
+        <View style = {{flexDirection:"row", flex:0.2, alignItems: "flex-start",justifyContent: "space-evenly",width:"98%",}}>
+        <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginRight:mar,}} onPress={()=>
           navigation.goBack()}>
         <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
@@ -512,8 +513,8 @@ const TopicList = ({navigation, route}) => {
 
 
       </Modal>
-      <View style = {{width:"97%"}}>
-      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{width:"94%",alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginLeft:8, marginRight:166,}} onPress={()=>
+      <View style = {{width:"98%"}}>
+      <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20}} onPress={()=>
           navigation.goBack()}>
         <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
         <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>

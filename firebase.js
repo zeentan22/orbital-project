@@ -6,6 +6,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
@@ -40,6 +41,9 @@ export function login(email, password) {
 
 export function logout() {
   return signOut(auth);
+}
+export function resetPasswordEmail(email){
+  return sendPasswordResetEmail(auth,email);
 }
 
 // Custom Hook

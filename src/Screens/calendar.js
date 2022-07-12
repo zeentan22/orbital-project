@@ -12,6 +12,7 @@ import {
   TextInput,
   Animated,
   Platform,
+  Dimensions
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import {
@@ -32,6 +33,10 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DropDownAcadYr from "../Components/DropDownAcadYr";
 import { fetchDataFromNusMods, getExamDate } from "./utils";
+const {width, height} = Dimensions.get("screen")
+const mar = width * 0.02
+const mar2 = width * 0.004
+const marLeft = width * 0.6
 
 const SetCalendar = ({ navigation }) => {
   const user = useAuth();
@@ -126,7 +131,6 @@ const SetCalendar = ({ navigation }) => {
   };
 
   useEffect(() => {
-    console.log("Trolling troll")
     setOS(Platform.OS === "ios");
     let result = {};
     let unmodifiedResult = [];
@@ -430,7 +434,7 @@ const SetCalendar = ({ navigation }) => {
               height: "94%",
             }}
           >
-
+            <Text style={{fontSize:35, borderWidth:3, width:"94%", textAlign:"center"}}>Set Your Task</Text>
             <Text style={{fontSize:25 }}>
               Date Chosen: {dateFormat}
             </Text>
@@ -513,29 +517,26 @@ const SetCalendar = ({ navigation }) => {
           <View
             style={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-around",
               alignItems: "center",
-              width: 300,
-              height: 700,
-              borderColor: "black",
-              borderRadius: 5,
-              borderWidth: 2,
+              width: "100%",
+              height: "94%",
             }}
           >
             <Text
               style={{
-                position: "absolute",
-                top: 5,
-                fontSize: 20,
-                borderBottomColor: "blue",
+                fontSize: 30,
+                width:"94%",
+                textAlign:"center",
                 borderWidth: 2,
-                marginBottom: 50,
+                height:50
               }}
             >
               Get Your Exam Dates
             </Text>
 
-            <View style={{ position: "absolute", top: 90, zIndex: 2 }}>
+            <View style={{zIndex: 2,alignItems:"center",justifyContent:"center", width:"80%"}}>
+              <Text style = {{fontSize:25}}>Academic Year :</Text>
               <DropDownAcadYr
                 item={acadYear}
                 data={tList}
@@ -544,7 +545,8 @@ const SetCalendar = ({ navigation }) => {
               />
             </View>
 
-            <View style={{ position: "absolute", top: 200, zIndex: 1 }}>
+            <View style={{zIndex: 2,alignItems:"center",justifyContent:"center", width:"80%" }}>
+            <Text style = {{fontSize:25,marginBottom:10}}>Semester :</Text>
               <DropDownAcadYr
                 item={semester}
                 data={semList}
@@ -552,50 +554,44 @@ const SetCalendar = ({ navigation }) => {
                 title={"Select Semester"}
               />
             </View>
-
-            <Text style={{ position: "absolute", top: 330, fontSize: 20 }}>
+            <View style = {{width:"80%", alignItems:"center",justifyContent:"center"}}>
+            <Text style={{fontSize: 20 }}>
               Module Code:
             </Text>
             <TextInput
-              placeholder="CS1010S"
+              textAlign="center"
+              placeholder="E.g. CS1010S"
               style={{
-                position: "absolute",
-                top: 380,
                 borderWidth: 1,
-                width: 200,
-                height: 30,
+                width: "100%",
+                height: 40,
                 borderRadius: 2,
+                marginTop:5
               }}
               onChangeText={(val) => {
                 setModuleCode(val);
               }}
             />
+            </View>
             <TouchableOpacity
-              style={{
-                borderColor: "black",
-                borderWidth: 2,
-                borderRadius: 5,
-                position: "absolute",
-                top: 500,
-                height: 50,
-                justifyContent: "center",
-              }}
+              style={{ borderColor: "black", borderWidth: 2, borderRadius: 10, width:"84%", height:40,alignItems:"center",justifyContent:"center" }}
               onPress={() => {
                 retrieveExamDate(acadYear.name, moduleCode, semester.name);
               }}
             >
-              <Text> Insert exam date into my calendar </Text>
+              <Text style = {{fontSize:15}}> Insert exam date into my calendar </Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      <View>
-        <TouchableOpacity onPress={() => setExamModalOpen(true)}>
-          <Text> Get my exam dates </Text>
+      <View style = {{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+        <TouchableOpacity style = {{justifyContent:"space-around", flexDirection:"row", alignItems:"center",marginLeft:mar}} onPress={() => setExamModalOpen(true)}>
+          <Image source = {{uri: "https://icons.veryicon.com/png/o/system/system-project/add-97.png"}} style = {{height: 20, width: 20,marginRight:mar2, tintColor:"blue"}}/>
+          <Text style = {{fontSize:15, color:"blue"}}>Get my exam dates </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ marginLeft: "auto" }}
+          style={{justifyContent:"center"}}
           onPress={() => setModalOpen(true)}
         >
           <Text style={styles.add}> + </Text>
@@ -640,6 +636,7 @@ const styles = StyleSheet.create({
 
   add: {
     fontSize: 30,
+    justifyContent:"center"
     // margin: 1,
   },
 

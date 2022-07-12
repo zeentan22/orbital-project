@@ -23,20 +23,20 @@ export default DropdownAcadYr = ({
   return (
     <View styles={styles.input}>
       <TouchableOpacity
-        style={{ alignItems: "center", justifyContent: "center", width: 280 }}
+        style={{ alignItems: "center", justifyContent: "center", alignSelf:"stretch" }}
         activeOpacity={0.8}
         onPress={() => setShowOption(!showOption)}
       >
         <View style={styles.dropDownStyle}>
           <Text
-            style={[styles.text, { alignSelf: "center", alignItems: "center" }]}
+            style={[styles.text, { alignSelf: "stretch", alignItems: "center", width:"88%" }]}
           >
             {!!item ? item.name : "Select A Year"}
           </Text>
           <Image
             style={[
               styles.image,
-              { transform: [{ rotate: showOption ? "180deg" : "0deg" }] },
+              { transform: [{ rotate: showOption ? "180deg" : "0deg" }],width:"12%" },
             ]}
             source={{
               uri: "https://icons.veryicon.com/png/o/miscellaneous/dowell/drop-down-25.png",
@@ -49,8 +49,10 @@ export default DropdownAcadYr = ({
           style={{
             backgroundColor: "#add8e6",
             padding: 8,
-            height: 280,
-            width: 280,
+            height: 240,
+            alignSelf:"stretch",
+            borderBottomLeftRadius:6,
+            borderBottomRightRadius:6
           }}
         >
           <Text
@@ -70,45 +72,23 @@ export default DropdownAcadYr = ({
                 style={{
                   paddingVertical: 8,
                   borderRadius: 4,
+                  height:45,
                   paddingHorizontal: 6,
                   marginBottom: 8,
                   backgroundColor: "white",
                 }}
               >
-                {item.name == "Add New Topic" ? (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Image
-                      style={[
-                        styles.iconimage,
-                        {
-                          alignSelf: "center",
-                          marginBottom: 7,
-                          marginRight: 8,
-                        },
-                      ]}
-                      source={{
-                        uri: "https://icons.veryicon.com/png/o/internet--web/myicon/add-41.png",
-                      }}
-                    />
-                  </View>
-                ) : (
-                  <Text
-                    style={{
-                      alignSelf: "center",
-                      fontSize: 25,
-                      marginBottom: 9,
-                      justifyContent: "center",
-                    }}
-                  >
-                    {item.name}
-                  </Text>
-                )}
+               <Text
+                style={{
+                  alignSelf: "center",
+                  fontSize: 15,
+                  marginBottom: 9,
+                  justifyContent: "center",
+                  }}
+                >
+                  {item.name}
+                </Text>
+
               </TouchableOpacity>
             )}
           />
@@ -119,8 +99,20 @@ export default DropdownAcadYr = ({
 };
 
 const styles = StyleSheet.create({
+  input: {
+    flex:1, 
+    width:"100%",
+    alignItems:"center",
+    position:"absolute"
+  },
   text: {
-    fontSize: 30,
+    fontSize: 20,
+    textAlign: "center",
+    color: "black",
+    alignSelf: "center",
+  },
+  textInp: {
+    fontSize: 15,
     textAlign: "center",
     color: "black",
     alignSelf: "center",
@@ -139,9 +131,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   image: {
-    height: 30,
-    width: 30,
-    marginTop: 8,
+    height: 25,
+    width: 25,
     alignSelf: "center",
     justifyContent: "center",
   },
@@ -167,7 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     marginBottom: 2,
-    width: 300,
+    width: "100%",
     alignItems: "center",
   },
 });

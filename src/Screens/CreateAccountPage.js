@@ -56,6 +56,7 @@ export default function CreateAccount({ navigation }) {
   const [phPasswordC,setPHPasswordC] = useState();
   const mar = width * 0.01
   const currentUser = useAuth();
+  const platform = Platform.OS === "ios"
   useEffect(()=>{
     setEmail("");
     setPassword("");
@@ -176,7 +177,8 @@ export default function CreateAccount({ navigation }) {
           style={styles.input}
           placeholder={phPassword}
           onChangeText={(value) => setPassword(value)}
-          secureTextEntry = {password === "" ? false : true}
+          secureTextEntry = {platform || ((password !== "") && (platform !== true))}
+          
           placeholderTextColor={phPasswordC}
         />
          <MashButton //havent create the login button function yet

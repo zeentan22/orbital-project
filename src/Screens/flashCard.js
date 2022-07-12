@@ -25,7 +25,7 @@ const {width, height} = Dimensions.get("screen")
 const cW = width * 0.75
 const cH = cW * 1.41
 const iW = width * 0.9
-const iH = iW * 0.68
+const iH = iW * 0.6
 const mar = width * 0.98 * 0.47
 
 
@@ -125,6 +125,11 @@ const TopicList = ({navigation, route}) => {
     else{null}})}else{}},[selectedItem])
   return (
     <View style={styles.body}>
+      <Image
+        resizeMode="cover"
+        source = {{uri:"https://images.pexels.com/photos/8823333/pexels-photo-8823333.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"}}
+        style = {StyleSheet.absoluteFillObject}
+        blurRadius = {0}/>
       <View style = {{justifyContent:"flex-start",alignItems:"center",flex:1}}>
       <CustomTabHeading
           onPage = {true}
@@ -175,11 +180,16 @@ const TopicList = ({navigation, route}) => {
     return (
       <KeyboardAwareScrollView enableOnAndroid={true}   contentContainerStyle={{flexGrow: 1}}> 
       <View style={styles.body}>
+      <Image
+        resizeMode="cover"
+        source = {{uri:"https://images.pexels.com/photos/8823333/pexels-photo-8823333.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"}}
+        style = {StyleSheet.absoluteFillObject}
+        blurRadius = {0}/>
         <View style = {{flexDirection:"row", flex:0.2, alignItems: "flex-start",justifyContent: "space-evenly",width:"98%",}}>
         <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20, marginRight:mar,}} onPress={()=>
           navigation.goBack()}>
-        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
-        <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
+        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= 'black'></Image>
+        <Text style = {{fontSize:17,color: 'black', fontWeight:"bold"}}>Go Back</Text>
       </TouchableOpacity>
       <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom:20}} onPress={async ()=>{
           try {
@@ -189,13 +199,13 @@ const TopicList = ({navigation, route}) => {
             alert("Error!");
             console.log(err);
           };navigation.navigate("Topic List")}}>
-        <Image style = {{marginRight:3,height: 27.3,width: 27.3, alignSelf: "center", justifyContent:"center",}} source = {{uri: "https://cdn.icon-icons.com/icons2/1946/PNG/512/1904674-accept-approved-check-checked-confirm-done-tick_122524.png"}} tintColor= '#008b8b' ></Image>
-        <Text style = {{fontSize:17,color: '#008b8b'}}>Confirm</Text>
+        <Image style = {{marginRight:3,height: 27.3,width: 27.3, alignSelf: "center", justifyContent:"center",}} source = {{uri: "https://cdn.icon-icons.com/icons2/1946/PNG/512/1904674-accept-approved-check-checked-confirm-done-tick_122524.png"}} tintColor= 'black' ></Image>
+        <Text style = {{fontSize:17,color: 'black', fontWeight:"bold"}}>Confirm</Text>
       </TouchableOpacity>
       </View>
-      <View style ={{flex:1, alignItems:"center",justifyContent: "center",}}>
-        <View style={{flexDirection:"row", justifyContent:"center", alignItems: "center", paddingBottom:10,}}>
-          <Text style = {[styles.titletext,{marginRight:10}]}>Topic:</Text>
+      <View style ={{flex:1, alignItems:"center",justifyContent: "space-around", width:"100%"}}>
+        <View style={{flexDirection:"row", justifyContent:"center", alignItems: "flex-start",}}>
+          <Text style = {[styles.titletext,{marginRight:10, fontWeight:"bold"}]}>Topic:</Text>
           {(passedTopic != "Add New Topic") ?<TextInput
           style = {{justifyContent: "center", alignItems: "center", fontSize:30, fontStyle:"italic",borderBottomWidth:1,textAlign: "center"}}
           placeholder={` ${topic}`}
@@ -206,22 +216,24 @@ const TopicList = ({navigation, route}) => {
           <TextInput
           style = {{justifyContent: "center", alignItems: "center", fontSize:30, fontStyle:"italic",borderBottomWidth:1,textAlign: "center"}}
           placeholder={" Enter here"}
-          placeholderTextColor = "grey"
+          placeholderTextColor = "black"
           onChangeText={(text) => setCurrentTopic(text)} 
           editable= {true}>
           </TextInput>}
         </View>
-        <Text style = {[styles.text,{marginTop:30}]}>Question:</Text>
+        <Text style = {[styles.text,{fontWeight:"bold"}]}>Question:</Text>
         <TextInput
-          style = {[styles.input,{marginTop:15}]}
+          fontSize = {20}
+          style = {styles.input}
+          placeholderTextColor = "grey"
           placeholder="Enter your question"
           onChangeText={(value) => setQuestion(value)}>
         </TextInput>
-      </View>
-      <View  style ={{flex:1, alignItems:"center",justifyContent: "center",}}>
-        <Text style = {[styles.text,{marginTop:15}]}>Answer:</Text>
+        <Text style = {[styles.text,{fontWeight:"bold"}]}>Answer:</Text>
         <TextInput
-          style = {[styles.input,{marginBottom:15}]}
+          fontSize = {20}
+          style = {styles.input}
+          placeholderTextColor = "grey"
           placeholder="Enter your Answer"
           onChangeText={(value) => setAnswer(value)}>
         </TextInput>
@@ -254,6 +266,11 @@ const TopicList = ({navigation, route}) => {
       else{null};})}else{}},[selectedItem])
     return (
       <View style={styles.body}>
+        <Image
+        resizeMode="cover"
+        source = {{uri:"https://images.pexels.com/photos/10526896/pexels-photo-10526896.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"}}
+        style = {StyleSheet.absoluteFillObject}
+        blurRadius = {0}/>
         <View style = {{justifyContent:"flex-start",alignItems:"center",flex:1}}>
         <CustomTabHeading
           onPage = {false}
@@ -430,7 +447,7 @@ const TopicList = ({navigation, route}) => {
     });
     const keyExtractor=(item,index)=> index.toString()
     const renderItem = useCallback(({item,index})=>(
-      <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{handleFlip()}}>  
+      <Pressable style = {{flex:1,alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{handleFlip()}}>  
             <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: cW,height: cH,zIndex: show ? 10 : 0}]}>
             <FlipCard
             test = {false}
@@ -490,6 +507,11 @@ const TopicList = ({navigation, route}) => {
       setTList(dList);totCount.current = dList.length})}else{}},[changeInTList])
     return(
     <View style={[styles.flashCardBody,{backgroundColor:"#f5f5dc"}]}>
+      <Image
+        resizeMode="cover"
+        source = {{uri:"https://images.pexels.com/photos/10526896/pexels-photo-10526896.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"}}
+        style = {StyleSheet.absoluteFillObject}
+        blurRadius = {0}/>
       <Modal
       visible = {appear}
       transparent = {true}
@@ -516,8 +538,8 @@ const TopicList = ({navigation, route}) => {
       <View style = {{width:"98%"}}>
       <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", marginBottom:20}} onPress={()=>
           navigation.goBack()}>
-        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
-        <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
+        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= 'black'></Image>
+        <Text style = {{fontSize:17,color: 'black', fontWeight:"bold"}}>Go Back</Text>
       </TouchableOpacity>
       </View>
       <View style = {{flexDirection:"row",justifyContent:"space-around",alignItems:"center"}}>
@@ -554,8 +576,9 @@ const TopicList = ({navigation, route}) => {
         renderItem={renderItem}/>
       <View style = {{flex:1.5,alignItems:"center",justifyContent:"flex-end",width:"50%"}}>
       <MashButton
-      style = {{borderWidth:1}}
-      title = {test ? "Start Scoring" : "Stop Scoring" }
+      style = {{borderWidth:2}}
+      title = {test ? "START SCORING" : "STOP SCORING" }
+      textStyle = {{fontWeight: "bold",fontStyle: "normal",fontSize:16}}
       onPress={()=>{setTest(!test);tracking()}}
       />
       </View>
@@ -634,6 +657,7 @@ const styles = StyleSheet.create({
     alignItems:"center",
     justifyContent:"flex-start",
     backgroundColor: "white",
+    width:"100%"
   },
   flashCardBody: {
     flex: 1,
@@ -662,7 +686,7 @@ const styles = StyleSheet.create({
   },
   imageHeader:{
     height: iH,
-    width: "86%",
+    width: "90%",
     flex:1
   },
   listSize:{
@@ -677,14 +701,12 @@ const styles = StyleSheet.create({
     justifyContent:"center",
   },
   input: {
-    margin: 5,
     borderWidth: 2,
     alignSelf: "center",
-    width: 300,
+    width: "90%",
     borderColor: "#555",
     borderRadius: 5,
     textAlign: "center",
-    margin: 15,
     height: 155,
   },
   hidden:{

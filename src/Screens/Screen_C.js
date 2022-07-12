@@ -46,9 +46,9 @@ const wH = cW *1.6
 
 
 export function Screenc({ navigation }) {
+  const user = useAuth()
   const [show,setShow] = useState(true)
   const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null
-  const user = useAuth()
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([]);
   const [date, setDate] = useState(new Date());
@@ -98,11 +98,10 @@ export function Screenc({ navigation }) {
   };
 
   const handleUpdate = async (oldData, obj, docRef) => {
+    console.log(oldData)
     await updateDoc(docRef, { tasks: arrayRemove(oldData) });
-
     obj.done = true;
     let updatedTasks = [...oldData.tasks];
-
     updatedTasks.sort((a, b) => {
       return parseInt(a.startTime) - parseInt(b.startTime);
     });
@@ -180,7 +179,9 @@ export function Screenc({ navigation }) {
           heading = "Mark As:"
           shows = {show}
           marking = {false}
-          onPress = {()=>updateData(item)}
+          onPress = {()=>{const newObj = item; 
+            const oldObj = {date: item.date, tasks: items}; 
+            handleUpdate(oldObj, newObj, docRef)}}
           button = {true}
           image = "https://icons.veryicon.com/png/o/business/erp-system-background-icon/task-6.png"
           btitle = "Completed"

@@ -29,6 +29,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from "react-native";
 // import { createStackNavigator } from "@react-navigation/stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -42,6 +43,7 @@ export default function Login({ navigation }) {
   const [phPassword,setPHPassword] = useState();
   const [phEmailC,setPHEmailC] = useState();
   const [phPasswordC,setPHPasswordC] = useState();
+  const platform = Platform.OS === "ios"
 
   useEffect(()=>{
     setEmail("");
@@ -102,7 +104,7 @@ export default function Login({ navigation }) {
           style={[{marginTop:0,borderTopWidth:0.5,borderTopLeftRadius:0,borderTopRightRadius:0},styles.input]}
           placeholder={phPassword}
           onChangeText={(text) => setPassword(text)} //connect to backend to login by checking with database
-          secureTextEntry = {password == "" ? false : true}
+          secureTextEntry = {platform || ((password !== "") && (platform !== true))}
           placeholderTextColor={phPasswordC}
         />
         <View style = {{flex:0.1,alignItems:"center",justifyContent:"center"}}>

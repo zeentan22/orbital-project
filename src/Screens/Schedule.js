@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, Header } from "@react-navigation/stack";
 import MashButton from "../Components/CustomButton";
 import SetCalendar from "./calendar";
+import SetNotifications from "../Screens/noti"
 const ScheduleStack = createStackNavigator();
 
 export default function Schedule() {
@@ -25,7 +26,7 @@ const Trial = ({navigation}) =>{
         <TouchableOpacity style={styles.button} onPress ={()=> navigation.navigate("SetCalendar")}>
           <Text> Set Schedule </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress ={()=> navigation.navigate("SetNoti")}>
           <Text> Custom notifications </Text>
         </TouchableOpacity>
       </View>
@@ -53,6 +54,9 @@ const Trial = ({navigation}) =>{
       <ScheduleStack.Screen name="first" component={Trial} />
 
       <ScheduleStack.Screen name="SetCalendar" component={SetCalendar} />
+
+      <ScheduleStack.Screen name="SetNoti" component={SetNotifications} />
+
     </ScheduleStack.Navigator>
   );
 }

@@ -79,6 +79,7 @@ const SetCalendar = ({ navigation }) => {
   }-${date.getDate()}`;
 
   const onChange = (event, selectedDate) => {
+    if (os === false) {setChooseDate(false);setModalOpen(true)}
     fDateTime = convertDate(selectedDate);
     let x = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
@@ -87,21 +88,16 @@ const SetCalendar = ({ navigation }) => {
     setDate(selectedDate);
     setDateFormat(convertDate(selectedDate));
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
-    if (os === false && chooseDate === true) {
-      setChooseDate(false);
-    }
   };
 
   const onChangeTime = (event, selectedTime) => {
+    if (os === false) {setChooseTime(false);setModalOpen(true)};
     let x = moment(selectedTime).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
     const hour = time.split(":")[0];
     const minutes = time.split(":")[1];
     setDate(selectedTime);
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
-    if (os === false && chooseTime === true) {
-      setChooseTime(false);
-    }
   };
 
   const handleUpdate = async (oldData, obj, docRef) => {
@@ -130,6 +126,7 @@ const SetCalendar = ({ navigation }) => {
   };
 
   useEffect(() => {
+    console.log("Trolling troll")
     setOS(Platform.OS === "ios");
     let result = {};
     let unmodifiedResult = [];
@@ -406,12 +403,12 @@ const SetCalendar = ({ navigation }) => {
             onChange={onChangeTime}
           />
         );
-      }
-    }
+
+    }}
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, justifyContent: "center" }}>
       <Modal visible={modalOpen} animationType="slide">
         <View style={styles.modalContent}>
           <TouchableOpacity
@@ -427,50 +424,52 @@ const SetCalendar = ({ navigation }) => {
           <View
             style={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-around",
               alignItems: "center",
-              width: 300,
-              height: 700,
-              borderColor: "black",
-              borderRadius: 5,
-              borderWidth: 2,
+              width: "100%",
+              height: "94%",
             }}
           >
+
+            <Text style={{fontSize:25 }}>
+              Date Chosen: {dateFormat}
+            </Text>
+
             <TouchableOpacity
-              style={{ borderRadius: 20, borderWidth: 2 }}
+              style={{ borderRadius: 16,borderWidth: 2,height:35,alignItems:"center",justifyContent:"center",width:"40%" }}
               onPress={() => {
                 setChooseDate(true);
-                setModalOpen(false);
+                setModalOpen(false)
               }}
             >
               <Text> Pick a date </Text>
             </TouchableOpacity>
 
-            <Text style={{ marginTop: 25, marginBottom: 25 }}>
-              Date Chosen: {dateFormat}
+            <Text style={{fontSize:25 }}>
+              Time Chosen: {convertTime(startTime)}
             </Text>
+
             <TouchableOpacity
-              style={{ borderRadius: 20, borderWidth: 2 }}
+              style={{ borderRadius: 16, borderWidth: 2,height:35,alignItems:"center",justifyContent:"center",width:"40%" }}
               onPress={() => {
                 setChooseTime(true);
-                setModalOpen(false);
+                setModalOpen(false)
               }}
             >
               <Text> Pick a Time </Text>
             </TouchableOpacity>
 
-            <Text style={{ marginTop: 25, marginBottom: 25 }}>
-              Time Chosen: {convertTime(startTime)}
-            </Text>
+            
             <TextInput
+              textAlign="center"
               style={styles.input}
-              placeholder="task 1..."
+              placeholder="Task 1..."
               onChangeText={(val) => {
                 setTask(val);
               }}
             />
             <TouchableOpacity
-              style={{ borderColor: "black", borderWidth: 2, borderRadius: 5 }}
+              style={{ borderColor: "black", borderWidth: 2, borderRadius: 10, width:"60%", height:40,alignItems:"center",justifyContent:"center" }}
               onPress={() => {
                 const obj = {
                   date: dateFormat,
@@ -490,6 +489,7 @@ const SetCalendar = ({ navigation }) => {
                   }
                 });
                 handleUpdate(oldData, obj, docRef);
+                setModalOpen(false);
               }}
             >
               <Text> Add Task </Text>
@@ -604,6 +604,7 @@ const SetCalendar = ({ navigation }) => {
       <Agenda
         items={items}
         minDate={"2018-05-10"}
+        extraData= {updateItem}
         renderItem={renderItem}
         renderEmptyData={() => (
           <View style={styles.itemContainer}>
@@ -650,6 +651,7 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: "contain",
     alignSelf: "flex-end",
+    tintColor:"red",
   },
 
   deleteTaskBtn: {
@@ -666,21 +668,28 @@ const styles = StyleSheet.create({
   },
 
   modalContent: {
-    flex: 1,
+    width:"90%",
+    height:"98%",
+    alignSelf:"center",
     alignItems: "center",
     justifyContent: "center",
+    borderColor: "black",
+    borderRadius: 5,
+    borderWidth: 2,
+    marginTop: 5,
   },
 
   input: {
     borderWidth: 1,
     borderColor: "#777",
-    padding: 8,
-    margin: 50,
+    marginBottom:20,
+    textAlign:"center",
+    height:60,
+    width:"85%",
     // margin: 10
     // marginTop: 20,
 
     // marginRight: 300,
-    width: 200,
   },
 
   container: {

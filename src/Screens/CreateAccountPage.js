@@ -142,8 +142,8 @@ export default function CreateAccount({ navigation }) {
         <View style = {{flex:0.2, alignItems:"flex-start",justifyContent:"flex-start",marginLeft:mar}}>
         <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "flex-start"}} onPress={()=>
           navigation.replace("Login Page")}>
-        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= '#008b8b'></Image>
-        <Text style = {{fontSize:17,color: '#008b8b'}}>Go Back</Text>
+        <Image style = {[styles.iconimage,{marginRight:3}]} source = {{uri: "https://icons.veryicon.com/png/o/miscellaneous/arrows/go-back-2.png"}} tintColor= 'black'></Image>
+        <Text style = {{fontSize:17,color: 'black',fontWeight:"bold"}}>Go Back</Text>
       </TouchableOpacity>
       </View>
         <View style={styles.body1}>

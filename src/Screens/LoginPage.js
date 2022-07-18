@@ -1,42 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { login, useAuth, logout,auth, resetPasswordEmail} from "../../firebase";
+import { login} from "../../firebase";
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {getDoc, collection, doc, setDoc} from "firebase/firestore"
-// import type Node from 'react';
-// import { NavigationContainer } from "@react-navigation/native";
-// import { Card } from "@rneui/themed";
 import {
-  StatusBar,
-  Alert,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  Button,
-  TouchableOpacity,
-  TouchableHighlight,
-  Linking,
-  ScrollView,
-  RefreshControl,
-  FlatList,
-  SectionList,
   Pressable,
   TextInput,
-  ToastAndroid,
-  Modal,
   Image,
-  ImageBackground,
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
 } from "react-native";
-// import { createStackNavigator } from "@react-navigation/stack";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+
 import MashButton from "../Components/CustomButton";
 export default function Login({ navigation }) {
-  const user = useAuth()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phEmail,setPHEmail] = useState();
@@ -121,11 +99,11 @@ export default function Login({ navigation }) {
         />
         <View style = {{flex:1/3,alignItems:"center",marginTop:0,width:"94%"}}>
         <View style={{flexDirection: 'row', alignItems: 'center',width:"100%", height:50}}>
-          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:"35%"}} />
+          <View style={styles.lineStyle} />
           <View style = {{width: "30%",justifyContent:"center",alignItems:"center"}}>
-            <Text style={[styles.textintro2,{fontStyle: "normal", textAlign: 'center'}]}>New User?</Text>
+            <Text style={styles.textintro2}>New User?</Text>
           </View>
-          <View style={{flex: 1, height: 1.5, backgroundColor: 'black',width:"35%"}} />
+          <View style={styles.lineStyle} />
         </View>
 
         <MashButton 
@@ -176,8 +154,9 @@ const styles = StyleSheet.create({
   textintro2: {
     fontSize: 17,
     alignSelf: "center",
-    fontStyle: "italic",
+    fontStyle: "normal",
     color:"black",
+    textAlign:"center"
   },
   input: {
     margin: 5,
@@ -203,4 +182,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
   },
+  lineStyle:{
+    flex: 1, 
+    height: 1.5, 
+    backgroundColor: 'black',
+    width:"35%"
+  }
 });

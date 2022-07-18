@@ -29,6 +29,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
   Dimensions
 } from "react-native";
 import { signup, login, logout, useAuth, dbInit } from "../../firebase";

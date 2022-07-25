@@ -1,0 +1,158 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test Screenc page 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "flex": 1,
+    }
+  }
+>
+  <Image
+    resizeMode="cover"
+    source={
+      Object {
+        "testUri": "../../../assets/BoardBG.png",
+      }
+    }
+    style={
+      Array [
+        Object {
+          "bottom": 0,
+          "left": 0,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        },
+        Object {
+          "height": "100%",
+          "width": "100%",
+        },
+      ]
+    }
+  />
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "height": 320.15999999999997,
+          "justifyContent": "center",
+          "width": "100%",
+        }
+      }
+    >
+      <Image
+        resizeMode="cover"
+        source={
+          Object {
+            "testUri": "../../../assets/HeaderForTasks.png",
+          }
+        }
+        style={
+          Object {
+            "alignSelf": "center",
+            "height": 840,
+            "justifyContent": "center",
+            "top": 17,
+            "width": 525,
+          }
+        }
+      />
+      <Text
+        style={
+          Array [
+            Object {
+              "fontSize": 20,
+            },
+            Object {
+              "position": "absolute",
+              "top": 75,
+            },
+          ]
+        }
+      >
+        Date : 
+        2022-07-23
+      </Text>
+      <Text
+        style={
+          Array [
+            Object {
+              "alignSelf": "center",
+              "fontSize": 25,
+              "fontWeight": "bold",
+            },
+            Object {
+              "position": "absolute",
+              "top": 120,
+            },
+          ]
+        }
+      >
+        Today's Tasks: 
+        0
+      </Text>
+    </View>
+    <View
+      style={
+        Object {
+          "height": 892.5,
+          "width": "100%",
+        }
+      }
+    >
+      <RCTScrollView
+        data={Array []}
+        decelerationRate="fast"
+        extraData={
+          Array [
+            0,
+            Array [],
+          ]
+        }
+        getItem={[Function]}
+        getItemCount={[Function]}
+        horizontal={true}
+        keyExtractor={[Function]}
+        onContentSizeChange={[Function]}
+        onLayout={[Function]}
+        onMomentumScrollBegin={[Function]}
+        onMomentumScrollEnd={[Function]}
+        onScroll={[Function]}
+        onScrollBeginDrag={[Function]}
+        onScrollEndDrag={[Function]}
+        pagingEnabled={true}
+        removeClippedSubviews={false}
+        renderItem={[Function]}
+        scrollEventThrottle={50}
+        stickyHeaderIndices={Array []}
+        viewabilityConfig={
+          Object {
+            "itemVisiblePercentThreshold": 40,
+          }
+        }
+        viewabilityConfigCallbackPairs={
+          Array [
+            Object {
+              "onViewableItemsChanged": [Function],
+              "viewabilityConfig": undefined,
+            },
+          ]
+        }
+      >
+        <View />
+      </RCTScrollView>
+    </View>
+  </View>
+</View>
+`;

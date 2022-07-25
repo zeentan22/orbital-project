@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test Starting page 1`] = `
+<View
+  style={
+    Object {
+      "backgroundColor": "#ffffff",
+      "flex": 1,
+      "justifyContent": "center",
+      "padding": 10,
+    }
+  }
+>
+  <Image
+    resizeMode="stretch"
+    source={
+      Object {
+        "testUri": "../../../assets/!Procrastinate_Logo.png",
+      }
+    }
+    style={
+      Object {
+        "alignItems": "center",
+        "borderRadius": 2,
+        "height": 350,
+        "justifyContent": "center",
+        "marginRight": 15,
+        "marginTop": 80,
+        "width": 350,
+      }
+    }
+  />
+  <View
+    collapsable={false}
+    style={
+      Object {
+        "alignSelf": "center",
+        "opacity": 0,
+        "width": "100%",
+      }
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "alignSelf": "center",
+            "color": "black",
+            "fontSize": 20,
+            "fontStyle": "italic",
+            "justifyContent": "center",
+          },
+          "font-family: Cursive",
+        ]
+      }
+    >
+      From
+    </Text>
+    <Text
+      style={
+        Array [
+          Object {
+            "alignSelf": "center",
+            "color": "#21d6ff",
+            "fontSize": 25,
+            "fontStyle": "italic",
+            "justifyContent": "center",
+          },
+          "font-family: fantasy",
+        ]
+      }
+    >
+      !Procrastinate
+    </Text>
+  </View>
+</View>
+`;

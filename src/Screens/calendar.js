@@ -6,37 +6,36 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  Modal,
-  Image,
-  Pressable,
-  TextInput,
   Animated,
   Platform,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import {
   onSnapshot,
   doc,
-  updateDoc,
-  arrayUnion,
-  arrayRemove,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { Card, Avatar } from "react-native-paper";
 import { dbInit, useAuth } from "../../firebase";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { Swipeable } from "react-native-gesture-handler";
-import DropDown from "../Components/DropDown";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
-import { SafeAreaView } from "react-native-safe-area-context";
-import DropDownAcadYr from "../Components/DropDownAcadYr";
-import { fetchDataFromNusMods, getExamDate } from "./utils";
-const {width, height} = Dimensions.get("screen")
-const mar = width * 0.02
-const mar2 = width * 0.004
-const marLeft = width * 0.6
+import {
+  fetchDataFromNusMods,
+  getExamDate,
+  convertDate,
+  convertTime,
+  handleUpdate,
+  handleDelete
+} from "./utils";
+import RenderIOSOrAndroidTimePicker from "../Components/RenderTimePicker";
+import RenderIOSOrAndroidDatePicker from "../Components/RenderDatePicker";
+import ExamModal from "../Components/ExamModal";
+import SetTaskModal from "../Components/SetTaskModal";
+import CalendarOptions from "../Components/CalendarOptions";
+const { width, height } = Dimensions.get("screen");
+const mar = width * 0.02;
+const mar2 = width * 0.004;
+const marLeft = width * 0.6;
 
 const SetCalendar = ({ navigation }) => {
   const user = useAuth();
@@ -65,16 +64,9 @@ const SetCalendar = ({ navigation }) => {
   ];
 
   const semList = [{ name: "1" }, { name: "2" }];
+
   const onSelect = (item) => {
     setAcadYear(item);
-  };
-
-  const convertDate = (date) => {
-    const extraMonthFormat = date.getMonth() + 1 < 10 ? "0" : "";
-    const extraDayFormat = date.getDate() < 10 ? "0" : "";
-    return `${date.getFullYear()}-${extraMonthFormat}${
-      date.getMonth() + 1
-    }-${extraDayFormat}${date.getDate()}`;
   };
 
   const [dateFormat, setDateFormat] = useState(convertDate(date));
@@ -84,7 +76,10 @@ const SetCalendar = ({ navigation }) => {
   }-${date.getDate()}`;
 
   const onChange = (event, selectedDate) => {
-    if (os === false) {setChooseDate(false);setModalOpen(true)}
+    if (os === false) {
+      setChooseDate(false);
+      setModalOpen(true);
+    }
     fDateTime = convertDate(selectedDate);
     let x = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
@@ -96,7 +91,10 @@ const SetCalendar = ({ navigation }) => {
   };
 
   const onChangeTime = (event, selectedTime) => {
-    if (os === false) {setChooseTime(false);setModalOpen(true)};
+    if (os === false) {
+      setChooseTime(false);
+      setModalOpen(true);
+    }
     let x = moment(selectedTime).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
     const hour = time.split(":")[0];
@@ -105,30 +103,6 @@ const SetCalendar = ({ navigation }) => {
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
   };
 
-  const handleUpdate = async (oldData, obj, docRef) => {
-    if (Object.keys(oldData).length === 0) {
-      await updateDoc(docRef, { tasks: arrayUnion(obj) });
-      alert("added task successfully");
-    } else {
-      await updateDoc(docRef, {
-        tasks: arrayRemove(oldData),
-      });
-      let updatedTasks = [...oldData.tasks, ...obj.tasks];
-      updatedTasks.sort((a, b) => {
-        return parseInt(a.startTime) - parseInt(b.startTime);
-      });
-      let newObj = { date: obj.date, tasks: updatedTasks };
-      await updateDoc(docRef, { tasks: arrayUnion(newObj) });
-      alert("added task successfully");
-    }
-    setupdateItem(!updateItem);
-  };
-
-  const handleDelete = async (oldData, newData, docRef) => {
-    await updateDoc(docRef, { tasks: arrayRemove(oldData) });
-    await updateDoc(docRef, { tasks: arrayUnion(newData) });
-    setupdateItem(!updateItem);
-  };
 
   useEffect(() => {
     setOS(Platform.OS === "ios");
@@ -186,16 +160,8 @@ const SetCalendar = ({ navigation }) => {
           oldData = item;
         }
       });
-      handleUpdate(oldData, obj, docRef);
+      handleUpdate(oldData, obj, docRef, setupdateItem, updateItem);
     }
-  };
-
-  const convertTime = (time) => {
-    const hours = Math.floor(time / 60);
-    const minutes = time % 60;
-    const appendHr = hours < 10 ? "0" : "";
-    const appendMins = minutes < 10 ? "0" : "";
-    return `${appendHr}${hours}:${appendMins}${minutes}`;
   };
 
   const RightActions = ({ progress, dragX, onPress }) => {
@@ -226,7 +192,7 @@ const SetCalendar = ({ navigation }) => {
         .flatMap((ele) => ele.tasks)
         .filter((ele) => ele !== item);
       const newData = { date: date, tasks: newtasks };
-      handleDelete(oldData, newData, docRef);
+      handleDelete(oldData, newData, docRef, setupdateItem, updateItem);
     };
     return (
       <View style={{ justifyContent: "center" }}>
@@ -284,323 +250,65 @@ const SetCalendar = ({ navigation }) => {
     );
   };
 
-  const renderIOSOrAndroidDatePicker = () => {
-    if (os) {
-      return (
-        <Modal
-          visible={chooseDate}
-          animationType="fade"
-          style={{ borderWidth: 2, zIndex: 2 }}
-        >
-          <View style={styles.modalContent}>
-            <TouchableOpacity
-              onPress={() => {
-                setChooseDate(false);
-                setModalOpen(true);
-              }}
-              style={{ alignSelf: "flex-end" }}
-            >
-              <Image
-                source={require("../../assets/cross.png")}
-                style={styles.modalClose}
-              />
-            </TouchableOpacity>
-            <View
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: 300,
-                height: 200,
-                borderColor: "black",
-                borderRadius: 5,
-                borderWidth: 2,
-              }}
-            >
-              <Text style={{ marginBottom: 20 }}> Set your Date Below </Text>
-              <DateTimePicker
-                isVisible={true}
-                testID="dateTimePicker"
-                value={date}
-                mode={"date"}
-                display="default"
-                is24Hour={true}
-                onChange={onChange}
-                style={{ width: 120 }}
-              />
-            </View>
-          </View>
-        </Modal>
-      );
-    } else {
-      if (chooseDate) {
-        return (
-          <DateTimePicker
-            // isVisible={chooseDate}
-            testID="dateTimePicker"
-            value={date}
-            mode={"date"}
-            display="default"
-            is24Hour={true}
-            onChange={onChange}
-            style={{ width: 200, marginRight: 70 }}
-          />
-        );
-      }
-    }
-  };
-
-  const renderIOSOrAndroidTimePicker = () => {
-    if (os) {
-      return (
-        <Modal visible={chooseTime} animationType="fade">
-          <View style={styles.modalContent}>
-            <TouchableOpacity
-              onPress={() => {
-                setChooseTime(false);
-                setModalOpen(true);
-              }}
-              style={{ alignSelf: "flex-end" }}
-            >
-              <Image
-                source={require("../../assets/cross.png")}
-                style={styles.modalClose}
-              />
-            </TouchableOpacity>
-            <View
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: 300,
-                height: 200,
-                borderColor: "black",
-                borderRadius: 5,
-                borderWidth: 2,
-              }}
-            >
-              <Text style={{ marginBottom: 20 }}>Set Your Start Time here</Text>
-              <DateTimePicker
-                isVisible={true}
-                testID="dateTimePicker"
-                value={date}
-                mode={"time"}
-                display="default"
-                is24Hour={true}
-                onChange={onChangeTime}
-                style={{ width: 200, marginRight: 70 }}
-              />
-            </View>
-          </View>
-        </Modal>
-      );
-    } else {
-      if (chooseTime) {
-        return (
-          <DateTimePicker
-            isVisible={chooseTime}
-            testID="dateTimePicker"
-            value={date}
-            mode={"time"}
-            display="default"
-            is24Hour={chooseDate}
-            onChange={onChangeTime}
-          />
-        );
-
-    }}
-  };
-
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
-      <Modal visible={modalOpen} animationType="slide">
-        <View style={styles.modalContent}>
-          <TouchableOpacity
-            onPress={() => setModalOpen(false)}
-            style={{ alignSelf: "flex-end" }}
-          >
-            <Image
-              source={require("../../assets/cross.png")}
-              style={styles.modalClose}
-            />
-          </TouchableOpacity>
+      <SetTaskModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        dateFormat={dateFormat}
+        setChooseDate={setChooseDate}
+        setTask={setTask}
+        startTime={startTime}
+        task={task}
+        unmodfiedItems={unmodfiedItems}
+        handleUpdate={handleUpdate}
+        docRef={docRef}
+        setupdateItem={setupdateItem}
+        updateItem={updateItem}
+        setChooseTime={setChooseTime}
+      />
+      <RenderIOSOrAndroidDatePicker
+        os={os}
+        chooseDate={chooseDate}
+        date={date}
+        onChange={onChange}
+        setChooseDate={setChooseDate}
+        setModalOpen={setModalOpen}
+      />
+      <RenderIOSOrAndroidTimePicker
+        os={os}
+        chooseDate={chooseDate}
+        chooseTime={chooseTime}
+        date={date}
+        onChangeTime={onChangeTime}
+        setChooseTime={setChooseTime}
+        setModalOpen={setModalOpen}
+      />
 
-          <View
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
-              alignItems: "center",
-              width: "100%",
-              height: "94%",
-            }}
-          >
-            <Text style={{fontSize:35, borderWidth:3, width:"94%", textAlign:"center"}}>Set Your Task</Text>
-            <Text style={{fontSize:25 }}>
-              Date Chosen: {dateFormat}
-            </Text>
+      <ExamModal
+        examModalOpen={examModalOpen}
+        setExamModalOpen={setExamModalOpen}
+        acadYear={acadYear}
+        tList={tList}
+        onSelect={onSelect}
+        semester={semester}
+        semList={semList}
+        setSemester={setSemester}
+        setModuleCode={setModuleCode}
+        retrieveExamDate={retrieveExamDate}
+        moduleCode={moduleCode}
+      />
+      <CalendarOptions
+        mar={mar}
+        mar2={mar2}
+        setExamModalOpen={setExamModalOpen}
+        setModalOpen={setModalOpen}
+      />
 
-            <TouchableOpacity
-              style={{ borderRadius: 16,borderWidth: 2,height:35,alignItems:"center",justifyContent:"center",width:"40%" }}
-              onPress={() => {
-                setChooseDate(true);
-                setModalOpen(false)
-              }}
-            >
-              <Text> Pick a date </Text>
-            </TouchableOpacity>
-
-            <Text style={{fontSize:25 }}>
-              Time Chosen: {convertTime(startTime)}
-            </Text>
-
-            <TouchableOpacity
-              style={{ borderRadius: 16, borderWidth: 2,height:35,alignItems:"center",justifyContent:"center",width:"40%" }}
-              onPress={() => {
-                setChooseTime(true);
-                setModalOpen(false)
-              }}
-            >
-              <Text> Pick a Time </Text>
-            </TouchableOpacity>
-
-            
-            <TextInput
-              textAlign="center"
-              style={styles.input}
-              placeholder="Task 1..."
-              onChangeText={(val) => {
-                setTask(val);
-              }}
-            />
-            <TouchableOpacity
-              style={{ borderColor: "black", borderWidth: 2, borderRadius: 10, width:"60%", height:40,alignItems:"center",justifyContent:"center" }}
-              onPress={() => {
-                const obj = {
-                  date: dateFormat,
-                  tasks: [
-                    {
-                      name: task,
-                      done: false,
-                      startTime: startTime,
-                      date: dateFormat,
-                    },
-                  ],
-                };
-                let oldData = {};
-                unmodfiedItems.forEach((item) => {
-                  if (item.date === dateFormat) {
-                    oldData = item;
-                  }
-                });
-                handleUpdate(oldData, obj, docRef);
-                setModalOpen(false);
-              }}
-            >
-              <Text> Add Task </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-      {renderIOSOrAndroidDatePicker()}
-      {renderIOSOrAndroidTimePicker()}
-      <Modal visible={examModalOpen} animationType="slide">
-        <View style={styles.modalContent}>
-          <TouchableOpacity
-            onPress={() => setExamModalOpen(false)}
-            style={{ alignSelf: "flex-end" }}
-          >
-            <Image
-              source={require("../../assets/cross.png")}
-              style={styles.modalClose}
-            />
-          </TouchableOpacity>
-          <View
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
-              alignItems: "center",
-              width: "100%",
-              height: "94%",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 30,
-                width:"94%",
-                textAlign:"center",
-                borderWidth: 2,
-                height:50
-              }}
-            >
-              Get Your Exam Dates
-            </Text>
-
-            <View style={{zIndex: 2,alignItems:"center",justifyContent:"center", width:"80%"}}>
-              <Text style = {{fontSize:25}}>Academic Year :</Text>
-              <DropDownAcadYr
-                item={acadYear}
-                data={tList}
-                onSelect={onSelect}
-                title={"Select Academic Year"}
-              />
-            </View>
-
-            <View style={{zIndex: 2,alignItems:"center",justifyContent:"center", width:"80%" }}>
-            <Text style = {{fontSize:25,marginBottom:10}}>Semester :</Text>
-              <DropDownAcadYr
-                item={semester}
-                data={semList}
-                onSelect={(val) => setSemester(val)}
-                title={"Select Semester"}
-              />
-            </View>
-            <View style = {{width:"80%", alignItems:"center",justifyContent:"center"}}>
-            <Text style={{fontSize: 20 }}>
-              Module Code:
-            </Text>
-            <TextInput
-              textAlign="center"
-              placeholder="E.g. CS1010S"
-              style={{
-                borderWidth: 1,
-                width: "100%",
-                height: 40,
-                borderRadius: 2,
-                marginTop:5
-              }}
-              onChangeText={(val) => {
-                setModuleCode(val);
-              }}
-            />
-            </View>
-            <TouchableOpacity
-              style={{ borderColor: "black", borderWidth: 2, borderRadius: 10, width:"84%", height:40,alignItems:"center",justifyContent:"center" }}
-              onPress={() => {
-                retrieveExamDate(acadYear.name, moduleCode, semester.name);
-              }}
-            >
-              <Text style = {{fontSize:15}}> Insert exam date into my calendar </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      <View style = {{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-        <TouchableOpacity style = {{justifyContent:"space-around", flexDirection:"row", alignItems:"center",marginLeft:mar}} onPress={() => setExamModalOpen(true)}>
-          <Image source = {{uri: "https://icons.veryicon.com/png/o/system/system-project/add-97.png"}} style = {{height: 20, width: 20,marginRight:mar2, tintColor:"blue"}}/>
-          <Text style = {{fontSize:15, color:"blue"}}>Get my exam dates </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{justifyContent:"center"}}
-          onPress={() => setModalOpen(true)}
-        >
-          <Text style={styles.add}> + </Text>
-        </TouchableOpacity>
-      </View>
       <Agenda
         items={items}
         minDate={"2018-05-10"}
-        extraData= {updateItem}
+        extraData={updateItem}
         renderItem={renderItem}
         renderEmptyData={() => (
           <View style={styles.itemContainer}>
@@ -634,23 +342,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  add: {
-    fontSize: 30,
-    justifyContent:"center"
-    // margin: 1,
-  },
-
-  modalClose: {
-    // marginTop: 50,
-    // marginRight: 10,
-    marginBottom: 10,
-    width: 35,
-    height: 40,
-    resizeMode: "contain",
-    alignSelf: "flex-end",
-    tintColor:"red",
-  },
-
   deleteTaskBtn: {
     alignSelf: "flex-end",
     justifyContent: "center",
@@ -664,25 +355,13 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 
-  modalContent: {
-    width:"90%",
-    height:"98%",
-    alignSelf:"center",
-    alignItems: "center",
-    justifyContent: "center",
-    borderColor: "black",
-    borderRadius: 5,
-    borderWidth: 2,
-    marginTop: 5,
-  },
-
   input: {
     borderWidth: 1,
     borderColor: "#777",
-    marginBottom:20,
-    textAlign:"center",
-    height:60,
-    width:"85%",
+    marginBottom: 20,
+    textAlign: "center",
+    height: 60,
+    width: "85%",
     // margin: 10
     // marginTop: 20,
 

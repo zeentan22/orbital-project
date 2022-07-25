@@ -1,7 +1,9 @@
 {
   "expo": {
-    "name": "orbital",
+    "name": "!Procrastinate",
     "slug": "orbital",
+    "privacy":"public",
+    "description":"A great tools to help students with procrastination",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,14 +20,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.weerocks123.orbital"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "package": "com.weerocks123.orbital"
     },
     "web": {
       "favicon": "./assets/favicon.png"

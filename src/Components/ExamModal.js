@@ -27,15 +27,6 @@ const ExamModal = (props) => {
   return (
     <Modal visible={examModalOpen} animationType="slide">
       <View style={styles.modalContent}>
-        <TouchableOpacity
-          onPress={() => setExamModalOpen(false)}
-          style={{ alignSelf: "flex-end" }}
-        >
-          <Image
-            source={require("../../assets/cross.png")}
-            style={styles.modalClose}
-          />
-        </TouchableOpacity>
         <View
           style={{
             display: "flex",
@@ -132,6 +123,19 @@ const ExamModal = (props) => {
               Insert exam date into my calendar{" "}
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              borderRadius: 16,
+              borderWidth: 2,
+              height: 35,
+              alignItems: "center",
+              justifyContent: "center",
+              width: "40%",
+            }}
+            onPress={() => setExamModalOpen(false)}
+          >
+            <Text> Close </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -157,6 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 2,
     marginTop: 5,
+    backgroundColor: "#ffe6cc",
   },
 });
 

@@ -69,8 +69,10 @@ const RenderIOSOrAndroidTimePicker = (props) => {
           onChange={onChangeTime}
         />
       );
-    } else { return (null)}
-  } 
+    } else {
+      return null;
+    }
+  }
 };
 
 const styles = StyleSheet.create({
@@ -84,6 +86,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 2,
     marginTop: 5,
+    backgroundColor: "#ffe6cc",
   },
 });
 

@@ -40,7 +40,7 @@ const RenderIOSOrAndroidDatePicker = (props) => {
               display="default"
               is24Hour={true}
               onChange={onChange}
-              style={{ width: 200, marginRight: 70 }}
+              style={{ width: "50%", marginRight: 40 }}
             />
             <TouchableOpacity
               style={{
@@ -74,7 +74,9 @@ const RenderIOSOrAndroidDatePicker = (props) => {
           style={{ width: 200, marginRight: 70 }}
         />
       );
-    } else{return (null)}
+    } else {
+      return null;
+    }
   }
 };
 
@@ -89,6 +91,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 2,
     marginTop: 5,
+    backgroundColor: "#ffe6cc",
   },
 });
 

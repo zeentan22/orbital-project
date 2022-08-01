@@ -168,14 +168,14 @@ const TopicList = ({navigation, route}) => {
   const FlashCardInput = ({route,navigation}) => { 
     const topic =  (route.params) ? route.params["topicSelected"] : null
     const passedTopic = topic
-    const [currentTopic, setCurrentTopic] = useState((topic != "Add New Topic") ? topic : null)
+    const [currentTopic, setCurrentTopic] = useState((topic != "Add New Topic") ? topic : "")
     const wdoc = user ? doc(dbInit, "users", auth?.currentUser.uid) : null ;
     console.log(`${topic}`)
-    const [question,setQuestion] = useState("Null")
-    const [answer, setAnswer] = useState("Null")
+    const [question,setQuestion] = useState()
+    const [answer, setAnswer] = useState()
     useEffect(()=>{
-      setQuestion("Null");
-      setAnswer("Null");
+      setQuestion("");
+      setAnswer("");
     },[])
     return (
       <KeyboardAwareScrollView enableOnAndroid={true}   contentContainerStyle={{flexGrow: 1}}> 
@@ -192,13 +192,19 @@ const TopicList = ({navigation, route}) => {
         <Text style = {{fontSize:17,color: 'black', fontWeight:"bold"}}>Go Back</Text>
       </TouchableOpacity>
       <TouchableOpacity hitSlop={{ top: 20, bottom: 20, right: 20, left: 20 }} style= {{alignSelf: "flex-start", flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom:20}} onPress={async ()=>{
+          if(currentTopic.trim() == "" || question.trim() ==  "" || answer.trim() == ""){
+            let cT = currentTopic.trim() ? "" : "Topic,";
+            let qn = question.trim() ? "" : "Question,";
+            let ans = answer.trim() ? "" : "Answer,";
+            alert(`Please ensure that the following field(s) are filled: ${cT} ${qn} ${ans}`)
+          }else{
           try {
             let newObj = {topic: currentTopic, Question: question, Answer:answer}
             await updateDoc(wdoc, {FlashCardContent:arrayUnion(newObj)})
           } catch (err){
             alert("Error!");
             console.log(err);
-          };navigation.navigate("Topic List")}}>
+          };navigation.navigate("Topic List")}}}>
         <Image style = {{marginRight:3,height: 27.3,width: 27.3, alignSelf: "center", justifyContent:"center",}} source = {{uri: "https://cdn.icon-icons.com/icons2/1946/PNG/512/1904674-accept-approved-check-checked-confirm-done-tick_122524.png"}} tintColor= 'black' ></Image>
         <Text style = {{fontSize:17,color: 'black', fontWeight:"bold"}}>Confirm</Text>
       </TouchableOpacity>

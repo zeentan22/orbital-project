@@ -27,16 +27,6 @@ const SetTaskModal = (props) => {
   return (
     <Modal visible={modalOpen} animationType="slide">
       <View style={styles.modalContent}>
-        <TouchableOpacity
-          onPress={() => setModalOpen(false)}
-          style={{ alignSelf: "flex-end" }}
-        >
-          <Image
-            source={require("../../assets/cross.png")}
-            style={styles.modalClose}
-          />
-        </TouchableOpacity>
-
         <View
           style={{
             display: "flex",
@@ -138,6 +128,20 @@ const SetTaskModal = (props) => {
           >
             <Text> Add Task </Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{
+              borderRadius: 16,
+              borderWidth: 2,
+              height: 35,
+              alignItems: "center",
+              justifyContent: "center",
+              width: "40%",
+            }}
+            onPress={() => setModalOpen(false)}
+          >
+            <Text> Close </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -155,6 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 2,
     marginTop: 5,
+    backgroundColor: "#ffe6cc",
   },
   modalClose: {
     // marginTop: 50,

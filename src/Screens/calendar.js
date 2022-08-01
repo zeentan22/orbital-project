@@ -11,10 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
-import {
-  onSnapshot,
-  doc,
-} from "firebase/firestore";
+import { onSnapshot, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { Card, Avatar } from "react-native-paper";
 import { dbInit, useAuth } from "../../firebase";
@@ -25,7 +22,7 @@ import {
   convertDate,
   convertTime,
   handleUpdate,
-  handleDelete
+  handleDelete,
 } from "./utils";
 import RenderIOSOrAndroidTimePicker from "../Components/RenderTimePicker";
 import RenderIOSOrAndroidDatePicker from "../Components/RenderDatePicker";
@@ -103,7 +100,6 @@ const SetCalendar = ({ navigation }) => {
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
   };
 
-
   useEffect(() => {
     setOS(Platform.OS === "ios");
     let result = {};
@@ -122,13 +118,13 @@ const SetCalendar = ({ navigation }) => {
           result[dateInput] = element.tasks;
         });
         setItems(result);
-        setUnmodifiedItems(unmodifiedResult);
+        setUnmodifiedItems(unmodfiedItems);
       }
     );
   }, [updateItem]);
 
   const retrieveExamDate = async (acadYear, moduleCode, semester) => {
-    const data = await fetchDataFromNusMods(acadYear, moduleCode);
+    const data = await fetchDataFromNusMods(acadYear, moduleCode.toUpperCase());
     const value = getExamDate(data, semester);
 
     if (value.length === 0) {

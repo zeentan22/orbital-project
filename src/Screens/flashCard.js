@@ -170,7 +170,7 @@ const TopicList = ({navigation, route}) => {
     const passedTopic = topic
     const [currentTopic, setCurrentTopic] = useState((topic != "Add New Topic") ? topic : "")
     const wdoc = user ? doc(dbInit, "users", auth?.currentUser.uid) : null ;
-    console.log(`${topic}`)
+    // console.log(`${topic}`)
     const [question,setQuestion] = useState()
     const [answer, setAnswer] = useState()
     useEffect(()=>{
@@ -203,7 +203,7 @@ const TopicList = ({navigation, route}) => {
             await updateDoc(wdoc, {FlashCardContent:arrayUnion(newObj)})
           } catch (err){
             alert("Error!");
-            console.log(err);
+            // console.log(err);
           };navigation.navigate("Topic List")}}}>
         <Image style = {{marginRight:3,height: 27.3,width: 27.3, alignSelf: "center", justifyContent:"center",}} source = {{uri: "https://cdn.icon-icons.com/icons2/1946/PNG/512/1904674-accept-approved-check-checked-confirm-done-tick_122524.png"}} tintColor= 'black' ></Image>
         <Text style = {{fontSize:17,color: 'black', fontWeight:"bold"}}>Confirm</Text>
@@ -353,7 +353,7 @@ const TopicList = ({navigation, route}) => {
     }}
     const tracking = () =>{
       setAppear(true);
-      console.log("h",test);
+      // console.log("h",test);
       if (test){
         setAppear(false);
         cList.current = [];
@@ -372,9 +372,9 @@ const TopicList = ({navigation, route}) => {
     };
     const _onViewableItemsChanged = useCallback(({ viewableItems,changed}) => {
       if (viewableItems != undefined || viewableItems) {
-      console.log("Visible items are", viewableItems);
-      console.log("Changed in this iteration", changed);
-      console.log(viewableItems[0].index);
+      // console.log("Visible items are", viewableItems);
+      // console.log("Changed in this iteration", changed);
+      // console.log(viewableItems[0].index);
       setSelectedItem(viewableItems[0].index);}
       else {setSelectedItem(0)}
     },[selectedItem]);
@@ -419,7 +419,7 @@ const TopicList = ({navigation, route}) => {
           ;alert("Flashcard has been successfully deleted!")
         } catch (err){
           alert("Error!");
-          console.log(err);
+          // console.log(err);
         }; navigation.navigate("View Flash Card")}
         else {
           try {
@@ -439,7 +439,7 @@ const TopicList = ({navigation, route}) => {
             }); setSelectedItem(number - 1)}
           } catch (err){
             alert("Error!");
-            console.log(err);};
+            // console.log(err);};
     }}
 
     const interpolateFront = animate.current.interpolate({
@@ -493,11 +493,11 @@ const TopicList = ({navigation, route}) => {
       ))
     const [tList,setTList] = useState()
     const [changeInTList, setChangeInTList] = useState(true)
-    console.log(tList)
+    // console.log(tList)
     const topic =  (route.params) ? route.params["topicSelected"] : null
-    console.log(topic)
+    // console.log(topic)
     useEffect(()=>{
-      console.log("yoloo",test)
+      // console.log("yoloo",test)
       if (user) {
       const wdoc = doc(dbInit, "users", auth?.currentUser.uid);
         return onSnapshot(wdoc, (doc) => {
@@ -736,4 +736,5 @@ const styles = StyleSheet.create({
     backgroundColor:"#ffffff",
   },
 
-});
+})
+}

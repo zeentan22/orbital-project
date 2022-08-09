@@ -19,13 +19,13 @@ export const getExamDate = (data, semester) => {
   if (!data) {
     return [];
   } else {
-    console.log(data.semesterData);
-    console.log("---");
+    // console.log(data.semesterData);
+    // console.log("---");
     const semesterMod = data.semesterData.filter(
       (mod) => mod.semester === parseInt(semester)
     );
-    console.log(semesterMod);
-    console.log("pass");
+    // console.log(semesterMod);
+    // console.log("pass");
     if (semesterMod) {
       return [data.moduleCode, semesterMod[0].examDate];
     } else {

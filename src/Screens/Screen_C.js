@@ -36,19 +36,18 @@ import {
   TouchableRipple,
   Switch,
 } from "react-native-paper";
-import NotiFlipCard from "../Components/NotiCardsTrial"
+import NotiFlipCard from "../Components/NotiCardsTrial";
 import { createNativeWrapper } from "react-native-gesture-handler";
-const {width, height} = Dimensions.get("screen")
-const cW = width * 0.7
-const cH = cW * 1.7
-const hH = height * 0.24
-const wH = cW *1.6
-
+const { width, height } = Dimensions.get("screen");
+const cW = width * 0.7;
+const cH = cW * 1.7;
+const hH = height * 0.24;
+const wH = cW * 1.6;
 
 export function Screenc({ navigation }) {
-  const user = useAuth()
-  const [show,setShow] = useState(true)
-  const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null
+  const user = useAuth();
+  const [show, setShow] = useState(true);
+  const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null;
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState([]);
   const [date, setDate] = useState(new Date());
@@ -93,12 +92,12 @@ export function Screenc({ navigation }) {
       useNativeDriver: true,
     }).start(() => {
       setIsFlipped(!isFlipped);
-      setShow(!show)
+      setShow(!show);
     });
   };
 
   const handleUpdate = async (oldData, obj, docRef) => {
-    console.log(oldData)
+    // console.log(oldData)
     await updateDoc(docRef, { tasks: arrayRemove(oldData) });
     obj.done = true;
     let updatedTasks = [...oldData.tasks];
@@ -151,59 +150,101 @@ export function Screenc({ navigation }) {
     return onSnapshot(
       doc(dbInit, "users", getAuth()?.currentUser.uid),
       (doc) => {
-        console.log("onSnapshot");
+        // console.log("onSnapshot");
         getData(convertDate(date));
       }
     );
   }, [updateItem]);
 
-  const keyExtractor=(item,index)=> index.toString()
-  const renderItem = useCallback(({item,index})=>(
-    <Pressable style = {{alignSelf:"center", justifyContent: "center", alignItems:"center",width,height: cH}} onPress = {()=>{[handleFlip()]}}>  
-          <Animated.View style={[{transform:[{rotateY:interpolateFront}]},styles.hidden,{width: "90%",height: cH}]}>
-          <NotiFlipCard
-          heading = {`Task ${index + 1}`}
-          button = {false}
-          image = "https://icons.veryicon.com/png/o/business/erp-system-background-icon/task-6.png"
-          imagedone = {item.done ? require("../../assets/Correct.png") : require("../../assets/Wrong.png")}
-          tC = {item.done? "#32cd32" : "red"}
-          marking = {true}
-          title = {item.name}
-          btitle = {null}
-          pageNum = {`${index + 1}/${items.length}`}/>
+  const keyExtractor = (item, index) => index.toString();
+  const renderItem = useCallback(({ item, index }) => (
+    <Pressable
+      style={{
+        alignSelf: "center",
+        justifyContent: "center",
+        alignItems: "center",
+        width,
+        height: cH,
+      }}
+      onPress={() => {
+        [handleFlip()];
+      }}
+    >
+      <Animated.View
+        style={[
+          { transform: [{ rotateY: interpolateFront }] },
+          styles.hidden,
+          { width: "90%", height: cH },
+        ]}
+      >
+        <NotiFlipCard
+          heading={`Task ${index + 1}`}
+          button={false}
+          image="https://icons.veryicon.com/png/o/business/erp-system-background-icon/task-6.png"
+          imagedone={
+            item.done
+              ? require("../../assets/Correct.png")
+              : require("../../assets/Wrong.png")
+          }
+          tC={item.done ? "#32cd32" : "red"}
+          marking={true}
+          title={item.name}
+          btitle={null}
+          pageNum={`${index + 1}/${items.length}`}
+        />
+      </Animated.View>
 
-          </Animated.View>
-        
-        <Animated.View style = {[styles.back, styles.hidden,{width: "90%",height: cH},{transform:[{rotateY:interpolateBack}]}]}>
-          <NotiFlipCard
-          heading = "Mark As:"
-          shows = {show}
-          marking = {false}
-          onPress = {()=>{const newObj = item; 
-            const oldObj = {date: item.date, tasks: items}; 
-            handleUpdate(oldObj, newObj, docRef)}}
-          button = {true}
-          image = "https://icons.veryicon.com/png/o/business/erp-system-background-icon/task-6.png"
-          btitle = "Completed"
-          title = {null}
-          pageNum = {`${index + 1}/${items.length}`}/>
-        </Animated.View>
+      <Animated.View
+        style={[
+          styles.back,
+          styles.hidden,
+          { width: "90%", height: cH },
+          { transform: [{ rotateY: interpolateBack }] },
+        ]}
+      >
+        <NotiFlipCard
+          heading="Mark As:"
+          shows={show}
+          marking={false}
+          onPress={() => {
+            const newObj = item;
+            const oldObj = { date: item.date, tasks: items };
+            handleUpdate(oldObj, newObj, docRef);
+          }}
+          button={true}
+          image="https://icons.veryicon.com/png/o/business/erp-system-background-icon/task-6.png"
+          btitle="Completed"
+          title={null}
+          pageNum={`${index + 1}/${items.length}`}
+        />
+      </Animated.View>
     </Pressable>
   ));
 
   const checkTasks = (items) => {
-      return (
-        <View style={{ flex:1,justifyContent:"center",alignItems:"center" }}>
-          <View style = {{height:hH, justifyContent:"center",alignItems:"center",width:"100%"}}>
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{
+            height: hH,
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
           <Image
-              source={require("../../assets/HeaderForTasks.png")}
-              style={styles.imageHeader}
-              resizeMode = "cover"
-            />
-          <Text style={[styles.date,{position:"absolute",top:75}]}>Date : {convertDate(date)}</Text>
-          <Text style={[styles.taskHeader,{position:"absolute",top:120}]}>Today's Tasks: {items.length}</Text>
-          </View>
-          <View style = {{width:"100%",height:cH}}>
+            source={require("../../assets/HeaderForTasks.png")}
+            style={styles.imageHeader}
+            resizeMode="cover"
+          />
+          <Text style={[styles.date, { position: "absolute", top: 75 }]}>
+            Date : {convertDate(date)}
+          </Text>
+          <Text style={[styles.taskHeader, { position: "absolute", top: 120 }]}>
+            Today's Tasks: {items.length}
+          </Text>
+        </View>
+        <View style={{ width: "100%", height: cH }}>
           <FlatList
             onScrollBeginDrag={() => {
               flipback(isFlipped, handleFlip);
@@ -214,25 +255,27 @@ export function Screenc({ navigation }) {
             viewabilityConfig={_viewabilityConfig}
             horizontal={true}
             keyExtractor={keyExtractor}
-            extraData={[selectedItem,items]}
+            extraData={[selectedItem, items]}
             decelerationRate="fast"
             pagingEnabled
             data={items}
             renderItem={renderItem}
           />
-          </View>
         </View>
-      );
+      </View>
+    );
   };
 
   return (
     <View style={styles.body}>
       <Image
-          resizeMode="cover"
-          source = {require("../../assets/BoardBG.png")}
-          style = {[StyleSheet.absoluteFillObject,{width:"100%",height:"100%"}]}
-          
-          />
+        resizeMode="cover"
+        source={require("../../assets/BoardBG.png")}
+        style={[
+          StyleSheet.absoluteFillObject,
+          { width: "100%", height: "100%" },
+        ]}
+      />
       {checkTasks(items)}
     </View>
   );
@@ -255,7 +298,7 @@ const styles = StyleSheet.create({
   taskHeader: {
     fontWeight: "bold",
     fontSize: 25,
-    alignSelf:"center"
+    alignSelf: "center",
   },
 
   noTasks: {
@@ -303,13 +346,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
-  }
-  ,
-  imageHeader:{
+  },
+  imageHeader: {
     height: wH,
     width: cW,
-    alignSelf:"center",
-    justifyContent:"center",
-    top:17
+    alignSelf: "center",
+    justifyContent: "center",
+    top: 17,
   },
 });

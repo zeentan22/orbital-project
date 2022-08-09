@@ -1,5 +1,5 @@
 "use strict";
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import {
   View,
@@ -23,15 +23,15 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Card, Avatar } from "react-native-paper";
 import { dbInit, useAuth } from "../../firebase";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Swipeable } from "react-native-gesture-handler";
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
-export default function SetNotifications ({navigation}) {
+export default function SetNotifications({ navigation }) {
   const user = useAuth();
   const docRef = user ? doc(dbInit, "users", getAuth().currentUser.uid) : null;
   const [items, setItems] = useState({});
@@ -41,68 +41,78 @@ export default function SetNotifications ({navigation}) {
   const [updateItem, setupdateItem] = useState(false);
   const [chooseDate, setChooseDate] = useState(false);
   const [chooseTime, setChooseTime] = useState(false);
-  const [title,setTitle] = useState("");
-  const [body,setBody] = useState("");
-  const [notiDate, setNotiDate] = useState("")
-  const [notiTime, setNotiTime] = useState("")
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [notiDate, setNotiDate] = useState("");
+  const [notiTime, setNotiTime] = useState("");
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
-  const [mins, setMins] = useState(0)
+  const [mins, setMins] = useState(0);
   const [os, setOS] = useState(true);
   async function registerForPushNotificationsAsync() {
     let token;
     if (Device.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
+      if (existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
+      // console.log(token);
     } else {
-      alert('Must use physical device for Push Notifications');
+      alert("Must use physical device for Push Notifications");
     }
-  
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
+        lightColor: "#FF231F7C",
       });
     }
-  
+
     return token;
   }
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
-      }),
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+
+  async function schedulePushNotification() {
+    const day = parseInt(dateFormat.split("-")[2]);
+    const month = parseInt(dateFormat.split("-")[1]);
+    const sec = (date.getTime() - new Date().getTime()) / 1000;
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: `${body} \n Alarm: ${dateFormat}, ${notiTime}`,
+        data: { data: "goes here" },
+      },
+      trigger:
+        Platform.OS === "ios"
+          ? {
+              day: day,
+              nonth: month,
+              hour: hours,
+              minute: mins,
+              channelId: "new-emails",
+            }
+          : { seconds: sec },
     });
+  }
 
-    async function schedulePushNotification() {
-      const day = parseInt(dateFormat.split("-")[2]);
-      const month = parseInt(dateFormat.split("-")[1]);
-      const sec = ((date.getTime()-new Date().getTime())/1000)
-
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: title,
-          body: `${body} \n Alarm: ${dateFormat}, ${notiTime}`,
-          data: { data: 'goes here' },
-        },
-        trigger: (Platform.OS === "ios") ? { day: day, nonth: month, hour: hours, minute: mins,channelId: 'new-emails'} : {seconds: sec},
-      });
-    }
-
-  const [expoPushToken, setExpoPushToken] = useState('');
+  const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -122,7 +132,9 @@ export default function SetNotifications ({navigation}) {
   }-${date.getDate()}`;
 
   const onChange = (event, selectedDate) => {
-    if (os ===false) {setChooseDate(!chooseDate)}
+    if (os === false) {
+      setChooseDate(!chooseDate);
+    }
     fDateTime = convertDate(selectedDate);
     let x = moment(selectedDate).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
@@ -134,7 +146,9 @@ export default function SetNotifications ({navigation}) {
   };
 
   const onChangeTime = (event, selectedTime) => {
-    if (os === false) {setChooseTime(!chooseTime);}
+    if (os === false) {
+      setChooseTime(!chooseTime);
+    }
     let x = moment(selectedTime).format("YYYY-MM-DD HH:mm:ss");
     let time = x.split(" ")[1];
     const hour = time.split(":")[0];
@@ -144,10 +158,8 @@ export default function SetNotifications ({navigation}) {
     setDate(selectedTime);
     setStartTime(parseInt(hour) * 60 + parseInt(minutes));
     setNotiTime(convertTime(parseInt(hour) * 60 + parseInt(minutes)));
-    console.log(notiTime)
+    // console.log(notiTime);
   };
-
-
 
   useEffect(() => {
     setOS(Platform.OS === "ios");
@@ -157,22 +169,27 @@ export default function SetNotifications ({navigation}) {
     setHours(0);
     setMins(0);
     setNotiTime("");
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        // console.log(response);
+      });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
 
   const convertTime = (time) => {
     const hours = Math.floor(time / 60);
@@ -308,86 +325,118 @@ export default function SetNotifications ({navigation}) {
   };
 
   return (
-        <KeyboardAwareScrollView enableOnAndroid={true}  contentContainerStyle={{flexGrow: 1}}>
-        <View style={styles.modalContent}>
-          <Image
+    <KeyboardAwareScrollView
+      enableOnAndroid={true}
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
+      <View style={styles.modalContent}>
+        <Image
           resizeMode="cover"
-          source = {{uri:"https://images.pexels.com/photos/4862873/pexels-photo-4862873.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4862873.jpg&fm=jpg"}}
-          style = {StyleSheet.absoluteFillObject}
-          blurRadius = {0}/>
-          <View
+          source={{
+            uri: "https://images.pexels.com/photos/4862873/pexels-photo-4862873.jpeg?cs=srgb&dl=pexels-karolina-grabowska-4862873.jpg&fm=jpg",
+          }}
+          style={StyleSheet.absoluteFillObject}
+          blurRadius={0}
+        />
+        <View
+          style={{
+            width: "100%",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            borderRadius: 5,
+            height: "100%",
+          }}
+        >
+          <Text style={{ marginBottom: 15, fontSize: 25, fontWeight: "bold" }}>
+            Date Chosen: {dateFormat}
+          </Text>
+
+          <TouchableOpacity
             style={{
-              width:"100%",
-              justifyContent: "space-evenly",
+              borderRadius: 10,
+              borderWidth: 2,
+              marginBottom: 25,
+              height: 35,
+              justifyContent: "center",
+              width: "40%",
               alignItems: "center",
-              borderRadius: 5,
-              height:"100%"
+            }}
+            onPress={() => {
+              setChooseDate(true);
             }}
           >
-            <Text style={{ marginBottom: 15, fontSize:25, fontWeight:"bold" }}>
-              Date Chosen: {dateFormat}
-            </Text>
+            <Text> Pick a date </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={{ borderRadius: 10, borderWidth: 2,marginBottom: 25,height:35,justifyContent:"center",width:"40%",alignItems:"center"  }}
-              onPress={() => {
-                setChooseDate(true);
-              }}
-            >
-              <Text> Pick a date </Text>
-            </TouchableOpacity>
+          <Text style={{ marginBottom: 15, fontSize: 25, fontWeight: "bold" }}>
+            Time Chosen: {convertTime(startTime)}
+          </Text>
 
-            <Text style={{marginBottom: 15, fontSize:25,fontWeight:"bold"  }}>
-              Time Chosen: {convertTime(startTime)}
-            </Text>
+          <TouchableOpacity
+            style={{
+              borderRadius: 10,
+              borderWidth: 2,
+              marginBottom: 25,
+              height: 35,
+              justifyContent: "center",
+              width: "40%",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              setChooseTime(true);
+            }}
+          >
+            <Text style={{ textAlign: "center" }}> Pick a Time </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={{ borderRadius: 10, borderWidth: 2,marginBottom: 25,height:35,justifyContent:"center" ,width:"40%" ,alignItems:"center"  }}
-              onPress={() => {
-                setChooseTime(true);
-              }}
-            >
-              <Text style = {{textAlign:"center"}}> Pick a Time </Text>
-            </TouchableOpacity>
+          <TextInput
+            placeholderTextColor={"black"}
+            style={styles.input}
+            placeholder="Notification Title"
+            onChangeText={(val) => {
+              setTitle(val);
+            }}
+          />
+          <TextInput
+            placeholderTextColor={"black"}
+            style={styles.input}
+            placeholder="Notification Message"
+            onChangeText={(val) => {
+              setBody(val);
+            }}
+          />
 
-            <TextInput
-              placeholderTextColor={"black"}
-              style={styles.input}
-              placeholder="Notification Title"
-              onChangeText={(val) => {
-                setTitle(val);
-              }}
-            />
-            <TextInput
-              placeholderTextColor={"black"}
-              style={styles.input}
-              placeholder="Notification Message"
-              onChangeText={(val) => {
-                setBody(val);
-              }}
-            />
-            
-            <TouchableOpacity
-              style={{ borderColor: "black", borderWidth: 2, borderRadius: 10,height:40, alignItems:"center",justifyContent:"center",width:"60%",marginTop:20}}
-              onPress={async () => {
-                console.log(dateFormat);
-                if (title == "" || body == "")
-                {Alert.alert("Please fill in both Title and Message!")}
-                else{
-                await schedulePushNotification().then(()=>{
-                navigation.navigate("first")
-              })}}}
-            >
-              <Text> Set Notification </Text>
-            </TouchableOpacity>
-          </View>
-      {renderIOSOrAndroidDatePicker()}
-      {renderIOSOrAndroidTimePicker()}
-
-    </View>
+          <TouchableOpacity
+            style={{
+              borderColor: "black",
+              borderWidth: 2,
+              borderRadius: 10,
+              height: 40,
+              alignItems: "center",
+              justifyContent: "center",
+              width: "60%",
+              marginTop: 20,
+            }}
+            onPress={async () => {
+              // console.log(dateFormat);
+              if (title == "" || body == "") {
+                Alert.alert("Please fill in both Title and Message!");
+              } else {
+                await schedulePushNotification().then(() => {
+                  navigation.navigate("first");
+                });
+              }
+            }}
+          >
+            <Text> Set Notification </Text>
+          </TouchableOpacity>
+        </View>
+        {renderIOSOrAndroidDatePicker()}
+        {renderIOSOrAndroidTimePicker()}
+      </View>
     </KeyboardAwareScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   noTasksText: {
@@ -440,16 +489,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    width:"100%",
+    width: "100%",
   },
 
   input: {
     borderWidth: 1,
-    borderColor:"black",
-    marginBottom:20,
-    textAlign:"center",
-    height:60,
-    width:"85%",
+    borderColor: "black",
+    marginBottom: 20,
+    textAlign: "center",
+    height: 60,
+    width: "85%",
     // margin: 10
     // marginTop: 20,
 
@@ -458,9 +507,9 @@ const styles = StyleSheet.create({
   inputSmall: {
     borderWidth: 1,
     borderColor: "#777",
-    textAlign:"center",
-    width:80,
-    height:40,
+    textAlign: "center",
+    width: 80,
+    height: 40,
     // margin: 10
     // marginTop: 20,
 

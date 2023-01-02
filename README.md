@@ -41,9 +41,4 @@ https://docs.google.com/document/d/1ruVOX7JnNadeX8M5FUQDOpJcoEdmWq1E/edit?usp=sh
  
  Email address: zeenmqorbital@gmail.com
  
- ### Plans for milestone 3
- > First Week of July - Beautify our UI design
- >
- > Second Week of July - Allow users to set notifications by using native notify package
- >
- > Third week of July - Conducting Unit Testing by using React Native Testing Library 
+
